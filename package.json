@@ -1,8 +1,9 @@
 {
   "name": "manageSystem",
   "version": "0.0.0",
+  "main": "main.js",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently \"vite\" \"electron .\"",
     "build": "vite build"
   },
   "dependencies": {
@@ -12,6 +13,10 @@
   },
   "devDependencies": {
     "@vue/compiler-sfc": "^3.0.4",
-    "vite": "^1.0.0-rc.13"
+    "vite": "^1.0.0-rc.13",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "concurrently": "^7.6.0",
+    "electron": "^23.1.1",
+    "vue-tsc": "^1.0.24"
   }
 }
