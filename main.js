@@ -6,12 +6,13 @@ const path = require('path')
 // 保持对window对象的全局引用，如果不这么做的话，当JavaScript对象被
 // 垃圾回收的时候，window对象将会自动的关闭
 let win
- 
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = true;
+
 function createWindow () {
   // 创建浏览器窗口。
   win = new BrowserWindow({
-    width: 700,
-    height: 400,
+    width: 18000,
+    height: 2000,
     // webPreferences: {
     //   nodeIntegration: true,        //是否可以使用node.js的API
     //   contextIsolation: false       //隔离取消掉，把主进程和渲染进程打通
@@ -28,7 +29,7 @@ function createWindow () {
   win.loadURL('http://172.17.7.33:3000/')
  
   // 打开开发者工具
-  // win.webContents.openDevTools()
+  win.webContents.openDevTools()
  
   // 当 window 被关闭，这个事件会被触发。
   win.on('closed', () => {

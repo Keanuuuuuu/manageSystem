@@ -1,12 +1,15 @@
-// router/index
+import { createRouter, createWebHashHistory } from 'vue-router'
 
-import { createRouter, createWebHistory} from 'vue-router'
-const routes = [  
-
+const routes = [
+  {
+    
+  },
+  // ...其他路由配置
 ]
-const router = createRouter({  
-    history: createWebHistory(),  
-    routes
+
+const router = createRouter({
+  history: createWebHashHistory(),
+  routes
 })
 
 export default router
