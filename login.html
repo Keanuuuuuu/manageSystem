@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Login</title>
+<style>
+    body {
+        background-color: #eee;
+    }
+    form {
+        margin: 20px auto;
+        max-width: 300px;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+    h1 {
+        text-align: center;
+        font-weight: normal;
+        margin-bottom: 20px;
+    }
+    input {
+        display: block;
+        width: 100%;
+        border: none;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    button {
+        display: block;
+        width: 100%;
+        border: none;
+        background-color: #007aff;
+        color: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #005aff;
+    }
+</style>
+</head>
+<body>
+<form >
+    <h1>Login</h1>
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" required>
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" required>
+    <button type="submit" id="login-form">Login</button>
+</form>
+
+<script>
+    const { remote } = require('electron')
+    alert(111)
+    // // 获取登录表单
+    const loginForm = document.getElementById('login-form')
+
+    loginForm.onclick(function(){
+        // remote.getCurrentWindow().close()
+        // remote.app.createWindow()
+        alert('Login failed')
+    })
+</script>

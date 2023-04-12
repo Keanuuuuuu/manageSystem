@@ -5,45 +5,23 @@
         <logo class="logo grid-content bg-purple-dark"></logo>
       </el-col>
     </el-row>
-    <el-row style="flex:1;" class="top_navigation_bar">
-      <el-col :span="24"> 
-        <bar class="grid-content bg-purple"></bar>
-      </el-col>
-    </el-row>
-    <el-row style="flex:20;">
-      <el-col :span="6">
-        <div class="navigator grid-content1 bg-purple">
-          <navigator></navigator>
-          <Menu></Menu>
-        </div>
-      </el-col>
-      <el-col :span="18">
-        <div class="grid-content1 bg-purple-light">
-        <router-view></router-view>
-      </div></el-col>
-    </el-row>
+    <Arti></Arti>
   </div>
 </template>
 
 <script>
 import Logo from './components/Logo.vue'
 import Navigator from './components/navigator.vue'
-import gridCol from './components/grid-col.vue'
-import gridRow from './components/grid-row.vue'
 import Menu from './components/menu.vue'
-import Bar from './components/bar.vue'
+import Arti from './components/arti.vue'
 
 export default {
   name: 'App',
   components: {
     Logo,
     Navigator,
-    gridCol,
-    gridRow,
     Menu,
-    Bar
-  },
-  mounted(){
+    Arti
   }
 }
 </script>
@@ -60,15 +38,9 @@ export default {
   display: flex;
   flex-direction: column;
   padding-left: calc(100vw - 100%);
-  .top_navigation_bar{
-    border: 1px solid black;
-    box-sizing: border-box;
-  }
-  .logo_boder{
-    border: 1px solid black;
-    box-sizing: border-box;
-  }
   .el-row {
+    border: 1px solid black;
+    box-sizing: border-box;
     min-width: 1200px;
     &:last-child {
     margin-bottom: 0;

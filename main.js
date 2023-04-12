@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow,ipcMain } = require('electron')
 // 在官方文档里可以查看这些模块的作用及用法
 
 const path = require('path')
@@ -11,8 +11,8 @@ process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = true;
 function createWindow () {
   // 创建浏览器窗口。
   win = new BrowserWindow({
-    width: 18000,
-    height: 2000,
+    width: 2000,
+    height: 1000,
     // webPreferences: {
     //   nodeIntegration: true,        //是否可以使用node.js的API
     //   contextIsolation: false       //隔离取消掉，把主进程和渲染进程打通
@@ -20,16 +20,17 @@ function createWindow () {
     // frame: false, // 隐藏顶部栏
     // transparent: true, // 不显示html的元素区域设置透明色
   })
-  win.setAspectRatio(1) //设置窗口保持的比例
+  // win.setAspectRatio(1) //设置窗口保持的比例
  
   // 加载index.html文件
   //   win.loadFile('./index.html')  //就是根据这句加载你创建的index.html的
   // win.loadFile(path.resolve(__dirname,'/src/index.html')) // 或者这样写，来适应不同操作系统的路径
 
-  win.loadURL('http://172.17.7.33:3000/')
+  win.loadURL('http://localhost:3000/')
+  // win.loadURL('http://192.168.0.140:3000/')
  
   // 打开开发者工具
-  win.webContents.openDevTools()
+  // win.webContents.openDevTools()
  
   // 当 window 被关闭，这个事件会被触发。
   win.on('closed', () => {
@@ -40,10 +41,30 @@ function createWindow () {
   })
 }
  
+
+function createLoginWindow() {
+  loginWindow = new BrowserWindow({
+    width: 400,
+    height: 500,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  })
+  loginWindow.loadFile('./login.html')
+  loginWindow.on('closed', () => {
+    // loginWindow = null
+    // if (loginWindow === null) {
+    //   createWindow()
+    // }
+  })
+}
+
+  
 // Electron 会在初始化后并准备
 // 创建浏览器窗口时，调用这个函数。
 // 部分 API 在 ready 事件触发后才能使用。
 app.on('ready', createWindow)
+// app.on('ready', createLoginWindow)
  
 // 当全部窗口关闭时退出。
 app.on('window-all-closed', () => {

@@ -4,6 +4,7 @@
     <div class="monitoring">内机监控</div>
     <div class="log">日志记载</div>
     <div class="id">账号管理</div>
+    <router-link class="list-group-item" active-class="active" to="">总览2</router-link>
   </div>
 </template>
 
