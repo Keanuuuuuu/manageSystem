@@ -51,7 +51,7 @@
       @change="Temperature_change"
       v-model="num"
       :min="16"
-      :max="30"
+      :max="25"
       controls-position="right"
       class="Temperature_select"
     />

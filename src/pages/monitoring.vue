@@ -3,35 +3,49 @@
     <!-- 暂时未封装为组件 -->
     <div class="Monitor_display_head"></div>
     <div class="Monitor_display_control"></div>
+
     <div class="Monitor_the_display_data_list">
       <table class="table">
         <thead>
             <tr>
                 <th scope="col">名称</th>
-                <th scope="col">模式</th>
                 <th scope="col">编号</th>
+                <th scope="col">模式</th>
                 <th scope="col">温度</th>
+                <th scope="col">室温</th>
+                <th scope="col">风速</th>
                 <th scope="col">状态</th>
             </tr>
         </thead>
         <tbody>
 
             <!-- 使用v-for遍历数据，并且设置key保证组件唯一性  -->
-            <tr v-for="item in array.value" :key="item.number" v-mouse-menu="
+            <tr v-for="item in array.value? array.value.slice((currentPage - 1) * pageSize, currentPage * pageSize): []" :key="item.number" v-mouse-menu="
             {
               params: item,
               ...options
             }">
                 <th scope="row">{{ item.faultCode }}</th>
-                <td>{{ item.mode }}</td>
                 <td>{{ item.number }}</td>
+                <td>{{ item.mode }}</td>
+                <td>{{ item.temperature }}</td>
                 <td>{{ item.roomTemperature }}</td>
+                <td>{{ item.windSpeed }}</td>
                 <td>{{ item.status }}</td>
-                <td @click="modifyNode(item)" class="modify">修改</td>
+                <td @click="modifyNode(item)" class="modify">智能控制</td>
             </tr>
 
         </tbody>
       </table>  
+      <el-pagination
+        :current-page="currentPage"
+        :page-size="pageSize"
+        :page-sizes="[10, 20, 30, 40]" 
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
       <button @click="getAirconditionPost">刷新数据</button>
     </div>
   </div>
@@ -115,13 +129,23 @@ export default{
     ])
     let dialogVisible = ref(false)
     let titleName = ref('')
-    
+    let total = ref(0)
+    let currentPage = ref(1)
+    let pageSize = ref(10)
+
     async function getAirconditionPost(){
       const res = await post('/getAllMachineStatus',{
         ip: '59.68.61.4'
       })
+      
       array.value = res
+      total.value = res.length
     }
+
+    onMounted(() => {
+      // 利用页面挂载请求不太好，每次刷新都要请求
+      getAirconditionPost()
+    })
 
     async function modifyNodePost(node) {
       console.log(node);
@@ -136,11 +160,11 @@ export default{
             "windSpeed": node[2]
           },
           {
-            "number": node[4],
-            "status": node[0],
-            "mode": node[1],
-            "temperature": node[3],
-            "windSpeed": node[2]
+            "number": 2,
+            "status": 1,
+            "mode": 3,
+            "temperature": 20,
+            "windSpeed": 1
           }
         ]
       })
@@ -186,9 +210,26 @@ export default{
       modifyNodePost(res)
     }
 
+    // 分页相关操作
+    const paginatedArray = computed(() => {
+      const start = (currentPage.value - 1) * pageSize.value
+      const end = currentPage.value * pageSize.value
+      return array.value.slice(start, end)
+    })
+
+    function handleSizeChange(val) {
+      pageSize.value = val
+    }
+
+    function handleCurrentChange(val) {
+      currentPage.value = val
+    }
+
     return {
       getAirconditionPost,
       modifyNode,
+      handleSizeChange,
+      handleCurrentChange,
       confirm,
       ...storeMutations,
       array,
@@ -204,7 +245,10 @@ export default{
       modeValue,
       windValue,
       temperatureValue,
-      numberValue
+      numberValue,
+      total,
+      currentPage,
+      pageSize
     }
   }
 }
