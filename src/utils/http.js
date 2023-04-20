@@ -39,7 +39,7 @@ instance.interceptors.response.use(
 
 export function get(url, params) {
     return instance.get(url, {
-        params
+      params    
     })
 }
 

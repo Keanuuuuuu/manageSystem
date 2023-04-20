@@ -1,8 +1,8 @@
 <template>
   <div class="body">
-    <el-row style="flex:1;">
+    <el-row class="logo">
       <el-col :span="24" class="logo_boder">
-        <logo class="logo grid-content bg-purple-dark"></logo>
+        <logo class=" grid-content bg-purple-dark"></logo>
       </el-col>
     </el-row>
     <Arti></Arti>
@@ -33,11 +33,15 @@ export default {
   position: absolute;
   top: 50%;
   left: 50%;
-  height: 100vh;
+  height: 100%;
   transform: translate(-50%,-50%);
   display: flex;
   flex-direction: column;
   padding-left: calc(100vw - 100%);
+  .logo{
+    height: 10%;
+    // 顶部logo的高度加上下面Arti组件的高度为100%，例：这里为10%，那Arti整个高度为90%
+  }
   .el-row {
     border: 1px solid black;
     box-sizing: border-box;

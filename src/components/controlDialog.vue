@@ -1,10 +1,10 @@
 <template>
-  <div class="content">
+  <div class="contentDialog">
     <div class="control Switch_control">
       <span>开/关</span>
       <el-select 
         v-model="value_one" 
-        placeholder="Select" 
+        placeholder="选择开关状态" 
         class="Switch_select"
         @change="Switch_change"
         >
@@ -19,7 +19,7 @@
       <span>模式</span>
       <el-select 
         v-model="value_two" 
-        placeholder="Select" 
+        placeholder="选择空调模式" 
         class="Mode_select"
         @change="Mode_change"
         >
@@ -34,7 +34,7 @@
       <span>风速</span>
       <el-select 
         v-model="value_three" 
-        placeholder="Select" 
+        placeholder="选择风速挡位" 
         class="Wind_select"
         @change="Wind_change"
         >
@@ -64,11 +64,21 @@ import { reactive, ref, computed } from 'vue'
 import { mapMutations, mapState, useStore } from 'vuex'
 export default {
   name:'controlDialog',
-  setup() {
-    const value_one = ref('')
-    const value_two = ref('')
-    const value_three = ref('')
-    const num = ref()
+  props: {
+    value_one: {
+      type: String
+    },
+    value_two: {
+      type: String
+    },
+    value_three: {
+      type: String
+    },
+    num: {
+      type: Number
+    }
+  },
+  setup(props, { emit }) {
     const options_one = [
       {
         value: '开',
@@ -128,6 +138,7 @@ export default {
 
     function Switch_change(event) {
       store.commit('Switch_control', event)
+      emit('updateDialogValue', switchValue)
     }
 
     function Mode_change(event) {
@@ -142,16 +153,13 @@ export default {
 
     function Temperature_change(event) {
       store.commit('Temperature_control', event)
+      emit('updateDialogNum', event)
     }
 
     return {
       options_one,
       options_two,
       options_three,
-      value_one,
-      value_two,
-      value_three,
-      num,
       Switch_change,
       Mode_change,
       Wind_change,
@@ -168,7 +176,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.content{
+.contentDialog{
   display: flex;
   flex-direction: column;
   width: 450px;
