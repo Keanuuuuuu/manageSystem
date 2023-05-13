@@ -7,7 +7,7 @@ const instance = axios.create({
     timeout: 5000,
     // 配置请求头信息
     headers: {
-        'Content-Type': 'application/json;charset=UTF-8'
+      'Content-Type': 'application/json;charset=UTF-8'
     }
 })
 
@@ -15,6 +15,11 @@ const instance = axios.create({
 instance.interceptors.request.use(
   config => {
     // 在发送请求之前做些什么
+
+    // const token = localStorage.getItem('token')
+    // 如果有token，即登录过后，那么就在这个请求拦截器中设置每一个请求都要带上token
+    // if(token) config.headers.Authorization = `Bearer ${token}`
+
     return config
   },
   error => {
@@ -31,7 +36,7 @@ instance.interceptors.response.use(
     return response.data
   },
   error => {
-    // 对响应错误做点什么
+    // 对响应错误做点什么，是否触发错误是通过状态码来判断的
     console.log(error) // 打印错误信息
     return Promise.reject(error)
   }

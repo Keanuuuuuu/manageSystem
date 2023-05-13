@@ -24,16 +24,22 @@ export default {
   props: {
     dialogVisible: {
       type: Boolean
+    },
+    control_dialogValue: {
+      type: Boolean
     }
   },
   setup(props, { emit }) {
     const input = ref('')
     const select = ref('')
     const DialogVisible = ref(props.dialogVisible)
+    const Control_dialogValue = ref(props.control_dialogValue)
 
     function changeDialogVisible() {
       DialogVisible.value = true
+      Control_dialogValue.value = true
       emit('updateDialogVisible', DialogVisible.value)
+      emit('updateControl_dialogValue', Control_dialogValue.value)
     }
 
     return {

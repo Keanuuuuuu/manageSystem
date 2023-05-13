@@ -1,7 +1,15 @@
 <template>
   <div class="content">
     <div class="tree">
-      <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" />
+      <el-tree 
+        :data="data" 
+        :props="defaultProps" 
+        @node-click="handleNodeClick"
+        :default-expand-all="true"
+        v-mouse-menu = "{
+          ...options_tree
+        }"
+      />
     </div>
     <!-- 以上菜单暂时未封装 -->
     <div class="Monitor">
@@ -9,7 +17,9 @@
       <!-- 以上为内机监控界面的总览显示 -->
       <monitor-display-control 
         :dialogVisible="dialogVisible"
+        :control_dialogValue="control_dialogValue"
         @updateDialogVisible="dialogVisible = $event"
+        @updateControl_dialogValue="control_dialogValue = $event"
       >
       </monitor-display-control>
       <!-- 以上为内机监控界面的控制显示 -->
@@ -76,6 +86,7 @@
     align-center
   >
     <control-dialog
+      v-show="control_dialogValue"
       :value_one="value_one"
       :value_two="value_two"
       :value_three="value_three"
@@ -83,6 +94,9 @@
       @updateDialogValue="value_one = $event"
       @updateDialogNum="num = $event"
     ></control-dialog>
+    <add-dialog
+      v-show="add_dialogValue"
+    ></add-dialog>
     <el-button @click="cancel">取消</el-button>
     <el-button @click="confirm">确定</el-button>
   </el-dialog>
@@ -98,12 +112,13 @@ import { ref, onMounted, computed } from 'vue'
 import { defineComponent } from 'vue'
 import { MouseMenuDirective, MouseMenuCtx } from '@howdyjs/mouse-menu'
 import controlDialog from '../components/controlDialog.vue'
+import addDialog from '../components/addDialog.vue'
 import MonitorDisplayHead from '../components/control_components/Monitor_display_head.vue'
 import MonitorDisplayControl from '../components/control_components/Monitor_display_control.vue'
 import { mapMutations, mapState, useStore } from 'vuex'
 
 export default{
-  components: { controlDialog, MonitorDisplayHead, MonitorDisplayControl },
+  components: { controlDialog, MonitorDisplayHead, MonitorDisplayControl, addDialog },
   name:'monitoring',
   directives: {
     MouseMenu: MouseMenuDirective
@@ -131,6 +146,9 @@ export default{
             fn: (params, currentEl, bindingEl, e) => {
               titleName.value = params.number + "号空调"
               dialogVisible.value = true
+              add_dialogValue.value = false
+              control_dialogValue.value = true
+              // 展示弹窗
               console.log(params.number)
               store.commit('number_control', params.number)
             }
@@ -147,6 +165,49 @@ export default{
           }
         ]
       })
+    const options_tree = reactive({
+      useLongPressInMobile: true,
+      menuWrapperCss: {
+        background: "#FFFFFF"
+      },
+      menuItemCss: {
+
+      },
+      menuList: [
+        {
+          label: '添加节点',
+          tips: 'Add',
+          fn: (params, currentEl, bindingEl, e) => {
+            dialogVisible.value = true
+            add_dialogValue.value = true
+            // 展示对应的内部dialog时，要把别的设置为false
+            control_dialogValue.value = false
+            console.log('open', params, currentEl, bindingEl, e)
+          }
+        },
+        {
+          label: '修改节点',
+          tips: 'Edit',
+          fn: (params, currentEl, bindingEl, e) => {
+            titleName.value = params.number + "号空调"
+            dialogVisible.value = true
+            // 展示弹窗
+            console.log(params.number)
+            store.commit('number_control', params.number)
+          }
+        },
+        {
+          label: '删除节点',
+          tips: 'Delete',
+          fn: (params, currentEl, bindingEl, e) => console.log('delete', params, currentEl, bindingEl, e)
+        },
+        {
+          label: '智能控制',
+          tips: 'Control',
+          fn: (params, currentEl, bindingEl, e) => console.log('rename', params, currentEl, bindingEl, e)
+        }
+      ]
+    })
     const  formItems = reactive([
       { label: '用户姓名', key: 'realName', required: true },
       {
@@ -157,6 +218,8 @@ export default{
       },
     ])
     let dialogVisible = ref(false)
+    let control_dialogValue = ref(true)
+    let add_dialogValue = ref(true)
     let titleName = ref('')
     let total = ref(0)
     let currentPage = ref(1)
@@ -341,7 +404,7 @@ export default{
     };
 
     const handleNodeClick = (data) => {
-      // console.log(data)
+      console.log(data)
       // 通过一个查询接口，向后端发送请求，参数就为这个data的内容，从而更新array
     }
 
@@ -355,13 +418,16 @@ export default{
       handleNodeClick,
       ...storeMutations,
       array,
-      options,
+      options, // 列表节点右击配置项
+      options_tree, // 菜单栏右击配置项
       editVisible,
       editItemData,
       handleEdit,
       handleAdd,
       editSubmit,
-      dialogVisible,
+      dialogVisible, // 整个Dialog是否展示
+      control_dialogValue, // 根据不同右击事件选择展示不同内容：修改节点
+      add_dialogValue, // ：添加节点
       titleName,
       switchValue,
       modeValue,
