@@ -9,9 +9,22 @@
         v-mouse-menu = "{
           ...options_tree
         }"
-      />
+      >
+        <template #default="{ node, data }">
+          <span class="custom-tree-node">
+            <div v-show="!data.children">
+              <span>
+                <span @click="append(data)"> {{ color }} </span>
+                <!-- 现在只是一个固定的1来表示状态，要换成插值表达式，根据请求返回的故障码我来做一个判断 -->
+                <!-- <a style="margin-left: 8px" @click="remove(node, data)"> Delete </a> -->
+              </span>
+            </div>
+            <span>{{ node.label }}</span>
+          </span>
+        </template>
+      </el-tree>
     </div>
-    <!-- 以上菜单暂时未封装 -->
+    <!-- 以上为左侧菜单 -->
     <div class="Monitor">
       <monitor-display-head></monitor-display-head>
       <!-- 以上为内机监控界面的总览显示 -->
@@ -24,7 +37,7 @@
       </monitor-display-control>
       <!-- 以上为内机监控界面的控制显示 -->
       <div class="Monitor_the_display_data_list">
-        <table>
+        <!-- <table>
           <thead>
               <tr class="table">
                   <th scope="col">
@@ -41,7 +54,6 @@
           </thead>
           <tbody>
 
-              <!-- 使用v-for遍历数据，并且设置key保证组件唯一性  -->
               <tr v-for="item in array.value? 
                 array.value.slice((currentPage - 1) * pageSize, currentPage * pageSize): []" 
                 :key="item.number" 
@@ -65,17 +77,54 @@
               </tr>
 
           </tbody>
-        </table>  
+        </table> -->
+        <!-- 以上是自定义列表内容 -->
+
+        <el-table
+          ref="multipleTableRef"
+          :data="tableData?tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize): []"
+          style="width: 100%"
+          v-mouse-menu="
+          {
+            params: item,
+            ...options
+          }"
+          @selection-change="handleSelectionChange"
+          stripe
+          max-height="400"
+          :header-cell-style="headerRowStyle"
+        >
+          <!-- 
+            1、ele对于列表中每一项数据的展示可以使用property属性，也可以使用template模板 
+            2、sortable为设置是否启用排序功能
+            3、v-mouse-menu为列表元素右键的菜单设置
+            4、tableData.slice为分页相关
+            5、selection-change当选择项发生变化时会触发该事件
+          -->
+          <el-table-column type="selection" width="55" />
+          <el-table-column label="序号" width="120" />
+          <el-table-column label="名称" width="120">
+            <template #default="scope">{{ scope.row.date }}</template>
+          </el-table-column>
+          <el-table-column property="name" label="状态" width="120" sortable />
+          <el-table-column label="模式" width="120" sortable/>
+          <el-table-column label="温度" width="120" sortable/>
+          <el-table-column label="风速" width="120" sortable/>
+          <el-table-column property="address" label="备注" show-overflow-tooltip />
+        </el-table>
+        <!-- 以上是使用ele列表内容 -->
+
         <el-pagination
           :current-page="currentPage"
           :page-size="pageSize"
-          :page-sizes="[10, 20, 30, 40]" 
+          :page-sizes="[5, 10, 20, 30, 40]" 
+          background="true"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
+          :total="tableData.length"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
         />
-        <button @click="getAllIP">获取所有IP</button>
+        <!-- 以上是分页器内容 -->
       </div>
     </div>
   </div>
@@ -221,7 +270,7 @@ export default{
     let control_dialogValue = ref(true)
     let add_dialogValue = ref(true)
     let titleName = ref('')
-    let total = ref(0)
+    let total = ref(100)
     let currentPage = ref(1)
     let pageSize = ref(10)
     let value_one = ref()
@@ -289,7 +338,90 @@ export default{
       children: 'children',
       label: 'label',
     })
+    const tableData = reactive([ // 定义列表内表格数据
+      {
+        date: '2016-05-03',
+        name: 'Tom',
+        address: 'No. 189, Grove St, Los Angeles',
+      },
+      {
+        date: '2016-05-02',
+        name: 'Tom2',
+        address: 'No. 189, Grove St, Los Angeles',
+      },
+      {
+        date: '2016-05-04',
+        name: 'Tom3',
+        address: 'No. 189, Grove St, Los Angeles',
+      },
+      {
+        date: '2016-05-01',
+        name: 'Tom',
+        address: 'No. 189, Grove St, Los Angeles',
+      },
+      {
+        date: '2016-05-08',
+        name: 'Tom',
+        address: 'No. 189, Grove St, Los Angeles',
+      },
+      {
+        date: '2016-05-06',
+        name: 'Tom',
+        address: 'No. 189, Grove St, Los Angeles',
+      },
+      {
+        date: '2016-05-07',
+        name: 'Tom',
+        address: 'No. 189, Grove St, Los Angeles',
+      },
+      {
+        date: '2016-05-07',
+        name: 'Tom',
+        address: 'No. 189, Grove St, Los Angeles',
+      },
+      {
+        date: '2016-05-07',
+        name: 'Tom',
+        address: 'No. 189, Grove St, Los Angeles',
+      },
+      {
+        date: '2016-05-07',
+        name: 'Tom',
+        address: 'No. 189, Grove St, Los Angeles',
+      },
+      {
+        date: '2016-05-07',
+        name: 'Tom',
+        address: 'No. 189, Grove St, Los Angeles',
+      },
+      {
+        date: '2016-05-07',
+        name: 'Tom',
+        address: 'No. 189, Grove St, Los Angeles',
+      },
+      {
+        date: '2016-05-07',
+        name: 'Tom',
+        address: 'No. 189, Grove St, Los Angeles',
+      },
+      {
+        date: '2016-05-07',
+        name: 'Tom',
+        address: 'No. 189, Grove St, Los Angeles',
+      },
+      {
+        date: '2016-05-07',
+        name: 'Tom',
+        address: 'No. 189, Grove St, Los Angeles',
+      },
+      {
+        date: '2016-05-07',
+        name: 'Tom',
+        address: 'No. 189, Grove St, Los Angeles',
+      },
+    ])
 
+    // 获取原始列表
     async function getAirconditionPost() {
       const res = await post('/getAllMachineStatus',{
         ip: '59.68.61.4'
@@ -299,16 +431,13 @@ export default{
       total.value = res.length
     }
 
+    // 获取所有的IP
     async function getAllIP() {
       const res = await post('/getAllIP')
       console.log(res)
     }
 
-    onMounted(() => {
-      // 利用页面挂载请求不太好，每次刷新都要请求
-      getAirconditionPost()
-    })
-
+    // 修改节点的POST请求
     async function modifyNodePost(node) {
       console.log(node);
       const changeNode = await post('/controlMachine',{
@@ -331,6 +460,16 @@ export default{
         ]
       })
       console.log(changeNode)
+    }
+
+    // 页面挂载时刷新请求
+    onMounted(() => {
+      getAirconditionPost()
+    })
+
+    // 获取原始数组列表后，根据故障码渲染内机故障颜色
+    function calculateColor(array){
+
     }
 
     function modifyNode(item) {
@@ -408,6 +547,16 @@ export default{
       // 通过一个查询接口，向后端发送请求，参数就为这个data的内容，从而更新array
     }
 
+    const handleSelectionChange = (ev) => { // 当选择项发生变化时会触发该事件
+      console.log(ev)
+    }
+
+    const headerRowStyle = ({ row, rowIndex }) => { // 修改表头的回调函数
+      return {
+        backgroundColor: 'pink !important'
+      }
+    }
+
     return {
       getAirconditionPost,
       modifyNode,
@@ -443,7 +592,10 @@ export default{
       value_one,
       value_two,
       value_three,
-      num
+      num,
+      tableData, // 定义列表内表格数据
+      handleSelectionChange, // 当选择项发生变化时会触发该事件
+      headerRowStyle // 修改表头颜色的回调函数
     }
   }
 }
@@ -463,6 +615,9 @@ export default{
 .Monitor_the_display_data_list{
   height: 80%;
   // 在内机控制界面的右侧 列表的高度 + 头部高度 + 控制区域高度 = 100%
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   .table{
     background-color: rgb(207, 197, 197);
     border-collapse:collapse; 
@@ -477,5 +632,15 @@ export default{
 .modify{
   cursor: pointer;
   color: rgb(33, 66, 214);
+}
+.custom-tree-node {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  padding-right: 8px;
+}
+.el-table tr{
+  background-color: aqua;
 }
 </style>

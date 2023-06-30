@@ -9,10 +9,10 @@
         placeholder="Please input"
         class="input-with-select"
         >
-      <template #prepend>
-        <el-button :icon="Search" />
-      </template>
-  </el-input>
+        <template #prepend>
+          <el-button :icon="Search" />
+        </template>
+      </el-input>
   </div>
 </template>
   

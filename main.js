@@ -13,12 +13,17 @@ function createWindow () {
   win = new BrowserWindow({
     width: 2000,
     height: 1000,
+    minHeight: 600,
+    minWidth: 1000,
     // webPreferences: {
     //   nodeIntegration: true,        //是否可以使用node.js的API
     //   contextIsolation: false       //隔离取消掉，把主进程和渲染进程打通
     // }
-    // frame: false, // 隐藏顶部栏
     // transparent: true, // 不显示html的元素区域设置透明色
+    frame: true, // 用于自定义menu，设置为false可以将默认的菜单栏隐藏，包括叉、最小化、拖动与放大缩小
+    autoHideMenuBar: true, // 在显示默认菜单的同时，隐藏那些Flie等菜单
+    icon: './public/favicon.ico', // 设置一个图片路径，可以自定义当前应用的显示图标
+    title: '中央空调管理', // 自定义当前应用的标题
   })
   // win.setAspectRatio(1) //设置窗口保持的比例
  
@@ -59,7 +64,9 @@ function createLoginWindow() {
   })
 }
 
-  
+
+// app相当于整个应用程序，拥有不同的生命周期
+
 // Electron 会在初始化后并准备
 // 创建浏览器窗口时，调用这个函数。
 // 部分 API 在 ready 事件触发后才能使用。
