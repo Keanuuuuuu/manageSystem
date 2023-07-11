@@ -3,7 +3,7 @@
     <div class="control Switch_control">
       <span>开/关</span>
       <el-select 
-        v-model="value_one" 
+      :modelValue="value_one" 
         placeholder="选择开关状态" 
         class="Switch_select"
         @change="Switch_change"
@@ -18,7 +18,7 @@
     <div class="control Mode_control">
       <span>模式</span>
       <el-select 
-        v-model="value_two" 
+      :modelValue="value_two" 
         placeholder="选择空调模式" 
         class="Mode_select"
         @change="Mode_change"
@@ -33,7 +33,7 @@
     <div class="control Wind_speed_control">
       <span>风速</span>
       <el-select 
-        v-model="value_three" 
+      :modelValue="value_three" 
         placeholder="选择风速挡位" 
         class="Wind_select"
         @change="Wind_change"
@@ -49,7 +49,7 @@
       <span>温度</span>
       <el-input-number
       @change="Temperature_change"
-      v-model="num"
+      :modelValue="num"
       :min="16"
       :max="25"
       controls-position="right"
@@ -79,7 +79,7 @@ export default {
     }
   },
   setup(props, { emit }) {
-    const options_one = [
+    const options_one = reactive([
       {
         value: '开',
         label: 'Option1',
@@ -88,8 +88,8 @@ export default {
         value: '关',
         label: 'Option2',
       }
-    ]
-    const options_two = [
+    ])
+    const options_two = reactive([
       {
         value: '制冷',
         label: 'Option1',
@@ -106,8 +106,8 @@ export default {
         value: '除湿',
         label: 'Option4',
       }
-    ]
-    const options_three = [
+    ])
+    const options_three = reactive([
       {
         value: '自动',
         label: 'Option1',
@@ -124,7 +124,7 @@ export default {
         value: '高速',
         label: 'Option4',
       }
-    ]
+    ])
 
     // vuex相关操作
     const store = useStore()

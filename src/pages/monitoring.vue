@@ -12,14 +12,14 @@
       >
         <template #default="{ node, data }">
           <span class="custom-tree-node">
+            <span>{{ node.label }}</span>
             <div v-show="!data.children">
               <span>
-                <span @click="append(data)"> {{ color }} </span>
+                <span @click="append(data)">  --color  </span>
                 <!-- 现在只是一个固定的1来表示状态，要换成插值表达式，根据请求返回的故障码我来做一个判断 -->
                 <!-- <a style="margin-left: 8px" @click="remove(node, data)"> Delete </a> -->
               </span>
             </div>
-            <span>{{ node.label }}</span>
           </span>
         </template>
       </el-tree>
@@ -86,7 +86,7 @@
           style="width: 100%"
           v-mouse-menu="
           {
-            params: item,
+            // params: item, // 这里还要看下文档，不知道为何写了报错
             ...options
           }"
           @selection-change="handleSelectionChange"
@@ -104,13 +104,13 @@
           <el-table-column type="selection" width="55" />
           <el-table-column label="序号" width="120" />
           <el-table-column label="名称" width="120">
-            <template #default="scope">{{ scope.row.date }}</template>
+            <template #default="scope">{{ scope.row["空调名称"] }}</template>
           </el-table-column>
-          <el-table-column property="name" label="状态" width="120" sortable />
+          <el-table-column property='status' label="状态" width="120" sortable />
           <el-table-column label="模式" width="120" sortable/>
           <el-table-column label="温度" width="120" sortable/>
           <el-table-column label="风速" width="120" sortable/>
-          <el-table-column property="address" label="备注" show-overflow-tooltip />
+          <el-table-column label="备注" show-overflow-tooltip />
         </el-table>
         <!-- 以上是使用ele列表内容 -->
 
@@ -118,7 +118,7 @@
           :current-page="currentPage"
           :page-size="pageSize"
           :page-sizes="[5, 10, 20, 30, 40]" 
-          background="true"
+          background
           layout="total, sizes, prev, pager, next, jumper"
           :total="tableData.length"
           @size-change="handleSizeChange"
@@ -156,6 +156,7 @@
 
 import { post, get } from '../utils/http.js'
 import { switchString } from '../utils/digitalTransformation.js'
+import  Test  from '../utils/treeArr.js'
 import { reactive, toRaw } from 'vue'
 import { ref, onMounted, computed } from 'vue'
 import { defineComponent } from 'vue'
@@ -282,53 +283,45 @@ export default{
         label: '内机监控',
         children: [
           {
-            label: '16栋（23/24）',
+            id:'16',
+            label: '16栋 （23/24）',
             children: [
               {
-                label: 'Level three 1-1-1',
+                id:'201',
+                label: '16-201',
+                children: [
+                  {
+                    id:'16-201_1',
+                    label: '16-201_1'
+                  },
+                  {
+                    id:'16-201_2',
+                    label: '16-201_2'
+                  },
+                  {
+                    id:'16-201_3',
+                    label: '16-201_3'
+                  }
+                ]
               },
-            ],
-          },
-        ],
-      },
-      {
-        label: '2',
-        children: [
-          {
-            label: '2-1',
-            children: [
               {
-                label: '2-1-1',
-              },
-            ],
-          },
-          {
-            label: '2-2',
-            children: [
-              {
-                label: '2-2-1',
-              },
-            ],
-          },
-        ],
-      },
-      {
-        label: '3',
-        children: [
-          {
-            label: '3-1',
-            children: [
-              {
-                label: '3-1-1',
-              },
-            ],
-          },
-          {
-            label: '3-2',
-            children: [
-              {
-                label: '3-2-1',
-              },
+                id:'202',
+                label: '16-202',
+                children: [
+                  {
+                    id:'16-202_1',
+                    label: '16-202_1'
+                  },
+                  {
+                    id:'16-202_2',
+                    label: '16-202_2'
+                  },
+                  {
+                    id:'16-202_3',
+                    label: '16-202_3'
+                  }
+                ]
+              }
             ],
           },
         ],
@@ -341,82 +334,12 @@ export default{
     const tableData = reactive([ // 定义列表内表格数据
       {
         date: '2016-05-03',
-        name: 'Tom',
+        name: 'Tom1',
         address: 'No. 189, Grove St, Los Angeles',
       },
       {
         date: '2016-05-02',
         name: 'Tom2',
-        address: 'No. 189, Grove St, Los Angeles',
-      },
-      {
-        date: '2016-05-04',
-        name: 'Tom3',
-        address: 'No. 189, Grove St, Los Angeles',
-      },
-      {
-        date: '2016-05-01',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-      },
-      {
-        date: '2016-05-08',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-      },
-      {
-        date: '2016-05-06',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-      },
-      {
-        date: '2016-05-07',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-      },
-      {
-        date: '2016-05-07',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-      },
-      {
-        date: '2016-05-07',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-      },
-      {
-        date: '2016-05-07',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-      },
-      {
-        date: '2016-05-07',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-      },
-      {
-        date: '2016-05-07',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-      },
-      {
-        date: '2016-05-07',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-      },
-      {
-        date: '2016-05-07',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-      },
-      {
-        date: '2016-05-07',
-        name: 'Tom',
-        address: 'No. 189, Grove St, Los Angeles',
-      },
-      {
-        date: '2016-05-07',
-        name: 'Tom',
         address: 'No. 189, Grove St, Los Angeles',
       },
     ])
@@ -464,7 +387,7 @@ export default{
 
     // 页面挂载时刷新请求
     onMounted(() => {
-      getAirconditionPost()
+      // getAirconditionPost()
     })
 
     // 获取原始数组列表后，根据故障码渲染内机故障颜色
@@ -543,8 +466,12 @@ export default{
     };
 
     const handleNodeClick = (data) => {
-      console.log(data)
-      // 通过一个查询接口，向后端发送请求，参数就为这个data的内容，从而更新array
+      // 想在下次点击事件触发前把数组删除干净，不过当table数组过长应该性能不好
+      let res = Test(data.id)
+      tableData.splice(0, tableData.length);
+      res.forEach(e => {
+        tableData.push(e);
+      });
     }
 
     const handleSelectionChange = (ev) => { // 当选择项发生变化时会触发该事件
