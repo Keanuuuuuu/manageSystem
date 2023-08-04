@@ -3,7 +3,7 @@
     <div class="control Switch_control">
       <span>开/关</span>
       <el-select 
-      :modelValue="value_one" 
+        :modelValue="value_one" 
         placeholder="选择开关状态" 
         class="Switch_select"
         @change="Switch_change"
@@ -18,7 +18,7 @@
     <div class="control Mode_control">
       <span>模式</span>
       <el-select 
-      :modelValue="value_two" 
+        :modelValue="value_two" 
         placeholder="选择空调模式" 
         class="Mode_select"
         @change="Mode_change"
@@ -33,7 +33,7 @@
     <div class="control Wind_speed_control">
       <span>风速</span>
       <el-select 
-      :modelValue="value_three" 
+        :modelValue="value_three" 
         placeholder="选择风速挡位" 
         class="Wind_select"
         @change="Wind_change"

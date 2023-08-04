@@ -3,11 +3,12 @@ import Overview from '../pages/overview.vue'
 import Monitoring from '../pages/monitoring.vue'
 import Log from '../pages/log.vue'
 import ID from '../pages/id.vue'
+import Login from '../pages/login.vue'
 
 const routes = [
   {
     path:'/',
-    redirect:"/overview"
+    redirect:"/login"
   },
   {
     path:'/overview',
@@ -24,6 +25,10 @@ const routes = [
   {
     path:'/id',
     component:ID
+  },
+  {
+    path:'/login',
+    component:Login
   },
   // ...其他路由配置
 ]

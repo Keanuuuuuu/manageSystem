@@ -1,14 +1,14 @@
 import axios from 'axios'
 
 const instance = axios.create({
-    // 配置请求根路径
-    baseURL: 'http://42.194.182.155:8088',
-    // 配置超时时间
-    timeout: 5000,
-    // 配置请求头信息
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
-    }
+  // 配置请求根路径
+  baseURL: 'http://42.194.182.155:8088',
+  // 配置超时时间
+  timeout: 5000,
+  // 配置请求头信息
+  headers: {
+    'Content-Type': 'application/json;charset=UTF-8'
+  }
 })
 
 // 请求拦截器
@@ -43,19 +43,21 @@ instance.interceptors.response.use(
 )
 
 export function get(url, params) {
-    return instance.get(url, {
-      params    
-    })
+  return instance.get(url, {
+    params
+  })
 }
 
-export function post(url, data) {
-    return instance.post(url, data)
+export function post(url, data, headers) {
+  const config = headers ? headers:{}
+  console.log(config);
+  return instance.post(url, data, config)
 }
 
 export function del(url) {
-    return instance.delete(url)
+  return instance.delete(url)
 }
 
 export function put(url, data) {
-    return instance.put(url, data)
+  return instance.put(url, data)
 }

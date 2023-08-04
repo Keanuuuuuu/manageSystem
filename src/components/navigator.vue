@@ -1,7 +1,7 @@
 <template>
   <div class="navigator">
     <div class="search">
-        <el-input v-model="input" placeholder="请输入内容"></el-input>
+        <el-input :modelValue="input" placeholder="请输入内容"></el-input>
         <el-button icon="el-icon-search" circle></el-button>
     </div>
   </div>

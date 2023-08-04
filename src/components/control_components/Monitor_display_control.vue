@@ -5,7 +5,7 @@
       <el-button class="btn">智能控制</el-button>
       <el-button class="btn">数据统计</el-button>
       <el-input
-        v-model="input"
+        :modelValue="input"
         placeholder="Please input"
         class="input-with-select"
         >
