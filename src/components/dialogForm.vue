@@ -7,7 +7,7 @@
         :prop="item.key">
         <!-- 通过判断item的type展示不同的表单项 -->
         <el-select v-if="item.type=='select'"
-          v-model="form[item.key]"
+          :modelValue="form[item.key]"
           style="width: 100%">
           <el-option v-for="op in item.options"
             :key="op.value"
@@ -15,7 +15,7 @@
             :value="op.value"></el-option>
         </el-select>
         <el-input v-else
-          v-model="form[item.key]"
+          :modelValue="form[item.key]"
           :disabled="item.disabled || (itemData && item.editDisabled)"
           :type="item.type || 'text'"
           :placeholder="item.placeholder">

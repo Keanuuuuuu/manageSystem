@@ -129,7 +129,7 @@
     </div>
   </div>
   <el-dialog 
-    v-model="dialogVisible"
+    :modelValue="dialogVisible"
     :title="titleName"
     width="600px"
     align-center
@@ -417,13 +417,16 @@ export default{
 
     // vuex相关操作
     const store = useStore()
-    const storeMutations = mapMutations(['Switch_control', 'Mode_control', 'Wind_control', 'Temperature_control'])
+    const storeMutations = mapMutations(['Switch_control', 'Mode_control', 'Wind_control', 'Temperature_control','role'])
 
     const numberValue = computed(() => store.state.number)
     const switchValue = computed(() => store.state.Switch)
     const modeValue = computed(() => store.state.Mode)
     const windValue = computed(() => store.state.Wind)
     const temperatureValue = computed(() => store.state.Temperature)
+    const roleValue = computed(() => store.state.role)
+
+    console.log(roleValue.value);
 
     function confirm() {
       // console.log(switchValue.value, modeValue.value, windValue.value, temperatureValue.value)
