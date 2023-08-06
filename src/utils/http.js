@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { ElLoading } from 'element-plus'
 
 const instance = axios.create({
   // 配置请求根路径
@@ -15,10 +16,11 @@ const instance = axios.create({
 instance.interceptors.request.use(
   config => {
     // 在发送请求之前做些什么
-
     // const token = localStorage.getItem('token')
     // 如果有token，即登录过后，那么就在这个请求拦截器中设置每一个请求都要带上token
     // if(token) config.headers.Authorization = `Bearer ${token}`
+
+    ElLoading.service({background: 'rgba(0,0,0,.5)',})
 
     return config
   },
@@ -33,6 +35,9 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   response => {
     // 对响应数据做点什么
+
+    ElLoading.service().close()
+
     return response.data
   },
   error => {
@@ -49,8 +54,7 @@ export function get(url, params) {
 }
 
 export function post(url, data, headers) {
-  const config = headers ? headers:{}
-  console.log(config);
+  const config = headers ? headers : {}
   return instance.post(url, data, config)
 }
 
