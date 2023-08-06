@@ -20,8 +20,14 @@
           />
         </div>
         <div id="checkBox">
-          <el-checkbox v-model="checked1" label="记住密码" size="large" />
-          <el-checkbox v-model="checked2" label="自动登录" size="large" />
+          <el-checkbox v-model="savePassword" label="记住密码" size="large" />
+          <el-checkbox
+            v-model="autoLogin"
+            label="自动登录"
+            size="large"
+            :disabled="!savePassword"
+            @change="handleAutoLoginChange"
+          />
         </div>
         <div id="loginBtn">
           <el-button color="#626aef" id="loginBtn" @click="handleLogin"
@@ -34,7 +40,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useStore } from "vuex";
 import { post } from "../utils/http.js";
 import { useRouter } from "vue-router";
@@ -45,10 +51,50 @@ export default {
   setup() {
     const username = ref("");
     const password = ref("");
-    const checked1 = ref(false);
-    const checked2 = ref(false);
+    const savePassword = ref(false);
+    const autoLogin = ref(false);
     const store = useStore();
     const router = useRouter();
+    let timeoutId = null;
+
+    // 监听“记住密码”选中状态的变化
+    watch(savePassword, (newValue) => {
+      // 如果取消选中“记住密码”，同时取消选中“自动登录”
+      if (!newValue) {
+        autoLogin.value = false;
+      }
+    });
+
+    // 记住密码  在组件挂载时从本地存储加载保存的凭据并自动登录
+    onMounted(() => {
+      const savedUsername = localStorage.getItem("username");
+      const savedPassword = localStorage.getItem("password");
+      const auto = localStorage.getItem("autoLogin");
+
+      if (savedUsername && savedPassword) {
+        username.value = savedUsername;
+        password.value = savedPassword;
+        savePassword.value = true;
+
+        if (auto) {
+          autoLogin.value = true;
+          timeoutId = setTimeout(handleLogin, 1500);
+        }
+      }
+    });
+
+    // 处理自动登录的变化
+    const handleAutoLoginChange = () => {
+      // 如果“自动登录”被选中，将自动登录标志保存到本地存储
+      if (autoLogin.value) {
+        localStorage.setItem("autoLogin", "true");
+      } else {
+        clearTimeout(timeoutId);
+        localStorage.removeItem("autoLogin");
+      }
+    };
+
+    // 处理登录
     const handleLogin = () => {
       const customUrl = "http://139.9.188.179:8002/api/login";
       // 转化为urlencode并且去除多余空格
@@ -68,10 +114,18 @@ export default {
             "Content-Type": "application/x-www-form-urlencoded",
           },
         };
-        // console.log(postData.toString());
         post(customUrl, postData.toString(), config).then((res) => {
           console.log(res);
           if (res.msg === "success") {
+            // 如果“记住密码”被选中，将凭据保存到本地存储
+            if (savePassword.value) {
+              localStorage.setItem("username", username.value);
+              localStorage.setItem("password", password.value);
+            } else {
+              // 如果“记住密码”未被选中，清除本地存储的凭据
+              localStorage.removeItem("username");
+              localStorage.removeItem("password");
+            }
             // 调用 Vuex 的 setRole mutation，将 role 存入 Vuex
             store.commit("setRole", res.role);
             // 跳转到 '/monitoring' 页面
@@ -90,8 +144,9 @@ export default {
     return {
       username,
       password,
-      checked1,
-      checked2,
+      savePassword,
+      autoLogin,
+      handleAutoLoginChange,
       handleLogin,
     };
   },

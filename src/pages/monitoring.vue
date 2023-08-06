@@ -431,7 +431,7 @@ export default{
     const temperatureValue = computed(() => store.state.Temperature)
     const roleValue = computed(() => store.state.role)
 
-    // console.log(roleValue.value);
+    console.log('role:',roleValue.value);
 
     function confirm() {
       // console.log(switchValue.value, modeValue.value, windValue.value, temperatureValue.value)

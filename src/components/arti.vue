@@ -6,6 +6,9 @@
         <router-link class="list-group-item monitoring" active-class="active" to="/monitoring">内机监控</router-link>
         <router-link class="list-group-item log" active-class="active" to="/log">日志记载</router-link>
         <router-link class="list-group-item id" active-class="active" to="/id">账号管理</router-link>
+        <el-tooltip class="box-item" effect="dark" content="退出登录" placement="left-end">
+        <el-icon id="power" @click="logout"><SwitchButton /></el-icon>
+        </el-tooltip>
       </div>
       <router-view></router-view>
     </el-col>
@@ -13,16 +16,43 @@
 </template>
 
 <script>
-import Bar from './bar.vue'
+import Bar from './bar.vue';
+import { useRouter } from "vue-router";
 export default{
   components :{
     Bar
   },
-  name:'arti'
+  name:'arti',
+  setup(){
+    const router = useRouter();
+    const logout = ()=>{
+      localStorage.removeItem("username");
+      localStorage.removeItem("password");
+      localStorage.removeItem("autoLogin");
+      router.push("/login")
+    }
+
+    return{
+      logout
+    }
+  }
 }
 </script>
 
 <style lang="scss">
+#power{
+  cursor: pointer;
+  display: block;
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 20px;
+  width: 40px;
+  height: 30px;
+  &:hover{
+    color: red;
+  }
+}
 .top_navigation_bar{
   height: 85%;
 }
