@@ -20,7 +20,7 @@ export default {
 
 <style lang="scss" scoped>
 .Monitor_display_head{
-  background-color: rgb(207, 197, 197);
+  background-color: #E7EEF3;
   height: 10%;
   display: flex;
   flex-direction: row;

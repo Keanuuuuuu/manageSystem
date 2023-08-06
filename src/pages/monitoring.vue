@@ -15,7 +15,7 @@
             <span>{{ node.label }}</span>
             <div v-show="!data.children">
               <span>
-                <span @click="append(data)">  --color  </span>
+                <span>  --color  </span>
                 <!-- 现在只是一个固定的1来表示状态，要换成插值表达式，根据请求返回的故障码我来做一个判断 -->
                 <!-- <a style="margin-left: 8px" @click="remove(node, data)"> Delete </a> -->
               </span>
@@ -86,7 +86,6 @@
           style="width: 100%"
           v-mouse-menu="
           {
-            // params: item, // 这里还要看下文档，不知道为何写了报错
             ...options
           }"
           @selection-change="handleSelectionChange"
@@ -131,6 +130,7 @@
   <el-dialog 
     :modelValue="dialogVisible"
     :title="titleName"
+    @close="close"
     width="600px"
     align-center
   >
@@ -224,36 +224,41 @@ export default{
       },
       menuList: [
         {
-          label: '添加节点',
-          tips: 'Add',
+          label: '数据查询',
+          tips: 'Search',
           fn: (params, currentEl, bindingEl, e) => {
-            dialogVisible.value = true
-            add_dialogValue.value = true
-            // 展示对应的内部dialog时，要把别的设置为false
-            control_dialogValue.value = false
             console.log('open', params, currentEl, bindingEl, e)
           }
         },
         {
-          label: '修改节点',
+          label: '编辑节点',
           tips: 'Edit',
           fn: (params, currentEl, bindingEl, e) => {
-            titleName.value = params.number + "号空调"
+            // titleName.value = params.number + "号空调"
             dialogVisible.value = true
-            // 展示弹窗
-            console.log(params.number)
-            store.commit('number_control', params.number)
+            add_dialogValue.value = false
+            // 展示对应的内部dialog时，要把别的设置为false
+            control_dialogValue.value = true
+            console.log(params)
+            // store.commit('number_control', params.number)
           }
         },
         {
           label: '删除节点',
           tips: 'Delete',
-          fn: (params, currentEl, bindingEl, e) => console.log('delete', params, currentEl, bindingEl, e)
+          fn: (params) => console.log('delete', params)
         },
         {
-          label: '智能控制',
-          tips: 'Control',
-          fn: (params, currentEl, bindingEl, e) => console.log('rename', params, currentEl, bindingEl, e)
+          label: '新增节点',
+          tips: 'Add',
+          fn: (params, currentEl, bindingEl, e) => { 
+            console.log('rename', params, currentEl, bindingEl, e)
+            dialogVisible.value = true
+            add_dialogValue.value = true
+            // 展示对应的内部dialog时，要把别的设置为false
+            control_dialogValue.value = false
+            // 增加节点后刷新
+          }
         }
       ]
     })
@@ -446,6 +451,10 @@ export default{
       console.log(num.value)
     }
 
+    function close() {
+      dialogVisible.value = false
+    }
+
     // 分页相关操作
     const paginatedArray = computed(() => {
       const start = (currentPage.value - 1) * pageSize.value
@@ -482,7 +491,7 @@ export default{
 
     const headerRowStyle = ({ row, rowIndex }) => { // 修改表头的回调函数
       return {
-        backgroundColor: 'pink !important'
+        backgroundColor: '#E7EEF3 !important'
       }
     }
 
@@ -493,6 +502,7 @@ export default{
       handleCurrentChange,
       confirm,
       cancel,
+      close,
       handleNodeClick,
       ...storeMutations,
       array,
@@ -548,7 +558,7 @@ export default{
   flex-direction: column;
   justify-content: space-between;
   .table{
-    background-color: rgb(207, 197, 197);
+    background-color: #E7EEF3;
     border-collapse:collapse; 
   }
 }
@@ -570,6 +580,6 @@ export default{
   padding-right: 8px;
 }
 .el-table tr{
-  background-color: aqua;
+  background-color: #E7EEF3;
 }
 </style>
