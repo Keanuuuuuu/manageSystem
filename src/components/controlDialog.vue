@@ -138,21 +138,24 @@ export default {
 
     function Switch_change(event) {
       store.commit('Switch_control', event)
-      emit('updateDialogValue', switchValue)
+      console.log(switchValue.value)
+      emit('updateDialogValue', event)
     }
 
     function Mode_change(event) {
       store.commit('Mode_control', event)
+      emit('updateDialogMode', event)
     }
 
     function Wind_change(event) {
       // console.log(event)
-      // storeMutations.Wind_control(event) // 不知为什么这种写法不可行
       store.commit('Wind_control', event)
+      emit('updateDialogWind', event)
     }
 
     function Temperature_change(event) {
       store.commit('Temperature_control', event)
+      console.log(event);
       emit('updateDialogNum', event)
     }
 

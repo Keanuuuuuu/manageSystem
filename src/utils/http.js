@@ -3,7 +3,7 @@ import { ElLoading } from 'element-plus'
 
 const instance = axios.create({
   // 配置请求根路径
-  baseURL: 'http://42.194.182.155:8088',
+  baseURL: 'https://7737xu2887.goho.co',
   // 配置超时时间
   timeout: 5000,
   // 配置请求头信息
@@ -54,7 +54,8 @@ export function get(url, params) {
 }
 
 export function post(url, data, headers) {
-  const config = headers ? headers : {}
+  const config = headers ? headers:{}
+  console.log("post请求信息：",config);
   return instance.post(url, data, config)
 }
 

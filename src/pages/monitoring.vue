@@ -6,12 +6,14 @@
         :props="defaultProps" 
         @node-click="handleNodeClick"
         :default-expand-all="true"
-        v-mouse-menu = "{
-          ...options_tree
-        }"
       >
         <template #default="{ node, data }">
-          <span class="custom-tree-node">
+          <span class="custom-tree-node"
+            v-mouse-menu = "{
+              params:data,
+              ...options_tree
+            }"
+          >
             <span>{{ node.label }}</span>
             <div v-show="!data.children">
               <span>
@@ -31,8 +33,10 @@
       <monitor-display-control 
         :dialogVisible="dialogVisible"
         :control_dialogValue="control_dialogValue"
+        :intelligent_controlValue="intelligent_controlValue"
         @updateDialogVisible="dialogVisible = $event"
         @updateControl_dialogValue="control_dialogValue = $event"
+        @updateIntelligent_controlValue="intelligent_controlValue = $event"
       >
       </monitor-display-control>
       <!-- 以上为内机监控界面的控制显示 -->
@@ -130,7 +134,7 @@
   <el-dialog 
     :modelValue="dialogVisible"
     :title="titleName"
-    @close="close"
+    @closed="close"
     width="600px"
     align-center
   >
@@ -141,11 +145,17 @@
       :value_three="value_three"
       :num="num"
       @updateDialogValue="value_one = $event"
+      @updateDialogMode="value_two = $event"
+      @updateDialogWind="value_three = $event"
       @updateDialogNum="num = $event"
     ></control-dialog>
     <add-dialog
       v-show="add_dialogValue"
+      @addDialogSubmit="addDialogfn"
     ></add-dialog>
+    <intelligent-control
+      v-show="intelligent_controlValue"
+    ></intelligent-control>
     <el-button @click="cancel">取消</el-button>
     <el-button @click="confirm">确定</el-button>
   </el-dialog>
@@ -162,12 +172,13 @@ import { ref, onMounted, computed } from 'vue'
 import { MouseMenuDirective, MouseMenuCtx } from '@howdyjs/mouse-menu'
 import controlDialog from '../components/controlDialog.vue'
 import addDialog from '../components/addDialog.vue'
+import intelligentControl from '../components/intelligentControlDialog.vue'
 import MonitorDisplayHead from '../components/control_components/Monitor_display_head.vue'
 import MonitorDisplayControl from '../components/control_components/Monitor_display_control.vue'
 import { mapMutations, mapState, useStore } from 'vuex'
 
 export default{
-  components: { controlDialog, MonitorDisplayHead, MonitorDisplayControl, addDialog },
+  components: { controlDialog, MonitorDisplayHead, MonitorDisplayControl, addDialog, intelligentControl },
   name:'monitoring',
   directives: {
     MouseMenu: MouseMenuDirective
@@ -231,7 +242,7 @@ export default{
           }
         },
         {
-          label: '编辑节点',
+          label: '实时控制',
           tips: 'Edit',
           fn: (params, currentEl, bindingEl, e) => {
             // titleName.value = params.number + "号空调"
@@ -239,8 +250,8 @@ export default{
             add_dialogValue.value = false
             // 展示对应的内部dialog时，要把别的设置为false
             control_dialogValue.value = true
-            console.log(params)
-            // store.commit('number_control', params.number)
+            console.log(params.id)
+            store.commit('Current_control', params.id)
           }
         },
         {
@@ -262,18 +273,10 @@ export default{
         }
       ]
     })
-    const  formItems = reactive([
-      { label: '用户姓名', key: 'realName', required: true },
-      {
-        label: '手机号(登录账号)',
-        key: 'phone',
-        required: true,
-        placeholder: ''
-      },
-    ])
     let dialogVisible = ref(false)
-    let control_dialogValue = ref(true)
-    let add_dialogValue = ref(true)
+    let control_dialogValue = ref(false)
+    let add_dialogValue = ref(false)
+    let intelligent_controlValue = ref(false)
     let titleName = ref('')
     let total = ref(100)
     let currentPage = ref(1)
@@ -288,41 +291,41 @@ export default{
         children: [
           {
             id:'16',
-            label: '16栋 （23/24）',
+            label: '16',
             children: [
               {
-                id:'201',
-                label: '16-201',
+                id:'16_201',
+                label: '16_201',
                 children: [
                   {
-                    id:'16-201_1',
-                    label: '16-201_1'
+                    id:'16_201_1',
+                    label: '16_201_1'
                   },
                   {
-                    id:'16-201_2',
-                    label: '16-201_2'
+                    id:'16_201_2',
+                    label: '16_201_2'
                   },
                   {
-                    id:'16-201_3',
-                    label: '16-201_3'
+                    id:'16_201_3',
+                    label: '16_201_3'
                   }
                 ]
               },
               {
-                id:'202',
-                label: '16-202',
+                id:'16_202',
+                label: '16_202',
                 children: [
                   {
-                    id:'16-202_1',
-                    label: '16-202_1'
+                    id:'16_202_1',
+                    label: '16_202_1'
                   },
                   {
-                    id:'16-202_2',
-                    label: '16-202_2'
+                    id:'16_202_2',
+                    label: '16_202_2'
                   },
                   {
-                    id:'16-202_3',
-                    label: '16-202_3'
+                    id:'16_202_3',
+                    label: '16_202_3'
                   }
                 ]
               }
@@ -351,11 +354,12 @@ export default{
     // 获取原始列表
     async function getAirconditionPost() {
       const res = await post('/getAllMachineStatus',{
-        ip: '59.68.61.4'
+        id: "1"
       })
       
-      array.value = res
-      total.value = res.length
+      // array.value = res
+      // total.value = res.length
+      console.log("测试查询接口：",res);
     }
 
     // 获取所有的IP
@@ -366,32 +370,29 @@ export default{
 
     // 修改节点的POST请求
     async function modifyNodePost(node) {
-      console.log(node);
-      const changeNode = await post('/controlMachine',{
-        ip: '59.68.61.4',
-        instruction: [
+      console.log(currentControlValue.value, node[0],node[1],node[3],node[2]);
+      const changeNode = await post('/controlMachine',[
           {
-            "number": node[4],
-            "status": node[0],
-            "mode": node[1],
-            "temperature": node[3],
-            "windSpeed": node[2]
+            "name":`${currentControlValue.value}`, 
+            "status": `${node[0]}`,
+            "mode": `${node[1]}`,
+            "temperature": `${node[3]}`,
+            "windSpeed": `${node[2]}`
           },
           {
-            "number": 2,
+            "name":"16_201_2",
             "status": 1,
-            "mode": 3,
-            "temperature": 20,
+            "mode": 1,
+            "temperature": 19,
             "windSpeed": 1
           }
-        ]
-      })
+      ])
       console.log(changeNode)
     }
 
     // 页面挂载时刷新请求
     onMounted(() => {
-      // getAirconditionPost()
+      getAirconditionPost()
     })
 
     // 获取原始数组列表后，根据故障码渲染内机故障颜色
@@ -422,8 +423,9 @@ export default{
 
     // vuex相关操作
     const store = useStore()
-    const storeMutations = mapMutations(['Switch_control', 'Mode_control', 'Wind_control', 'Temperature_control','role'])
+    const storeMutations = mapMutations(['Current_control', 'Switch_control', 'Mode_control', 'Wind_control', 'Temperature_control','role'])
 
+    const currentControlValue = computed(() => store.state.currentControl)
     const numberValue = computed(() => store.state.number)
     const switchValue = computed(() => store.state.Switch)
     const modeValue = computed(() => store.state.Mode)
@@ -436,7 +438,7 @@ export default{
     function confirm() {
       // console.log(switchValue.value, modeValue.value, windValue.value, temperatureValue.value)
       // 拿到数据后发送请求，后期需完善数据是否输入及格式检测
-      let res = switchString(switchValue.value, modeValue.value, windValue.value, temperatureValue.value, numberValue.value)
+      let res = switchString(switchValue.value, modeValue.value, windValue.value, temperatureValue.value)
       // console.log(res)
       modifyNodePost(res)
 
@@ -453,6 +455,9 @@ export default{
 
     function close() {
       dialogVisible.value = false
+      control_dialogValue.value = false
+      add_dialogValue.value = false
+      intelligent_controlValue.value = false
     }
 
     // 分页相关操作
@@ -479,6 +484,7 @@ export default{
     const handleNodeClick = (data) => {
       // 想在下次点击事件触发前把数组删除干净，不过当table数组过长应该性能不好
       let res = Test(data.id)
+      console.log(res);
       tableData.splice(0, tableData.length);
       res.forEach(e => {
         tableData.push(e);
@@ -493,6 +499,10 @@ export default{
       return {
         backgroundColor: '#E7EEF3 !important'
       }
+    }
+
+    const addDialogfn = (value) => {
+      console.log('fuqin',value);
     }
 
     return {
@@ -513,10 +523,12 @@ export default{
       handleEdit,
       handleAdd,
       editSubmit,
-      dialogVisible, // 整个Dialog是否展示
-      control_dialogValue, // 根据不同右击事件选择展示不同内容：修改节点
-      add_dialogValue, // ：添加节点
+      dialogVisible, // 整个Dialog是否展示控制
+      control_dialogValue, // 实时控制弹窗控制
+      add_dialogValue, // 添加节点弹窗控制
+      intelligent_controlValue, // 智能控制弹窗控制
       titleName,
+      currentControlValue,
       switchValue,
       modeValue,
       windValue,
@@ -534,7 +546,8 @@ export default{
       num,
       tableData, // 定义列表内表格数据
       handleSelectionChange, // 当选择项发生变化时会触发该事件
-      headerRowStyle // 修改表头颜色的回调函数
+      headerRowStyle, // 修改表头颜色的回调函数
+      addDialogfn
     }
   }
 }

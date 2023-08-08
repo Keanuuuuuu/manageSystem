@@ -4,6 +4,7 @@ import { createStore } from 'vuex'
  */
 export default createStore({
     state: {
+        currentControl:'', //标记当前正在控制内机的id
         number: '',
         Switch: '',
         Mode: '',
@@ -12,6 +13,9 @@ export default createStore({
         role: null, //存储用户身份信息 1、2、3分别对应超级管理员、管理员和普通用户
     },
     mutations: {
+        Current_control(state, currentControl){
+            state.currentControl = currentControl
+        },
         number_control(state, number) {
             state.number = number
         },

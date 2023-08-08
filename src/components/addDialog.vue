@@ -1,73 +1,146 @@
 <template>
-  <div class="contentDialog">
-    <div class="control Label_control">
-      <span>*节点属性</span>
-      <el-checkbox-group v-model="checkedCities" :min="3" :max="1">
-        <el-checkbox>标签</el-checkbox>
-        <el-checkbox>房间</el-checkbox>
-        <el-checkbox>设备</el-checkbox>
-      </el-checkbox-group>
-    </div>
-    <div class="control Room_control">
-      <span>*房间名称</span>
-      <el-input v-model="input" placeholder="Please input" />
-    </div>
-    <div class="control Equipment_control">
-      <span>*设备名称</span>
-      <el-input v-model="input" placeholder="Please input" />
-    </div>
-    <div class="control Unit_control">
-      <span>所属机组</span>
-      <el-input v-model="input" placeholder="Please input" />
-    </div>
-    <div class="control Gateway_control">
-      <span>所属网关</span>
-      <el-input v-model="input" placeholder="Please input" />
-    </div>
-  </div>
+  <el-form
+    ref="ruleFormRef"
+    :model="ruleForm"
+    :rules="rules"
+    label-width="100px"
+    class="demo-ruleForm"
+    :size="formSize"
+    status-icon
+  >
+    <span>编辑节点</span>
+    <el-form-item label="节点属性:" prop="nodeProperties">
+      <el-radio-group v-model="ruleForm.nodeProperties">
+        <el-radio label="标签" />
+        <el-radio label="房间" />
+        <el-radio label="设备" />
+      </el-radio-group>
+    </el-form-item>
+    <el-form-item label="房间名称:" prop="roomName">
+      <el-input v-model="ruleForm.roomName" />
+    </el-form-item>
+    <el-form-item label="设备名称:" prop="deviceName">
+      <el-input v-model="ruleForm.deviceName" />
+    </el-form-item>
+    <el-form-item label="所属机组:">
+      <el-input v-model="ruleForm.unit" />
+    </el-form-item>
+    <el-form-item label="所属网关:">
+      <el-input v-model="ruleForm.gateway" />
+    </el-form-item>
+    <el-form-item label="网关IP:" prop="gatewayIp">
+      <el-input v-model="ruleForm.gatewayIp" />
+    </el-form-item>
+    <el-form-item label="设备地址:" prop="deviceAddress">
+      <el-select-v2
+        v-model="ruleForm.deviceAddress"
+        placeholder="设备地址"
+        :options="options"
+      />
+    </el-form-item>
+    <el-form-item label="负责人:">
+      <el-input v-model="ruleForm.head" />
+    </el-form-item>
+    <el-form-item label="联系方式:">
+      <el-input v-model="ruleForm.contact" />
+    </el-form-item>
+    <el-form-item label="备注:">
+      <el-input v-model="ruleForm.remark" type="textarea" />
+    </el-form-item>
+
+    <el-form-item>
+      <el-button type="primary" @click="submitForm(ruleFormRef)">
+        Create
+      </el-button>
+      <el-button @click="resetForm(ruleFormRef)">Reset</el-button>
+    </el-form-item>
+  </el-form>
 </template>
 
-<script>
-export default{
-  setup() {
-      
-  }
+<script setup>
+import { reactive, ref, defineEmits } from 'vue'
+import {  } from 'vue-demi'
+const emits = defineEmits(['addDialogSubmit'])
+
+const formSize = ref('default')
+const ruleFormRef = ref()
+const ruleForm = reactive({
+  nodeProperties: '',
+  roomName: '',
+  deviceName: '',
+  unit: '',
+  gateway: '',
+  gatewayIp: '',
+  deviceAddress: '',
+  head: '',
+  contact: '',
+  remark: ''
+})
+
+const rules = reactive({
+  nodeProperties:[
+
+  ],
+  roomName: [
+    { required: true, message: 'Please input Activity name', trigger: 'blur' }
+    // { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
+  ],
+  deviceName: [
+    { required: true, message: 'Please input Activity name', trigger: 'blur' },
+  ],
+  unit: [
+
+  ],
+  gateway: [
+
+  ],
+  gatewayIp: [
+    { required: true, message: 'Please input Activity name', trigger: 'blur' },
+  ],
+  deviceAddress: [
+    {
+      required: true,
+      message: 'Please select Activity count',
+      trigger: 'change',
+    },
+  ],
+  head: [
+
+  ],
+  contact: [
+
+  ],
+  remark: [
+    { required: false, message: 'Please input activity form', trigger: 'blur' },
+  ],
+})
+
+const submitForm = async (formEl) => {
+  if (!formEl) return
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      console.log('submit!',valid)
+      emits('addDialogSubmit',valid)
+    } else {
+      console.log('error submit!', fields)
+    }
+  })
 }
+
+const resetForm = (formEl) => {
+  if (!formEl) return
+  formEl.resetFields()
+}
+
+const options = Array.from({ length: 16 }).map((_, idx) => ({
+  value: `${idx + 1}`,
+  label: `${idx + 1}`,
+}))
 </script>
 
 <style lang="scss" scoped>
-.contentDialog{
-  display: flex;
-  flex-direction: column;
-  width: 450px;
-  justify-content: center;
-  align-items: center;
+.demo-ruleForm{
   margin: 0 auto;
-  .control{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 360px;
-    margin: 15px auto;
-  }
-  span{
-    width: 80px;
-  }
-  .Label_control{
-    width: 300px;
-  }
-  .Room_control{
-    width: 300px;
-  }
-  .Equipment_control{
-    width: 300px;
-  }
-  .Unit_control{
-    width: 300px;
-  }
-  .Gateway_control{
-    width: 300px;
-  }
+  width: 350px;
 }
 </style>
