@@ -1,11 +1,12 @@
 import axios from 'axios'
 import { ElLoading } from 'element-plus'
+import { ElMessage } from "element-plus";
 
 const instance = axios.create({
   // 配置请求根路径
   baseURL: 'https://7737xu2887.goho.co',
   // 配置超时时间
-  timeout: 5000,
+  timeout: 35000,
   // 配置请求头信息
   headers: {
     'Content-Type': 'application/json;charset=UTF-8'
@@ -20,12 +21,17 @@ instance.interceptors.request.use(
     // 如果有token，即登录过后，那么就在这个请求拦截器中设置每一个请求都要带上token
     // if(token) config.headers.Authorization = `Bearer ${token}`
 
-    ElLoading.service({background: 'rgba(0,0,0,.5)',})
+    ElLoading.service({ background: 'rgba(0,0,0,.5)', })
 
     return config
   },
   error => {
     // 对请求错误做些什么
+    ElMessage({
+      showClose: true,
+      message: `"${error}"`,
+      type: "error",
+    });
     console.log(error) // 打印错误信息
     return Promise.reject(error)
   }
@@ -42,6 +48,12 @@ instance.interceptors.response.use(
   },
   error => {
     // 对响应错误做点什么，是否触发错误是通过状态码来判断的
+    ElLoading.service().close()
+    ElMessage({
+      showClose: true,
+      message: `"${error}"`,
+      type: "error",
+    });
     console.log(error) // 打印错误信息
     return Promise.reject(error)
   }
@@ -54,8 +66,8 @@ export function get(url, params) {
 }
 
 export function post(url, data, headers) {
-  const config = headers ? headers:{}
-  console.log("post请求信息：",config);
+  const config = headers ? headers : {}
+  console.log("post请求信息：", config);
   return instance.post(url, data, config)
 }
 
