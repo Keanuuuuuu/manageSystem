@@ -6,7 +6,7 @@ const instance = axios.create({
   // 配置请求根路径
   baseURL: 'https://7737xu2887.goho.co',
   // 配置超时时间
-  timeout: 35000,
+  timeout: 10000,
   // 配置请求头信息
   headers: {
     'Content-Type': 'application/json;charset=UTF-8'
@@ -42,7 +42,7 @@ instance.interceptors.response.use(
   response => {
     // 对响应数据做点什么
 
-    ElLoading.service().close()
+    // ElLoading.service().close()
 
     return response.data
   },
@@ -67,7 +67,6 @@ export function get(url, params) {
 
 export function post(url, data, headers) {
   const config = headers ? headers : {}
-  console.log("post请求信息：", config);
   return instance.post(url, data, config)
 }
 

@@ -2,9 +2,8 @@
   <div>
       总览
       <button @click="getNumberOfMachine">获取1</button>
-      <button @click="getAllDevice">获取2</button>
+      <button @click="getMachineStatusById">获取2</button>
       <button @click="getMachineStatus">获取3</button>
-      <button @click="getAllIP">获取4</button>
 
       <button @click="controlMachine">控制</button>
   </div>
@@ -17,17 +16,17 @@ export default{
   setup() {
     const getNumberOfMachine = async ()=> {
       const res = await post('/getNumberOfMachine',{
-        id: "1"
+        id: "16_201"
       })
 
       console.log("查询设备下的内机数量:",res);
     }
-    const getAllDevice = async ()=> {
-      const res = await post('/getAllDevice',{
-        id: "1"
+    const getMachineStatusById = async ()=> {
+      const res = await post('/getMachineStatusById',{
+        id: "16"
       })
 
-      console.log("获取所有设备信息:",res);
+      console.log("通过房间号或楼栋号内机状态:",res);
     }
     const getMachineStatus = async ()=> {
       const res = await post('/getMachineStatus',{
@@ -36,35 +35,22 @@ export default{
 
       console.log("查询指定内机状态:",res);
     }
-    const getAllIP = async ()=> {
-      const res = await post('/getAllIP')
-
-      console.log("获取所有的设备IP地址:",res);
-    }
     const controlMachine = async ()=> {
-      const res = await post('/controlMachine',[
-            {
-                "name":"16_201_1", 
-                "status": 0,
-                "mode": 1,
-                "temperature": 19,
-                "windSpeed": 1
-            },
-            {
-                "name":"16_201_2",
-                "status": 1,
-                "mode": 1,
-                "temperature": 19,
-                "windSpeed": 1
-            }
-      ])
+      const res = await post('/controlMachine',
+      {
+          "name":"16", 
+          "status": 0,
+          "mode": 1,
+          "temperature": 19,
+          "windSpeed": 1
+      }
+      )
       console.log("控制接口:",res);
     }
     return {
       getNumberOfMachine,
-      getAllDevice,
+      getMachineStatusById,
       getMachineStatus,
-      getAllIP,
       controlMachine
     }
   }

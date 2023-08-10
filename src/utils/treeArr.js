@@ -1,10 +1,10 @@
-function Test(id) {
-    const treeArr = {
+function Test(id, realTree) {
+    let treeArr = {
         "16":[
-            {
+              {
                 "16_201":[
                     {
-                        "空调名称":"16_201_1",
+                        name:"16_201_1",
                         status:"良好",
                         mode:"制冷",
                         wind_speed:"中",
@@ -37,8 +37,8 @@ function Test(id) {
                         "详情":"---"
                     }
                 ]
-            },
-            {
+              },
+              {
                 "16_202":[
                     {
                         "空调名称":"16_202_1",
@@ -74,8 +74,14 @@ function Test(id) {
                         "详情":"---"
                     }
                 ]
-            }
-        ]
+              }
+          ]
+      }
+
+    // console.log(realTree);
+    if(realTree){
+      treeArr = realTree
+      // 浅拷贝
     }
 
     let ans = []
@@ -83,15 +89,16 @@ function Test(id) {
         for (const key in tree) {
         if (Array.isArray(tree[key])) {
             // 当前节点是数组，继续递归遍历每个子节点
-            // console.log("这里是楼栋名或层级："+key
+            // console.log("这里是楼栋名或层级："+key)
             if(compare === key){
                 ans = tree[key]
                 break;
             }
             tree[key].forEach((node) => {
-            traverseTree(node, compare);
+              traverseTree(node, compare);
             });
-        } else if (key === '空调名称') {
+        } else if (key === 'name') {
+          // console.log("这里是楼栋名或层级2："+key)
             // 当前节点是叶子节点的空调名称，打印节点信息
             if(compare === tree[key]){
                 ans = tree
@@ -118,7 +125,7 @@ function Test(id) {
             } else if (typeof tree[key] === "object" && tree[key] !== null) {
               // 当前节点是对象，继续递归遍历子节点
               traverseTree(tree[key]);
-            } else if (key === "空调名称") {
+            } else if (key === "name") {
               // 当前节点是叶子节点的空调名称，将空调对象添加到结果数组
               airConditioners.push(tree);
             }

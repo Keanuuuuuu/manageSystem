@@ -87,6 +87,7 @@
         <el-table
           ref="multipleTableRef"
           :data="tableData?tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize): []"
+          v-loading="loading"
           style="width: 100%"
           v-mouse-menu="
           {
@@ -105,14 +106,13 @@
             5、selection-change当选择项发生变化时会触发该事件
           -->
           <el-table-column type="selection" width="55" />
-          <el-table-column label="序号" width="120" />
-          <el-table-column label="名称" width="120">
-            <template #default="scope">{{ scope.row["空调名称"] }}</template>
-          </el-table-column>
+          <el-table-column property='name' label="名称" width="120" />
+            <!-- <template #default="scope">{{ scope.row[name] }}</template> -->
+          <!-- </el-table-column> -->
           <el-table-column property='status' label="状态" width="120" sortable />
-          <el-table-column label="模式" width="120" sortable/>
-          <el-table-column label="温度" width="120" sortable/>
-          <el-table-column label="风速" width="120" sortable/>
+          <el-table-column property='mode' label="模式" width="120" sortable/>
+          <el-table-column property='roomTemperature' label="温度" width="120" sortable/>
+          <el-table-column property='windSpeed' label="风速" width="120" sortable/>
           <el-table-column label="备注" show-overflow-tooltip />
         </el-table>
         <!-- 以上是使用ele列表内容 -->
@@ -170,15 +170,21 @@ import  Test  from '../utils/treeArr.js'
 import { reactive, toRaw } from 'vue'
 import { ref, onMounted, computed } from 'vue'
 import { MouseMenuDirective, MouseMenuCtx } from '@howdyjs/mouse-menu'
+import { mapMutations, mapState, useStore } from 'vuex'
 import controlDialog from '../components/controlDialog.vue'
 import addDialog from '../components/addDialog.vue'
 import intelligentControl from '../components/intelligentControlDialog.vue'
 import MonitorDisplayHead from '../components/control_components/Monitor_display_head.vue'
 import MonitorDisplayControl from '../components/control_components/Monitor_display_control.vue'
-import { mapMutations, mapState, useStore } from 'vuex'
 
 export default{
-  components: { controlDialog, MonitorDisplayHead, MonitorDisplayControl, addDialog, intelligentControl },
+  components: { 
+    controlDialog, 
+    MonitorDisplayHead, 
+    MonitorDisplayControl, 
+    addDialog, 
+    intelligentControl 
+  },
   name:'monitoring',
   directives: {
     MouseMenu: MouseMenuDirective
@@ -285,6 +291,7 @@ export default{
     let value_two = ref()
     let value_three = ref()
     let num = ref()
+    let loading = ref(true)
     const data = reactive([
       {
         label: '内机监控',
@@ -298,16 +305,16 @@ export default{
                 label: '16_201',
                 children: [
                   {
+                    id:'16_201_0',
+                    label: '16_201_0'
+                  },
+                  {
                     id:'16_201_1',
                     label: '16_201_1'
                   },
                   {
                     id:'16_201_2',
                     label: '16_201_2'
-                  },
-                  {
-                    id:'16_201_3',
-                    label: '16_201_3'
                   }
                 ]
               },
@@ -316,16 +323,54 @@ export default{
                 label: '16_202',
                 children: [
                   {
+                    id:'16_202_0',
+                    label: '16_202_0'
+                  },
+                  {
                     id:'16_202_1',
                     label: '16_202_1'
                   },
                   {
                     id:'16_202_2',
                     label: '16_202_2'
+                  }
+                ]
+              },
+              {
+                id:'16_203',
+                label: '16_203',
+                children: [
+                  {
+                    id:'16_203_0',
+                    label: '16_203_0'
                   },
                   {
-                    id:'16_202_3',
-                    label: '16_202_3'
+                    id:'16_203_1',
+                    label: '16_203_1'
+                  },
+                  {
+                    id:'16_203_2',
+                    label: '16_203_2'
+                  }
+                ]
+              },
+              {
+                id:'16_209',
+                label: '16_209',
+                children: [
+                  {
+                    id:'16_209_0',
+                    label: '16_209_0'
+                  }
+                ]
+              },
+              {
+                id:'16_211',
+                label: '16_211',
+                children: [
+                  {
+                    id:'16_211_0',
+                    label: '16_211_0'
                   }
                 ]
               }
@@ -339,27 +384,22 @@ export default{
       label: 'label',
     })
     const tableData = reactive([ // 定义列表内表格数据
-      {
-        date: '2016-05-03',
-        name: 'Tom1',
-        address: 'No. 189, Grove St, Los Angeles',
-      },
-      {
-        date: '2016-05-02',
-        name: 'Tom2',
-        address: 'No. 189, Grove St, Los Angeles',
-      },
     ])
 
     // 获取原始列表
     async function getAirconditionPost() {
-      const res = await post('/getAllMachineStatus',{
-        id: "1"
+      const res = await post('/getMachineStatusById',{
+        id: "16"
       })
       
-      // array.value = res
       // total.value = res.length
-      console.log("测试查询接口：",res);
+      // console.log("测试查询接口：",res.data);
+      let obj = {
+        id:'16'
+      }
+      array.value = res.data
+      handleNodeClick(obj, array.value)
+      loading.value = false
     }
 
     // 获取所有的IP
@@ -371,22 +411,15 @@ export default{
     // 修改节点的POST请求
     async function modifyNodePost(node) {
       console.log(currentControlValue.value, node[0],node[1],node[3],node[2]);
-      const changeNode = await post('/controlMachine',[
+      const changeNode = await post('/controlMachine',
           {
             "name":`${currentControlValue.value}`, 
             "status": `${node[0]}`,
             "mode": `${node[1]}`,
             "temperature": `${node[3]}`,
             "windSpeed": `${node[2]}`
-          },
-          {
-            "name":"16_201_2",
-            "status": 1,
-            "mode": 1,
-            "temperature": 19,
-            "windSpeed": 1
           }
-      ])
+      )
       console.log(changeNode)
     }
 
@@ -481,10 +514,10 @@ export default{
       children: Array
     };
 
-    const handleNodeClick = (data) => {
+    const handleNodeClick = (data, treeArr) => {
       // 想在下次点击事件触发前把数组删除干净，不过当table数组过长应该性能不好
-      let res = Test(data.id)
-      console.log(res);
+      let res = Test(data.id, array.value)
+      // console.log('111',data.id, treeArr, res);
       tableData.splice(0, tableData.length);
       res.forEach(e => {
         tableData.push(e);
@@ -513,6 +546,7 @@ export default{
       confirm,
       cancel,
       close,
+      loading,
       handleNodeClick,
       ...storeMutations,
       array,
