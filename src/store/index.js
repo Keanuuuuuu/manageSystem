@@ -10,7 +10,7 @@ export default createStore({
         Mode: '',
         Wind: '',
         Temperature: 16,
-        role: null, //存储用户身份信息 1、2、3分别对应超级管理员、管理员和普通用户
+        userdata: null, //存储用户身份信息包括权限  1、2、3分别对应超级管理员、管理员和普通用户
     },
     mutations: {
         Current_control(state, currentControl){
@@ -31,8 +31,8 @@ export default createStore({
         Temperature_control(state, Temperature){
             state.Temperature = Temperature
         },
-        setRole(state,role){
-            state.role = role
+        setUserdata(state,userdata){
+            state.userdata = userdata
         }
     }
 })

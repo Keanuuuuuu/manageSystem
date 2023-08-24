@@ -1,6 +1,7 @@
 import axios from 'axios'
-import { ElLoading } from 'element-plus'
 import { ElMessage } from "element-plus";
+import { ElLoading } from "element-plus";
+import {authorizeGet} from './authorize'
 
 const instance = axios.create({
   // 配置请求根路径
@@ -17,12 +18,11 @@ const instance = axios.create({
 instance.interceptors.request.use(
   config => {
     // 在发送请求之前做些什么
+    console.log('cccc');
+    authorizeGet()
     // const token = localStorage.getItem('token')
     // 如果有token，即登录过后，那么就在这个请求拦截器中设置每一个请求都要带上token
     // if(token) config.headers.Authorization = `Bearer ${token}`
-
-    ElLoading.service({ background: 'rgba(0,0,0,.5)', })
-
     return config
   },
   error => {
@@ -41,25 +41,22 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   response => {
     // 对响应数据做点什么
-
-    // ElLoading.service().close()
-
     return response.data
   },
   error => {
     // 对响应错误做点什么，是否触发错误是通过状态码来判断的
-    ElLoading.service().close()
     ElMessage({
       showClose: true,
       message: `"${error}"`,
       type: "error",
     });
     console.log(error) // 打印错误信息
+    ElLoading.service().close();
     return Promise.reject(error)
   }
 )
 
-export function get(url, params) {
+export function get(url, params = {}) {
   return instance.get(url, {
     params
   })
