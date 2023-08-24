@@ -42,15 +42,18 @@
 <script>
 import { ref, onMounted, watch } from "vue";
 import { useStore } from "vuex";
-import { post } from "../utils/http.js";
+import { post, get } from "../utils/http.js";
 import { useRouter } from "vue-router";
+import { ElLoading } from "element-plus";
 import { ElMessage } from "element-plus";
+import { JSEncrypt } from "jsencrypt";
 
 export default {
   name: "Login",
   setup() {
     const username = ref("");
     const password = ref("");
+    let publickey = ref("");
     const savePassword = ref(false);
     const autoLogin = ref(false);
     const store = useStore();
@@ -96,27 +99,36 @@ export default {
 
     // 处理登录
     const handleLogin = () => {
-      const customUrl = "http://139.9.188.179:8002/api/login";
-      // 转化为urlencode并且去除多余空格
-      const postData = new URLSearchParams({
-        username: username.value.trim(),
-        password: password.value.trim(),
+
+      // 获取公钥
+      get("http://127.0.0.1:4523/m1/3191778-0-default/login").then((res) => {
+        publickey.value = res.msg;
       });
-      if (postData.get("username") === "" || postData.get("password") === "") {
+
+      // 加密函数
+      function encryptPWD (publickey,password) {
+        const encryptor = new JSEncrypt()
+        encryptor.setPublicKey(publickey)
+        return encryptor.encrypt(password+'')
+      }
+
+      const customUrl = "http://127.0.0.1:4523/m1/3191778-0-default/login";
+      const postData = {
+        username: username.value.trim(),
+        password: encryptPWD(publickey,password.value.trim()),
+      };
+      if (postData.username === "" || postData.password === "") {
         ElMessage({
           showClose: true,
           message: "输入的用户名或密码不能为空！",
           type: "error",
         });
       } else {
-        const config = {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        };
-        post(customUrl, postData.toString(), config).then((res) => {
+        ElLoading.service({ background: "rgba(0,0,0,.5)" });
+        post(customUrl, postData).then((res) => {
+          ElLoading.service().close();
           console.log(res);
-          if (res.msg === "success") {
+          if (res.code === 21200) {
             // 如果“记住密码”被选中，将凭据保存到本地存储
             if (savePassword.value) {
               localStorage.setItem("username", username.value);
@@ -127,10 +139,12 @@ export default {
               localStorage.removeItem("password");
             }
             // 调用 Vuex 的 setRole mutation，将 role 存入 Vuex
-            store.commit("setRole", res.role);
+            store.commit("setUserdata", res.data);
+            localStorage.setItem("token",res.data.token)
             // 跳转到 '/monitoring' 页面
             router.push("/monitoring");
           } else {
+            ElLoading.service().close();
             ElMessage({
               showClose: true,
               message: "用户名或密码错误！",
@@ -144,6 +158,7 @@ export default {
     return {
       username,
       password,
+      publickey,
       savePassword,
       autoLogin,
       handleAutoLoginChange,
@@ -161,8 +176,10 @@ export default {
   height: 100vh;
   #loginBox {
     width: 27%;
+    max-width: 470px;
     min-width: 400px;
     height: 65%;
+    max-height: 550px;
     min-height: 500px;
     border-radius: 10px;
     background-color: #fff;

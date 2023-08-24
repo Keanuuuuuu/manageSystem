@@ -456,7 +456,7 @@ export default{
 
     // vuex相关操作
     const store = useStore()
-    const storeMutations = mapMutations(['Current_control', 'Switch_control', 'Mode_control', 'Wind_control', 'Temperature_control','role'])
+    const storeMutations = mapMutations(['Current_control', 'Switch_control', 'Mode_control', 'Wind_control', 'Temperature_control','setUserdata'])
 
     const currentControlValue = computed(() => store.state.currentControl)
     const numberValue = computed(() => store.state.number)
@@ -464,10 +464,8 @@ export default{
     const modeValue = computed(() => store.state.Mode)
     const windValue = computed(() => store.state.Wind)
     const temperatureValue = computed(() => store.state.Temperature)
-    const roleValue = computed(() => store.state.role)
-
-    console.log('role:',roleValue.value);
-
+    const userdataValue = computed(() => store.state.userdata)
+    console.log('userdata:',userdataValue.value);
     function confirm() {
       // console.log(switchValue.value, modeValue.value, windValue.value, temperatureValue.value)
       // 拿到数据后发送请求，后期需完善数据是否输入及格式检测
