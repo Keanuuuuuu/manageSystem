@@ -8,7 +8,7 @@ const instance = axios.create({
   // 配置请求根路径
   baseURL: 'https://lab.zhongyaohui.club',
   // 配置超时时间
-  timeout: 10000,
+  timeout: 100000,
   // 配置请求头信息
   headers: {
     'Content-Type': 'application/json;charset=UTF-8'

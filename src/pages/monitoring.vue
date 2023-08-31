@@ -41,49 +41,6 @@
       </monitor-display-control>
       <!-- 以上为内机监控界面的控制显示 -->
       <div class="Monitor_the_display_data_list">
-        <!-- <table>
-          <thead>
-              <tr class="table">
-                  <th scope="col">
-                    <el-checkbox></el-checkbox>
-                  </th>
-                  <th scope="col">名称</th>
-                  <th scope="col">编号</th>
-                  <th scope="col">模式</th>
-                  <th scope="col">温度</th>
-                  <th scope="col">室温</th>
-                  <th scope="col">风速</th>
-                  <th scope="col">状态</th>
-              </tr>
-          </thead>
-          <tbody>
-
-              <tr v-for="item in array.value? 
-                array.value.slice((currentPage - 1) * pageSize, currentPage * pageSize): []" 
-                :key="item.number" 
-                v-mouse-menu="
-                {
-                  params: item,
-                  ...options
-                }"
-              >
-                  <th scope="row">{{ item.faultCode }}</th>
-                  <td>
-                    <el-checkbox></el-checkbox>
-                  </td>
-                  <td>{{ item.number }}</td>
-                  <td>{{ item.mode }}</td>
-                  <td>{{ item.temperature }}</td>
-                  <td>{{ item.roomTemperature }}</td>
-                  <td>{{ item.windSpeed }}</td>
-                  <td>{{ item.status }}</td>
-                  <td @click="modifyNode(item)" class="modify">智能控制</td>
-              </tr>
-
-          </tbody>
-        </table> -->
-        <!-- 以上是自定义列表内容 -->
-
         <el-table
           ref="multipleTableRef"
           :data="tableData?tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize): []"
@@ -106,13 +63,26 @@
             5、selection-change当选择项发生变化时会触发该事件
           -->
           <el-table-column type="selection" width="55" />
-          <el-table-column property='name' label="名称" width="120" />
+          <el-table-column property='name' label="名称" width="110" />
             <!-- <template #default="scope">{{ scope.row[name] }}</template> -->
           <!-- </el-table-column> -->
-          <el-table-column property='status' label="状态" width="120" sortable />
-          <el-table-column property='mode' label="模式" width="120" sortable/>
-          <el-table-column property='roomTemperature' label="温度" width="120" sortable/>
-          <el-table-column property='windSpeed' label="风速" width="120" sortable/>
+          <el-table-column property='status' label="状态" width="110" sortable />
+          <el-table-column property='mode' label="模式" width="110" sortable/>
+          <el-table-column property='temperature' label="温度" width="110" sortable/>
+          <el-table-column property='windSpeed' label="风速" width="110" sortable/>
+          <el-table-column property='roomTemperature' label="室温" width="110" sortable/>
+          <el-table-column label="详情" width="120">
+            <template>
+              <a href="">详情…</a>  
+            </template>
+          </el-table-column>
+          <el-table-column label="智能控制" width="120">
+            <template>
+              <el-switch
+                size="small"
+              />
+            </template>
+          </el-table-column>
           <el-table-column label="备注" show-overflow-tooltip />
         </el-table>
         <!-- 以上是使用ele列表内容 -->
@@ -174,8 +144,8 @@ import { mapMutations, mapState, useStore } from 'vuex'
 import controlDialog from '../components/controlDialog.vue'
 import addDialog from '../components/addDialog.vue'
 import intelligentControl from '../components/intelligentControlDialog.vue'
-import MonitorDisplayHead from '../components/control_components/Monitor_display_head.vue'
-import MonitorDisplayControl from '../components/control_components/Monitor_display_control.vue'
+import MonitorDisplayHead from '../components/ControlComponents/Monitor_display_head.vue'
+import MonitorDisplayControl from '../components/ControlComponents/Monitor_display_control.vue'
 
 export default{
   components: { 
@@ -191,6 +161,7 @@ export default{
   },
   setup() {
     
+    let h = true
     const array = reactive([])
     const options = reactive({
         useLongPressInMobile: true,
@@ -268,6 +239,7 @@ export default{
         {
           label: '新增节点',
           tips: 'Add',
+          // hidden: h,
           fn: (params, currentEl, bindingEl, e) => { 
             console.log('rename', params, currentEl, bindingEl, e)
             dialogVisible.value = true
@@ -393,7 +365,7 @@ export default{
       })
       
       // total.value = res.length
-      // console.log("测试查询接口：",res.data);
+      console.log("测试查询接口：",res.data);
       let obj = {
         id:'16'
       }

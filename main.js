@@ -1,5 +1,11 @@
-const { app, BrowserWindow,ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu } = require('electron')
 // 在官方文档里可以查看这些模块的作用及用法
+
+// const mainTemp = Menu.buildFromTemplate(require('./src/temp/menuTemp'))
+// const { setupTitlebar, attachTitlebarToWindow } = require('custom-electron-titlebar/main');
+
+// // setup the titlebar main process
+// setupTitlebar();
 
 const path = require('path')
  
@@ -15,14 +21,18 @@ function createWindow () {
     height: 1000,
     minHeight: 600,
     minWidth: 1000,
-    // webPreferences: {
-    //   nodeIntegration: true,        //是否可以使用node.js的API
-    //   contextIsolation: false       //隔离取消掉，把主进程和渲染进程打通
-    // }
     // transparent: true, // 不显示html的元素区域设置透明色
-    frame: true, // 用于自定义menu，设置为false可以将默认的菜单栏隐藏，包括叉、最小化、拖动与放大缩小
+    frame: false, // 用于自定义menu，设置为false可以将默认的菜单栏隐藏，包括叉、最小化、拖动与放大缩小
     autoHideMenuBar: true, // 在显示默认菜单的同时，隐藏那些Flie等菜单
-    icon: './public/favicon.ico', // 设置一个图片路径，可以自定义当前应用的显示图标
+    // titleBarStyle: 'hidden',
+    // titleBarOverlay: true,
+    webPreferences: {
+      // sandbox: false,
+      // preload: path.join(__dirname, 'preload.js')
+      nodeIntegration: true,        //是否可以使用node.js的API
+      contextIsolation: false       //隔离取消掉，把主进程和渲染进程打通
+    },
+    // icon: './public/favicon.ico', // 设置一个图片路径，可以自定义当前应用的显示图标
     title: '中央空调管理', // 自定义当前应用的标题
   })
   // win.setAspectRatio(1) //设置窗口保持的比例
@@ -31,12 +41,16 @@ function createWindow () {
   //   win.loadFile('./index.html')  //就是根据这句加载你创建的index.html的
   // win.loadFile(path.resolve(__dirname,'/src/index.html')) // 或者这样写，来适应不同操作系统的路径
 
-  win.loadURL('http://localhost:3000/')
-  // win.loadURL('http://192.168.0.140:3000/')
+  // attachTitlebarToWindow(win);
+  win.loadURL('http://localhost:5173/')
  
   // 打开开发者工具
   win.webContents.openDevTools()
  
+  // 设置菜单
+  // Menu.setApplicationMenu(mainTemp)
+
+  
   // 当 window 被关闭，这个事件会被触发。
   win.on('closed', () => {
     // 取消引用 window 对象，如果你的应用支持多窗口的话，
@@ -89,6 +103,11 @@ app.on('activate', () => {
     createWindow()
   }
 })
- 
-// 在这个文件中，你可以续写应用剩下主进程代码。
-// 也可以拆分成几个文件，然后用 require 导入。
+
+ipcMain.on('window-min', () => {
+  win.minimize()
+})
+
+ipcMain.on('window-close', () => {
+  win.hide();
+})

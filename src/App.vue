@@ -5,11 +5,12 @@
 
   <template v-else>
     <div class="body">
-      <el-row class="logo">
+      <TitleBar></TitleBar>
+      <!-- <el-row class="logo">
         <el-col :span="24" class="logo_boder">
           <logo class="grid-content bg-purple-dark"></logo>
         </el-col>
-      </el-row>
+      </el-row> -->
       <Arti></Arti>
     </div>
   </template>
@@ -20,6 +21,7 @@ import Logo from "./components/Logo.vue";
 import Navigator from "./components/navigator.vue";
 import Menu from "./components/menu.vue";
 import Arti from "./components/arti.vue";
+import TitleBar from "./components/TitleBar/index.vue"
 
 export default {
   name: "App",
@@ -28,6 +30,7 @@ export default {
     Navigator,
     Menu,
     Arti,
+    TitleBar,
   },
 };
 </script>
@@ -40,7 +43,7 @@ export default {
 
 // @import url("//unpkg.com/element-ui@2.15.13/lib/theme-chalk/index.css");
 .body {
-  width: 95vw;
+  width: 100%;
   position: absolute;
   top: 50%;
   left: 50%;
