@@ -100,22 +100,19 @@ export default {
     // 处理登录
     const handleLogin = () => {
 
-      // 获取公钥
-      get("http://127.0.0.1:4523/m1/3191778-0-default/login").then((res) => {
-        publickey.value = res.msg;
-      });
 
       // 加密函数
-      function encryptPWD (publickey,password) {
+      function encryptPWD (password) {
         const encryptor = new JSEncrypt()
-        encryptor.setPublicKey(publickey)
+        const key = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALiY4DWLKMiLRypsz4A8zdWyQF1fjZGof66PkXDt1AAwuEoKo8rNG9oP5iMZYr0TRDflCUebkP384qzDUFqcA3cCAwEAAQ=="
+        encryptor.setPublicKey(key)
         return encryptor.encrypt(password+'')
       }
 
-      const customUrl = "http://127.0.0.1:4523/m1/3191778-0-default/login";
+      const customUrl = "http://lab.zhongyaohui.club/login";
       const postData = {
         username: username.value.trim(),
-        password: encryptPWD(publickey,password.value.trim()),
+        password: encryptPWD(password.value.trim()),
       };
       if (postData.username === "" || postData.password === "") {
         ElMessage({
