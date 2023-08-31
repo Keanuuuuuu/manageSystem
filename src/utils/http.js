@@ -1,11 +1,12 @@
 import axios from 'axios'
 import { ElMessage } from "element-plus";
 import { ElLoading } from "element-plus";
-import {authorizeGet} from './authorize'
+import { authorizeGet } from './authorize'
+
 
 const instance = axios.create({
   // 配置请求根路径
-  baseURL: 'https://7737xu2887.goho.co',
+  baseURL: 'https://lab.zhongyaohui.club',
   // 配置超时时间
   timeout: 10000,
   // 配置请求头信息
@@ -14,47 +15,49 @@ const instance = axios.create({
   }
 })
 
-// 请求拦截器
-instance.interceptors.request.use(
-  config => {
-    // 在发送请求之前做些什么
-    console.log('cccc');
-    authorizeGet()
-    // const token = localStorage.getItem('token')
-    // 如果有token，即登录过后，那么就在这个请求拦截器中设置每一个请求都要带上token
-    // if(token) config.headers.Authorization = `Bearer ${token}`
-    return config
-  },
-  error => {
-    // 对请求错误做些什么
-    ElMessage({
-      showClose: true,
-      message: `"${error}"`,
-      type: "error",
-    });
-    console.log(error) // 打印错误信息
-    return Promise.reject(error)
-  }
-)
 
-// 响应拦截器
-instance.interceptors.response.use(
-  response => {
-    // 对响应数据做点什么
-    return response.data
-  },
-  error => {
-    // 对响应错误做点什么，是否触发错误是通过状态码来判断的
-    ElMessage({
-      showClose: true,
-      message: `"${error}"`,
-      type: "error",
-    });
-    console.log(error) // 打印错误信息
-    ElLoading.service().close();
-    return Promise.reject(error)
-  }
-)
+export function setupInterceptors(router) {
+  // 请求拦截器
+  instance.interceptors.request.use(
+    config => {
+      // 在发送请求之前做些什么
+      //鉴权函数 token失效后跳转至login
+      authorizeGet(router)
+      return config
+    },
+    error => {
+      // 对请求错误做些什么
+      ElMessage({
+        showClose: true,
+        message: `"${error}"`,
+        type: "error",
+      });
+      console.log(error) // 打印错误信息
+      return Promise.reject(error)
+    }
+  )
+
+  // 响应拦截器
+  instance.interceptors.response.use(
+    response => {
+      // 对响应数据做点什么
+      return response.data
+    },
+    error => {
+      // 对响应错误做点什么，是否触发错误是通过状态码来判断的
+      ElMessage({
+        showClose: true,
+        message: `"${error}"`,
+        type: "error",
+      });
+      console.log(error) // 打印错误信息
+      ElLoading.service().close();
+      return Promise.reject(error)
+    }
+  )
+}
+
+
 
 export function get(url, params = {}) {
   return instance.get(url, {
