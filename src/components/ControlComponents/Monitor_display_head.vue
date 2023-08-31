@@ -1,0 +1,36 @@
+<template>
+  <div class="Monitor_display_head">
+    <div class="title">
+      内机监控/16栋/1楼/16-130
+    </div>
+    <div class="member">
+      6台内机,其中
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Monitor_display_head',
+  setup() {
+    
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.Monitor_display_head{
+  background-color: #E7EEF3;
+  height: 10%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  .title{
+    margin-left: 20px;
+  }
+  .member{
+    margin-right: 20px;
+  }
+}
+</style>
