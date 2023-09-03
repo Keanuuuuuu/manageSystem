@@ -57,7 +57,7 @@ export default{
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 #power{
   cursor: pointer;
   display: block;

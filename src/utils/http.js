@@ -6,7 +6,7 @@ import { authorizeGet } from './authorize'
 
 const instance = axios.create({
   // 配置请求根路径
-  baseURL: 'https://lab.zhongyaohui.club',
+  baseURL: 'https://lab.bitstone14.xyz',
   // 配置超时时间
   timeout: 100000,
   // 配置请求头信息

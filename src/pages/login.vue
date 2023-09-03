@@ -199,20 +199,17 @@ export default {
     }
   }
   .inputBox {
-    // border: 1px solid black;
     width: 68%;
     text-align: left;
     margin: 10px auto !important;
     p {
       display: block;
-      // border: 1px solid black;
       margin-bottom: 5px !important;
     }
   }
   #checkBox {
     width: 300px;
     margin: 20px auto !important;
-    // border: 1px solid black;
     display: flex;
     justify-content: space-between;
   }

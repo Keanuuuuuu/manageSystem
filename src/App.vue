@@ -57,7 +57,7 @@ export default {
     // 顶部logo的高度加上下面Arti组件的高度为100%，例：这里为10%，那Arti整个高度为90%
   }
   .el-row {
-    border: 1px solid black;
+    // border: 1px solid black;
     box-sizing: border-box;
     min-width: 1200px;
     &:last-child {
