@@ -1,0 +1,4 @@
+{
+  "files": ["main.js", "preload.js", "./dist"],
+  "productName": "test"
+}
