@@ -1,6 +1,6 @@
 <template>
   <div class="Monitor_display_control">
-      <el-button class="btn">状态刷新</el-button>
+      <el-button class="btn" @click="reload">状态刷新</el-button>
       <el-button class="btn" @click="changeDialogVisible">实时控制</el-button>
       <el-button class="btn" @click="intelligentControlDialogVisible">智能控制</el-button>
       <el-button class="btn">数据统计</el-button>
@@ -30,6 +30,9 @@ export default {
     },
     intelligent_controlValue: {
       type: Boolean
+    },
+    loading:{
+      type: Boolean
     }
   },
   setup(props, { emit }) {
@@ -38,6 +41,7 @@ export default {
     const DialogVisible = ref(props.dialogVisible)
     const Control_dialogValue = ref(props.control_dialogValue)
     const intelligent_controlValue = ref(props.intelligent_controlValue)
+    const loading = ref(props.loading)
 
     function changeDialogVisible() {
       DialogVisible.value = true
@@ -53,13 +57,19 @@ export default {
       emit('updateIntelligent_controlValue', intelligent_controlValue.value)
     }
 
+    function reload(){
+      loading.value = true
+      emit('reload', loading.value)
+    }
+
     return {
       input,
       select,
       DialogVisible,
       Search,
       changeDialogVisible,
-      intelligentControlDialogVisible
+      intelligentControlDialogVisible,
+      reload
     }
   }
 }

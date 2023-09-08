@@ -1,7 +1,7 @@
 <template>
   <div class="Monitor_display_head">
     <div class="title">
-      内机监控/16栋/1楼/16-130
+      内机监控{{ titleChange }}
     </div>
     <div class="member">
       6台内机,其中
@@ -10,10 +10,17 @@
 </template>
 
 <script>
+import { watch } from 'vue'
 export default {
   name: 'Monitor_display_head',
-  setup() {
-    
+  props:{
+    titleChange:{
+      type: String,
+      default :'界面'
+    }
+  },
+  setup(props) {
+
   }
 }
 </script>

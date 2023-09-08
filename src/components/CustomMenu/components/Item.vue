@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { onMounted } from 'vue'
+import { onMounted, getCurrentInstance, inject } from 'vue'
 import eventBus from '../eventBus';
 export default {
   props:{
@@ -18,8 +18,15 @@ export default {
   },
   setup(props){
     const chooseItem = (res)=>{
-      eventBus.$emit('chooseItem', props.value, props.type)
+      eventBus.$emit('chooseItem', props.value, props.type, token)
     }
+
+    // 获取实例
+    const page = getCurrentInstance();
+    // 接收token
+    const token = inject('token');
+    // 缓存token
+    page.token = token
 
     onMounted(()=>{
 

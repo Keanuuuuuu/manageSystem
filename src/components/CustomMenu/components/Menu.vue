@@ -20,9 +20,11 @@
 </template>
 
 <script>
-import { ref, onDeactivated, onMounted, watch, computed } from 'vue'
+import { ref, onDeactivated, onMounted, watch, computed, provide, getCurrentInstance } from 'vue'
 import eventBus from "../eventBus"
 import systemEventBus from '../../../systemEventBus'
+import { tokenFun } from '../../../utils/token'
+
 export default {
   props:['menu'],
   setup(props){
@@ -34,7 +36,11 @@ export default {
     const selectOpen = ref(false)
     // 获取从Item选中的数据
     const selectValue = ref(null)
-
+    // 获取实例，配置唯一标识，并注入给后代
+    const page = getCurrentInstance()
+    var token = 'select-' + tokenFun()
+    page.token = token
+    provide('token',token)
     // 下拉框位置
     const dropdownPosition = ref({x:0,y:0,w:0})
 
@@ -87,12 +93,19 @@ export default {
 
     onMounted(()=>{
       calculatePosition()
-      eventBus.$on('chooseItem', (res, type)=>{
-        selectValue.value = res
-        if(type === 1){
-          systemEventBus.$emit('showFunc', res)
+      eventBus.$on('chooseItem', (res, type, token)=>{
+        if(token === page.token){
+          selectValue.value = res
+          console.log(res);
+          if(type === 1){
+            systemEventBus.$emit('showFunc', res)
+          }
+          if(type === 2){
+            console.log(type);
+            systemEventBus.$emit('showDialog', res)
+          }
+          selectOpen.value = false
         }
-        selectOpen.value = false
       })
     })
     
@@ -102,7 +115,8 @@ export default {
       selectOpen,
       selectValue,
       dropdownStyle,
-      handleClick
+      handleClick,
+      token
     }
   }
 }

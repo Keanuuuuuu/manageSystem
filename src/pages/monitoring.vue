@@ -3,7 +3,7 @@
     <div class="tree">
       <el-tree 
         :data="data" 
-        :props="defaultProps" 
+        :props="defaultProps"
         @node-click="handleNodeClick"
         :default-expand-all="true"
       >
@@ -28,15 +28,22 @@
     </div>
     <!-- 以上为左侧菜单 -->
     <div class="Monitor">
-      <monitor-display-head></monitor-display-head>
+      <monitor-display-head
+        :titleChange="titleChange"
+      ></monitor-display-head>
       <!-- 以上为内机监控界面的总览显示 -->
       <monitor-display-control 
         :dialogVisible="dialogVisible"
         :control_dialogValue="control_dialogValue"
         :intelligent_controlValue="intelligent_controlValue"
+        :loading="loading"
         @updateDialogVisible="dialogVisible = $event"
         @updateControl_dialogValue="control_dialogValue = $event"
         @updateIntelligent_controlValue="intelligent_controlValue = $event"
+        @reload="
+          loading = $event,
+          getAirconditionPost()
+        "
       >
       </monitor-display-control>
       <!-- 以上为内机监控界面的控制显示 -->
@@ -46,13 +53,9 @@
           :data="tableData?tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize): []"
           v-loading="loading"
           style="width: 100%"
-          v-mouse-menu="
-          {
-            ...options
-          }"
           @selection-change="handleSelectionChange"
           stripe
-          max-height="400"
+          max-height="550"
           :header-cell-style="headerRowStyle"
         >
           <!-- 
@@ -63,7 +66,7 @@
             5、selection-change当选择项发生变化时会触发该事件
           -->
           <el-table-column type="selection" width="55" />
-          <el-table-column property='name' label="名称" width="110" />
+          <el-table-column property='name' label="名称" width="110" sortable/>
             <!-- <template #default="scope">{{ scope.row[name] }}</template> -->
           <!-- </el-table-column> -->
           <el-table-column property='status' label="状态" width="110" sortable />
@@ -72,12 +75,12 @@
           <el-table-column property='windSpeed' label="风速" width="110" sortable/>
           <el-table-column property='roomTemperature' label="室温" width="110" sortable/>
           <el-table-column label="详情" width="120">
-            <template>
-              <a href="">详情…</a>  
+            <template #default>
+              <el-button href="">详情…</el-button>  
             </template>
           </el-table-column>
           <el-table-column label="智能控制" width="120">
-            <template>
+            <template #default>
               <el-switch
                 size="small"
               />
@@ -159,7 +162,7 @@ export default{
   directives: {
     MouseMenu: MouseMenuDirective
   },
-  setup() {
+  setup({ emit }) {
     
     let h = true
     const array = reactive([])
@@ -229,6 +232,7 @@ export default{
             control_dialogValue.value = true
             console.log(params.id)
             store.commit('Current_control', params.id)
+            getAirconditionPost()
           }
         },
         {
@@ -264,6 +268,7 @@ export default{
     let value_three = ref()
     let num = ref()
     let loading = ref(true)
+    let titleChange = ref(null)
     const data = reactive([
       {
         label: '内机监控',
@@ -271,78 +276,95 @@ export default{
           {
             id:'16',
             label: '16',
+            name: '16栋',
             children: [
               {
                 id:'16_201',
                 label: '16_201',
+                name: '16栋16_201室',
                 children: [
                   {
                     id:'16_201_0',
-                    label: '16_201_0'
+                    label: '16_201_0',
+                    name: '16栋16_201室16_201_0',
                   },
                   {
                     id:'16_201_1',
-                    label: '16_201_1'
+                    label: '16_201_1',
+                    name: '16栋16_201室16_201_1',
                   },
                   {
                     id:'16_201_2',
-                    label: '16_201_2'
+                    label: '16_201_2',
+                    name: '16栋16_201室16_201_2',
                   }
                 ]
               },
               {
                 id:'16_202',
                 label: '16_202',
+                name: '16栋16_202室',
                 children: [
                   {
                     id:'16_202_0',
-                    label: '16_202_0'
+                    label: '16_202_0',
+                    name: '16栋16_202室16_202_0',
                   },
                   {
                     id:'16_202_1',
-                    label: '16_202_1'
+                    label: '16_202_1',
+                    name: '16栋16_202室16_202_1',
                   },
                   {
                     id:'16_202_2',
-                    label: '16_202_2'
+                    label: '16_202_2',
+                    name: '16栋16_202室16_202_2',
                   }
                 ]
               },
               {
                 id:'16_203',
                 label: '16_203',
+                name: '16栋16_203室',
                 children: [
                   {
                     id:'16_203_0',
-                    label: '16_203_0'
+                    label: '16_203_0',
+                    name: '16栋16_203室16_203_0',
                   },
                   {
                     id:'16_203_1',
-                    label: '16_203_1'
+                    label: '16_203_1',
+                    name: '16栋16_203室16_203_1',
                   },
                   {
                     id:'16_203_2',
-                    label: '16_203_2'
+                    label: '16_203_2',
+                    name: '16栋16_203室16_203_2',
                   }
                 ]
               },
               {
                 id:'16_209',
                 label: '16_209',
+                name: '16栋16_209室',
                 children: [
                   {
                     id:'16_209_0',
-                    label: '16_209_0'
+                    label: '16_209_0',
+                  name: '16栋16_209室16_209_0',
                   }
                 ]
               },
               {
                 id:'16_211',
                 label: '16_211',
+                name: '16栋16_211室',
                 children: [
                   {
                     id:'16_211_0',
-                    label: '16_211_0'
+                    label: '16_211_0',
+                    name: '16栋16_211室16_211_0',
                   }
                 ]
               }
@@ -378,6 +400,14 @@ export default{
     async function getAllIP() {
       const res = await post('/getAllIP')
       console.log(res)
+    }
+
+    // 获取指定节点下的设备数量
+    const getNumberOfMachine = async (id)=> {
+      const res = await post('/getNumberOfMachine',{
+        id: "16_201"
+      })
+      console.log("查询设备下的内机数量:",res);
     }
 
     // 修改节点的POST请求
@@ -487,6 +517,7 @@ export default{
     const handleNodeClick = (data, treeArr) => {
       // 想在下次点击事件触发前把数组删除干净，不过当table数组过长应该性能不好
       let res = Test(data.id, array.value)
+      titleChange.value = data.name
       // console.log('111',data.id, treeArr, res);
       tableData.splice(0, tableData.length);
       res.forEach(e => {
@@ -517,6 +548,7 @@ export default{
       cancel,
       close,
       loading,
+      titleChange,
       handleNodeClick,
       ...storeMutations,
       array,
@@ -544,6 +576,7 @@ export default{
       data,
       defaultProps,
       getAllIP,
+      getNumberOfMachine,
       value_one,
       value_two,
       value_three,
@@ -562,7 +595,8 @@ export default{
 .content{
   display: flex;
   flex-direction: row;
-  height: 90%;
+  height: 100%;
+  background-repeat: no-repeat;
   // 路由界面的高度百分比 + 顶部路由按键的高度百分比 = 100% 即整个arti组件的高度
 }
 .Monitor{
@@ -584,6 +618,7 @@ export default{
   box-sizing: border-box;
   width: 20%;
   height: 100%;
+  overflow-y: auto;
 }
 .modify{
   cursor: pointer;
@@ -598,5 +633,11 @@ export default{
 }
 .el-table tr{
   background-color: #E7EEF3;
+}
+.el-pagination{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
 }
 </style>

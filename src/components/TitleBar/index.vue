@@ -1,5 +1,8 @@
 <template>
   <div class="main-top">
+    <div class="left">
+      <span>中央空调集中管理平台</span>
+    </div>
     <div class="right">
       <span class="window-min" @click="windowMin">
         <el-icon><SemiSelect /></el-icon>
@@ -17,6 +20,7 @@
 <script>
 import { useIpcRenderer } from "@vueuse/electron"
 import CustomMenu from "../CustomMenu/index.vue"
+import { onUnmounted } from 'vue'
 
 export default{
   components:{
@@ -25,7 +29,6 @@ export default{
   setup(){
     const ipcRenderer = useIpcRenderer();
     const windowMin = ()=>{
-      // remote.ipcRenderer.send("window-min")
       console.log(ipcRenderer);
       ipcRenderer.send("window-min"); // 向主进程通信
     }
@@ -33,6 +36,9 @@ export default{
       ipcRenderer.send("window-close"); // 向主进程通信
     }
 
+    onUnmounted(()=>{
+      
+    })
     return {
       windowMin,
       windowClose
@@ -46,7 +52,7 @@ export default{
   width: 100%;
   min-width: 1200px;
   // height: 60px;
-  background-color: #179bbb;
+  background-color: #3098e2;
   -webkit-app-region: drag; //事件处可以禁用拖拽区域
   color: white;
   .left {
@@ -67,7 +73,7 @@ export default{
       -webkit-app-region: no-drag; //事件处可以禁用拖拽区域
     }
     .window-min:hover {
-      background-color: rgb(209, 207, 207);
+      background-color: rgb(81, 164, 219);
     }
     .window-close:hover {
       background-color: red;

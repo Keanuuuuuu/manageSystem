@@ -15,17 +15,25 @@
         </div>
       </div>
     </div> -->
-    <Menu :menu="menu">
+    <Menu :menu="menu1">
       <template #selectDropDown>
-        <Item :value="value1" :type="1">内机监控1</Item>
-        <Item :value="value2" :type="1">内机监控2</Item>
-        <Item :value="value3" :type="1">内机监控3</Item>
+        <Item :value="value1" :type="3">设置</Item>
       </template>
     </Menu>
     <Menu :menu="menu2">
       <template #selectDropDown>
-        <Item :value="value4">日志记载</Item>
-        <Item :value="value5">账号管理</Item>
+        <Item :value="value2" :type="1">内机监控</Item>
+      </template>
+    </Menu>
+    <Menu :menu="menu3">
+      <template #selectDropDown>
+        <Item :value="value4" :type="2">日志记载</Item>
+        <Item :value="value5" :type="2">账号管理</Item>
+      </template>
+    </Menu>
+    <Menu :menu="menu4">
+      <template #selectDropDown>
+        <Item :value="value3" :type="4">帮助</Item>
       </template>
     </Menu>
   </div>
@@ -61,11 +69,13 @@ export default {
   data(){
     return{
       asClick: false,
-      menu: "视图",
-      menu2: "功能",
-      value1: "内机监控1",
-      value2: "内机监控2",
-      value3: "内机监控3",
+      menu1: "系统",
+      menu2: "视图",
+      menu3: "功能",
+      menu4: "帮助",
+      value1: "设置",
+      value2: "内机监控",
+      value3: "帮助",
       value4: "日志记载",
       value5: "账号管理"
     }

@@ -1,18 +1,24 @@
 <template>
-  <template v-if="$route.path == '/' || $route.path == '/login'">
+  <template v-if="$route.path == '/' || $route.path == '/login' ">
+    <router-view/>
+  </template>
+
+  <template v-else-if="$route.path == '/log' ">
     <router-view/>
   </template>
 
   <template v-else>
-    <div class="body">
-      <TitleBar></TitleBar>
-      <!-- <el-row class="logo">
-        <el-col :span="24" class="logo_boder">
-          <logo class="grid-content bg-purple-dark"></logo>
-        </el-col>
-      </el-row> -->
-      <Arti></Arti>
-    </div>
+    <el-config-provider :locale="locale">
+      <div class="body">
+        <TitleBar></TitleBar>
+        <!-- <el-row class="logo">
+          <el-col :span="24" class="logo_boder">
+            <logo class="grid-content bg-purple-dark"></logo>
+          </el-col>
+        </el-row> -->
+        <Arti></Arti>
+      </div>
+    </el-config-provider>
   </template>
 </template>
 
@@ -21,7 +27,12 @@ import Logo from "./components/Logo.vue";
 import Navigator from "./components/navigator.vue";
 import Menu from "./components/menu.vue";
 import Arti from "./components/arti.vue";
-import TitleBar from "./components/TitleBar/index.vue"
+import TitleBar from "./components/TitleBar/index.vue";
+import { onMounted } from "vue";
+import systemEventBus from "./systemEventBus";
+import { useIpcRenderer } from "@vueuse/electron";
+import { ElConfigProvider } from 'element-plus';
+import zhCn from 'element-plus/lib/locale/lang/zh-cn';
 
 export default {
   name: "App",
@@ -31,7 +42,22 @@ export default {
     Menu,
     Arti,
     TitleBar,
+    ElConfigProvider
   },
+  setup(){
+    const ipcRenderer = useIpcRenderer();
+    onMounted(()=>{
+      systemEventBus.$on('showDialog', (res)=>{
+        if(res === "日志记载"){
+        console.log(res);
+          ipcRenderer.send('openDialog',"日志记载")
+        }
+      })
+    })    
+    return{
+      locale: zhCn
+    }
+  }
 };
 </script>
 

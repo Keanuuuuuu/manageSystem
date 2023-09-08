@@ -4,8 +4,8 @@
       <div class="bar">
         <router-link class="list-group-item overview" active-class="active" to="/overview">总览</router-link>
         <router-link class="list-group-item monitoring" active-class="active" to="/monitoring" v-if="monitoring">内机监控</router-link>
-        <router-link class="list-group-item log" active-class="active" to="/log">日志记载</router-link>
-        <router-link class="list-group-item id" active-class="active" to="/id">账号管理</router-link>
+        <!-- <router-link class="list-group-item log" active-class="active" to="/log">日志记载</router-link>
+        <router-link class="list-group-item id" active-class="active" to="/id">账号管理</router-link> -->
         <el-tooltip class="box-item" effect="dark" content="退出登录" placement="left-end">
         <el-icon id="power" @click="logout"><SwitchButton /></el-icon>
         </el-tooltip>
@@ -43,7 +43,7 @@ export default{
 
     onMounted(()=>{
       systemEventBus.$on('showFunc', (res)=>{
-        if(res === "内机监控2"){
+        if(res === "内机监控"){
           monitoring.value = true
         }
       })
@@ -76,7 +76,6 @@ export default{
 }
 .body{
   .el-row {
-    border: 1px solid black;
     box-sizing: border-box;
     min-width: 1200px;
     &:last-child {
@@ -110,6 +109,6 @@ a {
   }
 }
 .router-link-exact-active{
-  background-color: #F8F8FF;
+  background-color: #E7EEF3;
 }
 </style>

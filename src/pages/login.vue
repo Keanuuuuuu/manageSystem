@@ -99,7 +99,7 @@ export default {
 
     // 处理登录
     const handleLogin = () => {
-
+      // router.push("/overview");
 
       // 加密函数
       function encryptPWD (password) {
