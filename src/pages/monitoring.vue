@@ -1,30 +1,32 @@
 <template>
   <div class="content">
     <div class="tree">
-      <el-tree 
-        :data="data" 
-        :props="defaultProps"
-        @node-click="handleNodeClick"
-        :default-expand-all="true"
-      >
-        <template #default="{ node, data }">
-          <span class="custom-tree-node"
-            v-mouse-menu = "{
-              params:data,
-              ...options_tree
-            }"
-          >
-            <span>{{ node.label }}</span>
-            <div v-show="!data.children">
-              <span>
-                <span>  --color  </span>
-                <!-- 现在只是一个固定的1来表示状态，要换成插值表达式，根据请求返回的故障码我来做一个判断 -->
-                <!-- <a style="margin-left: 8px" @click="remove(node, data)"> Delete </a> -->
-              </span>
-            </div>
-          </span>
-        </template>
-      </el-tree>
+      <el-scrollbar>  
+        <el-tree 
+          :data="data" 
+          :props="defaultProps"
+          @node-click="handleNodeClick"
+          :default-expand-all="true"
+        >
+          <template #default="{ node, data }">
+            <span class="custom-tree-node"
+              v-mouse-menu = "{
+                params:data,
+                ...options_tree
+              }"
+            >
+              <span>{{ node.label }}</span>
+              <div v-show="!data.children">
+                <span>
+                  <span>  --color  </span>
+                  <!-- 现在只是一个固定的1来表示状态，要换成插值表达式，根据请求返回的故障码我来做一个判断 -->
+                  <!-- <a style="margin-left: 8px" @click="remove(node, data)"> Delete </a> -->
+                </span>
+              </div>
+            </span>
+          </template>
+        </el-tree>
+      </el-scrollbar>
     </div>
     <!-- 以上为左侧菜单 -->
     <div class="Monitor">
@@ -319,6 +321,11 @@ export default{
                     id:'16_202_2',
                     label: '16_202_2',
                     name: '16栋16_202室16_202_2',
+                  },
+                  {
+                    id:'16_202_2',
+                    label: '16_202_3',
+                    name: '16栋16_202室16_202_3',
                   }
                 ]
               },
@@ -345,26 +352,93 @@ export default{
                 ]
               },
               {
-                id:'16_209',
-                label: '16_209',
-                name: '16栋16_209室',
+                id:'16_204',
+                label: '16_204',
+                name: '16栋16_204室',
                 children: [
                   {
-                    id:'16_209_0',
-                    label: '16_209_0',
-                  name: '16栋16_209室16_209_0',
+                    id:'16_204_0',
+                    label: '16_204_0',
+                    name: '16栋16_204室16_204_0',
+                  },
+                  {
+                    id:'16_204_1',
+                    label: '16_204_1',
+                    name: '16栋16_204室16_204_1',
+                  },
+                  {
+                    id:'16_204_2',
+                    label: '16_204_2',
+                    name: '16栋16_204室16_204_2',
                   }
                 ]
               },
               {
-                id:'16_211',
-                label: '16_211',
-                name: '16栋16_211室',
+                id:'16_205',
+                label: '16_205',
+                name: '16栋16_205室',
                 children: [
                   {
-                    id:'16_211_0',
-                    label: '16_211_0',
-                    name: '16栋16_211室16_211_0',
+                    id:'16_205_0',
+                    label: '16_205_0',
+                    name: '16栋16_205室16_205_0',
+                  },
+                  {
+                    id:'16_205_1',
+                    label: '16_205_1',
+                    name: '16栋16_205室16_205_1',
+                  },
+                  {
+                    id:'16_205_2',
+                    label: '16_205_2',
+                    name: '16栋16_205室16_205_2',
+                  }
+                ]
+              },
+              {
+                id:'16_206',
+                label: '16_206',
+                name: '16栋16_206室',
+                children: [
+                  {
+                    id:'16_206_0',
+                    label: '16_206_0',
+                    name: '16栋16_206室16_206_0',
+                  },
+                  {
+                    id:'16_206_1',
+                    label: '16_206_1',
+                    name: '16栋16_206室16_206_1',
+                  },
+                  {
+                    id:'16_206_2',
+                    label: '16_206_2',
+                    name: '16栋16_206室16_206_2',
+                  },
+                  {
+                    id:'16_206_3',
+                    label: '16_206_3',
+                    name: '16栋16_206室16_206_3',
+                  },
+                  {
+                    id:'16_206_4',
+                    label: '16_206_4',
+                    name: '16栋16_206室16_206_4',
+                  },
+                  {
+                    id:'16_206_5',
+                    label: '16_206_5',
+                    name: '16栋16_206室16_206_5',
+                  },
+                  {
+                    id:'16_206_6',
+                    label: '16_206_6',
+                    name: '16栋16_206室16_206_6',
+                  },
+                  {
+                    id:'16_206_7',
+                    label: '16_206_7',
+                    name: '16栋16_206室16_206_7',
                   }
                 ]
               }
@@ -595,7 +669,7 @@ export default{
 .content{
   display: flex;
   flex-direction: row;
-  height: 100%;
+  height: 82vh;
   background-repeat: no-repeat;
   // 路由界面的高度百分比 + 顶部路由按键的高度百分比 = 100% 即整个arti组件的高度
 }
@@ -617,8 +691,7 @@ export default{
   border-right: 1px solid black;
   box-sizing: border-box;
   width: 20%;
-  height: 100%;
-  overflow-y: auto;
+  // overflow-y: scroll;
 }
 .modify{
   cursor: pointer;

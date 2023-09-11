@@ -72,7 +72,7 @@ export default{
   }
 }
 .top_navigation_bar{
-  height: 85%;
+  height: 92vh;
 }
 .body{
   .el-row {
@@ -89,7 +89,7 @@ export default{
   .bar{
     border-bottom: 1px solid black;
     box-sizing: border-box;
-    height: 10%;
+    height: 10vh;
     // 各个路由界面的高度百分比 + 顶部路由按键的高度百分比 = 100% 即整个arti组件的高度
   }
 }

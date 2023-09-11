@@ -73,13 +73,13 @@ export default {
   position: absolute;
   top: 50%;
   left: 50%;
-  height: 100%;
+  height: 100vh;
   transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   padding-left: calc(100vw - 100%);
   .logo {
-    height: 10%;
+    height: 10%; 
     // 顶部logo的高度加上下面Arti组件的高度为100%，例：这里为10%，那Arti整个高度为90%
   }
   .el-row {

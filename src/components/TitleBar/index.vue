@@ -1,15 +1,17 @@
 <template>
   <div class="main-top">
-    <div class="left">
-      <span>中央空调集中管理平台</span>
-    </div>
-    <div class="right">
-      <span class="window-min" @click="windowMin">
-        <el-icon><SemiSelect /></el-icon>
-      </span>
-      <span class="window-close" @click="windowClose">
-        <el-icon><CloseBold /></el-icon>
-      </span>
+    <div>
+      <div class="left">
+        <span>中央空调集中管理平台</span>
+      </div>
+      <div class="right">
+        <span class="window-min" @click="windowMin">
+          <el-icon><SemiSelect /></el-icon>
+        </span>
+        <span class="window-close" @click="windowClose">
+          <el-icon><CloseBold /></el-icon>
+        </span>
+      </div>
     </div>
     <div class="menu">
       <CustomMenu></CustomMenu>
@@ -51,10 +53,12 @@ export default{
 .main-top {
   width: 100%;
   min-width: 1200px;
-  // height: 60px;
+  height: 8vh;
   background-color: #3098e2;
   -webkit-app-region: drag; //事件处可以禁用拖拽区域
   color: white;
+  display: flex;
+  flex-direction: column;
   .left {
     float: left;
     height: 30px;
@@ -78,6 +82,9 @@ export default{
     .window-close:hover {
       background-color: red;
     }
+  }
+  .menu{
+    margin-top:auto
   }
 }
 </style>
