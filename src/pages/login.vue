@@ -109,7 +109,7 @@ export default {
         return encryptor.encrypt(password+'')
       }
 
-      const customUrl = "https://lab.bitstone14.xyz/login";
+      const customUrl = "http://lab.zhongyaohui.club/login";
       const postData = {
         username: username.value.trim(),
         password: encryptPWD(password.value.trim()),
