@@ -104,9 +104,6 @@ a {
   .icon {
     width: 24px;
   }
-  &:hover {
-    // color: #fff;
-  }
 }
 .router-link-exact-active{
   background-color: #E7EEF3;
