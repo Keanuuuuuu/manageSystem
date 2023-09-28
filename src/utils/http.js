@@ -8,7 +8,7 @@ const instance = axios.create({
   // 配置请求根路径
   baseURL: 'https://lab.bitstone14.xyz',
   // 配置超时时间
-  timeout: 100000,
+  timeout: 50000,
   // 配置请求头信息
   headers: {
     'Content-Type': 'application/json;charset=UTF-8'
@@ -51,7 +51,7 @@ export function setupInterceptors(router) {
         type: "error",
       });
       console.log(error) // 打印错误信息
-      // ElLoading.service().close();
+      ElLoading.service().close(); 
       return Promise.reject(error)
     }
   )
