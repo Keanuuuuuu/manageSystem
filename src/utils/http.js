@@ -22,7 +22,7 @@ export function setupInterceptors(router) {
     config => {
       // 在发送请求之前做些什么
       //鉴权函数 token失效后跳转至login
-      authorizeGet(router)
+      // authorizeGet(router)
       return config
     },
     error => {

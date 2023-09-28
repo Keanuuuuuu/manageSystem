@@ -20,6 +20,8 @@ import Bar from './bar.vue';
 import { onMounted, ref, onBeforeMount } from 'vue';
 import { useRouter } from "vue-router";
 import systemEventBus from '../systemEventBus';
+import { useIpcRenderer } from "@vueuse/electron";
+
 export default{
   components :{
     Bar
@@ -27,12 +29,14 @@ export default{
   name:'arti',
   setup(){
     let monitoring = ref(false)
+    const ipcRenderer = useIpcRenderer();
     const router = useRouter();
     const logout = ()=>{
       localStorage.removeItem("username");
       localStorage.removeItem("password");
       localStorage.removeItem("autoLogin");
-      router.push("/login")
+      // router.push("/login")
+      ipcRenderer.send("login-deny-logout")
     }
 
     onBeforeMount(()=>{

@@ -15,7 +15,7 @@ console.log(NODE_ENV);
 
 // 保持对window对象的全局引用，如果不这么做的话，当JavaScript对象被
 // 垃圾回收的时候，window对象将会自动的关闭
-let win
+let win = null
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = true;
 
@@ -41,29 +41,13 @@ function createWindow () {
     title: '中央空调管理', // 自定义当前应用的标题
   })
   // win.setAspectRatio(1) //设置窗口保持的比例
- 
-  // 加载index.html文件
-  //   win.loadFile('./index.html')  //就是根据这句加载你创建的index.html的
-  // win.loadFile(path.resolve(__dirname,'/src/index.html')) // 或者这样写，来适应不同操作系统的路径
-
-  // attachTitlebarToWindow(win);
-  // win.loadURL('http://localhost:5173/')
   if(NODE_ENV === 'development'){
-    win.loadURL('http://localhost:5173/')
+    win.loadURL('http://localhost:5173/#/monitoring')
   }else{
     win.loadFile(NODE_ENV === 'development'
     ? 'http://localhost:5173/'
     : path.join(__dirname,'dist/index.html'))
   }
-
-
-  // win.loadFile('./dist/index.html')
- 
-  // 打开开发者工具
-  // win.webContents.openDevTools()
- 
-  // 设置菜单
-  // Menu.setApplicationMenu(mainTemp)
 
   
   // 当 window 被关闭，这个事件会被触发。
@@ -75,16 +59,33 @@ function createWindow () {
   })
 }
  
-
+let loginWindow = null
 function createLoginWindow() {
   loginWindow = new BrowserWindow({
-    width: 400,
+    width: 500,
     height: 500,
+    frame: false,
+    autoHideMenuBar: true,
+    transparent: true,
     webPreferences: {
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+      contextIsolation: false       //隔离取消掉
+    },
+    // icon: './public/favicon.ico',
+    title: '登录',
   })
-  loginWindow.loadFile('./login.html')
+
+  if(NODE_ENV === 'development'){
+    loginWindow.loadURL('http://localhost:5173/#/login')
+  }else{
+    loginWindow.loadFile(NODE_ENV === 'development'
+    ? 'http://localhost:5173/'
+    : path.join(__dirname,'dist/index.html'), {
+      hash: 'login'
+    })
+  }
+
+
   loginWindow.on('closed', () => {
     // loginWindow = null
     // if (loginWindow === null) {
@@ -99,8 +100,9 @@ function createLoginWindow() {
 // Electron 会在初始化后并准备
 // 创建浏览器窗口时，调用这个函数。
 // 部分 API 在 ready 事件触发后才能使用。
-app.on('ready', createWindow)
-// app.on('ready', createLoginWindow)
+// app.on('ready', createWindow)
+
+app.on('ready', createLoginWindow)
  
 // 当全部窗口关闭时退出。
 app.on('window-all-closed', () => {
@@ -119,6 +121,33 @@ app.on('activate', () => {
   }
 })
 
+ipcMain.on('login-deny-token', () => {
+  if(win !== null){
+    win.hide()
+    win = null
+  }
+  console.log(1);
+  createLoginWindow()
+})
+
+ipcMain.on('login-deny-logout', () => {
+  if(win !== null){
+    win.hide()
+    win = null
+  }
+  console.log(1);
+  createLoginWindow()
+})
+
+ipcMain.on('login-access', () => {
+  if(loginWindow !== null){
+    loginWindow.hide()
+    loginWindow = null
+  }
+  console.log(2);
+  createWindow()
+})
+
 ipcMain.on('window-min', () => {
   win.minimize()
 })
@@ -128,6 +157,17 @@ ipcMain.on('window-close', () => {
     Dialog.hide()
   }
   win.hide();
+})
+
+ipcMain.on('login-min', () => {
+  loginWindow.minimize()
+})
+
+ipcMain.on('login-close', () => {
+  if(loginWindow !== null){
+    loginWindow.hide()
+  }
+  loginWindow.hide();
 })
 
 let Dialog = null

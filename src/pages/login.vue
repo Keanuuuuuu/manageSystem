@@ -1,6 +1,7 @@
 <template>
   <div id="wrapper">
     <div id="loginBox">
+    <LoginTitleBar></LoginTitleBar>
       <div id="logo">
         <img src="../assets/airCondition.png" />
         <p>中央空调集中管理平台</p>
@@ -47,9 +48,14 @@ import { useRouter } from "vue-router";
 import { ElLoading } from "element-plus";
 import { ElMessage } from "element-plus";
 import { JSEncrypt } from "jsencrypt";
+import { useIpcRenderer } from "@vueuse/electron";
+import LoginTitleBar from '../components/LoginTitleBar/index.vue'
 
 export default {
   name: "Login",
+  components:{
+    LoginTitleBar
+  },
   setup() {
     const username = ref("");
     const password = ref("");
@@ -59,6 +65,7 @@ export default {
     const store = useStore();
     const router = useRouter();
     let timeoutId = null;
+    const ipcRenderer = useIpcRenderer();
 
     // 监听“记住密码”选中状态的变化
     watch(savePassword, (newValue) => {
@@ -139,7 +146,10 @@ export default {
             store.commit("setUserdata", res.data);
             localStorage.setItem("token",res.data.token)
             // 跳转到 '/monitoring' 页面
-            router.push("/monitoring");
+            // router.push("/monitoring");
+
+            ipcRenderer.send("login-access"); // 向主进程通信
+
           } else {
             ElLoading.service().close();
             ElMessage({
@@ -169,8 +179,10 @@ export default {
 
 <style lang="scss" scoped>
 #wrapper {
-  background-color: rgb(10, 9, 100);
-  height: 100vh;
+  // background-color: rgb(10, 9, 100);
+  // height: 100vh;
+  border-radius: 10px;
+  width: 400px;
   #loginBox {
     width: 27%;
     max-width: 470px;

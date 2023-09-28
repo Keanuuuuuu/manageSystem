@@ -11,11 +11,6 @@
     <el-config-provider :locale="locale">
       <div class="body">
         <TitleBar></TitleBar>
-        <!-- <el-row class="logo">
-          <el-col :span="24" class="logo_boder">
-            <logo class="grid-content bg-purple-dark"></logo>
-          </el-col>
-        </el-row> -->
         <Arti></Arti>
       </div>
     </el-config-provider>
@@ -28,11 +23,12 @@ import Navigator from "./components/navigator.vue";
 import Menu from "./components/menu.vue";
 import Arti from "./components/arti.vue";
 import TitleBar from "./components/TitleBar/index.vue";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import systemEventBus from "./systemEventBus";
 import { useIpcRenderer } from "@vueuse/electron";
 import { ElConfigProvider } from 'element-plus';
 import zhCn from 'element-plus/lib/locale/lang/zh-cn';
+import { useRouter } from "vue-router";
 
 export default {
   name: "App",
@@ -45,17 +41,24 @@ export default {
     ElConfigProvider
   },
   setup(){
+    let route = useRouter();
+    let url = ref(false)
     const ipcRenderer = useIpcRenderer();
     onMounted(()=>{
       systemEventBus.$on('showDialog', (res)=>{
         if(res === "日志记载"){
-        console.log(res);
+          console.log(res);
           ipcRenderer.send('openDialog',"日志记载")
         }
       })
+      console.log(route.currentRoute.value.path);
+      url = route.currentRoute.value.path === '/login' || '/' ? true : false;
+      console.log(url);
     })    
     return{
-      locale: zhCn
+      locale: zhCn,
+      route,
+      url
     }
   }
 };
