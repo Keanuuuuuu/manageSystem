@@ -46,7 +46,9 @@ function createWindow () {
   }else{
     win.loadFile(NODE_ENV === 'development'
     ? 'http://localhost:5173/'
-    : path.join(__dirname,'dist/index.html'))
+    : path.join(__dirname,'dist/index.html'), {
+      hash: 'monitoring'
+    })
   }
 
   
@@ -141,7 +143,8 @@ ipcMain.on('login-deny-logout', () => {
 
 ipcMain.on('login-access', () => {
   if(loginWindow !== null){
-    loginWindow.hide()
+    // loginWindow.hide()
+    loginWindow.close()
     loginWindow = null
   }
   console.log(2);

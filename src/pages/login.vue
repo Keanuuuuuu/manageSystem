@@ -50,6 +50,7 @@ import { ElMessage } from "element-plus";
 import { JSEncrypt } from "jsencrypt";
 import { useIpcRenderer } from "@vueuse/electron";
 import LoginTitleBar from '../components/LoginTitleBar/index.vue'
+import systemEventBus from "../systemEventBus"
 
 export default {
   name: "Login",
@@ -66,6 +67,7 @@ export default {
     const router = useRouter();
     let timeoutId = null;
     const ipcRenderer = useIpcRenderer();
+    let flagToken = "not-allowed"
 
     // 监听“记住密码”选中状态的变化
     watch(savePassword, (newValue) => {
@@ -80,6 +82,12 @@ export default {
       const savedUsername = localStorage.getItem("username");
       const savedPassword = localStorage.getItem("password");
       const auto = localStorage.getItem("autoLogin");
+      systemEventBus.$on("deny-token",(res)=>{
+        flagToken = res
+      })
+      systemEventBus.$on("access-token",(res)=>{
+        flagToken = res
+      })
 
       if (savedUsername && savedPassword) {
         username.value = savedUsername;
@@ -128,10 +136,9 @@ export default {
           type: "error",
         });
       } else {
-        ElLoading.service({ background: "rgba(0,0,0,.5)" });
+        // ElLoading.service({ background: "rgba(0,0,0,.5)" });
         post(customUrl, postData).then((res) => {
-          ElLoading.service().close();
-          console.log(res);
+          // ElLoading.service().close();
           if (res.code === 21200) {
             // 如果“记住密码”被选中，将凭据保存到本地存储
             if (savePassword.value) {
@@ -148,10 +155,12 @@ export default {
             // 跳转到 '/monitoring' 页面
             // router.push("/monitoring");
 
-            ipcRenderer.send("login-access"); // 向主进程通信
+            if(flagToken == "is-allowed"){
+              ipcRenderer.send("login-access"); // 向主进程通信
+            }
 
           } else {
-            ElLoading.service().close();
+            // ElLoading.service().close();
             ElMessage({
               showClose: true,
               message: "用户名或密码错误！",

@@ -22,7 +22,8 @@ export function setupInterceptors(router) {
     config => {
       // 在发送请求之前做些什么
       //鉴权函数 token失效后跳转至login
-      // authorizeGet(router)
+      console.log(1111);
+      authorizeGet(router)
       return config
     },
     error => {
@@ -51,7 +52,7 @@ export function setupInterceptors(router) {
         type: "error",
       });
       console.log(error) // 打印错误信息
-      ElLoading.service().close(); 
+      // ElLoading.service().close(); 
       return Promise.reject(error)
     }
   )

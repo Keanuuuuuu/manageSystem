@@ -1,6 +1,7 @@
 import { get } from "../utils/http.js";
 import { ElMessage } from "element-plus";
 import { useIpcRenderer } from "@vueuse/electron";
+import systemEventBus from '../systemEventBus';
 
 
 // 标识是否已经获取了token
@@ -22,6 +23,7 @@ export function authorizeGet(router) {
       console.log("开始");
       get(apiUrl).then((res) => {
         console.log(res);
+        console.log(11);
         if (res.code === 21401) {
           // router.push("/login");
           ElMessage({
@@ -30,10 +32,16 @@ export function authorizeGet(router) {
             type: "error",
           });
           
+          systemEventBus.$emit("deny-token", "not-allowed")
           // send a message 重新创建登录窗口，并关闭主窗口
           // ipcRenderer.send("login-deny-token"); // 向主进程通信
+        } else {
+          console.log(111);
+          systemEventBus.$emit("access-token", "is-allowed")
         }
       })
     }
+  } else {
+    systemEventBus.$emit("access-token", "is-allowed")
   }
 }
