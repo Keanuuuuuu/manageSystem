@@ -1,7 +1,7 @@
 <template>
   <div id="wrapper">
     <div id="loginBox">
-    <LoginTitleBar></LoginTitleBar>
+      <LoginTitleBar></LoginTitleBar>
       <div id="logo">
         <img src="../assets/airCondition.png" />
         <p>中央空调集中管理平台</p>
@@ -13,27 +13,14 @@
         </div>
         <div class="inputBox">
           <p>密码</p>
-          <el-input
-            v-model="password"
-            clearable
-            type="password"
-            show-password
-          />
+          <el-input v-model="password" clearable type="password" show-password />
         </div>
         <div id="checkBox">
-          <el-checkbox v-model="savePassword" label="记住密码" size="large" />
-          <el-checkbox
-            v-model="autoLogin"
-            label="自动登录"
-            size="large"
-            :disabled="!savePassword"
-            @change="handleAutoLoginChange"
-          />
+          <el-checkbox v-model="recordPassword" label="记住密码" size="large" />
+          <el-link>忘记密码？</el-link>
         </div>
         <div id="loginBtn">
-          <el-button color="#626aef" id="loginBtn" @click="handleLogin"
-            >登录</el-button
-          >
+          <el-button color="#626aef" id="loginBtn" @click="tryLogin">登录</el-button>
         </div>
       </div>
     </div>
@@ -41,89 +28,38 @@
 </template>
 
 <script>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
 import { post, get } from "../utils/http.js";
-import { useRouter } from "vue-router";
-import { ElLoading } from "element-plus";
 import { ElMessage } from "element-plus";
 import { JSEncrypt } from "jsencrypt";
 import { useIpcRenderer } from "@vueuse/electron";
 import LoginTitleBar from '../components/LoginTitleBar/index.vue'
-import systemEventBus from "../systemEventBus"
 
 export default {
   name: "Login",
-  components:{
+  components: {
     LoginTitleBar
   },
   setup() {
     const username = ref("");
     const password = ref("");
-    let publickey = ref("");
-    const savePassword = ref(false);
-    const autoLogin = ref(false);
+    let recordPassword = ref(false);
+    const Store = require('electron-store');
+    const Estore = new Store();
     const store = useStore();
-    const router = useRouter();
-    let timeoutId = null;
     const ipcRenderer = useIpcRenderer();
-    let flagToken = "not-allowed"
 
-    // 监听“记住密码”选中状态的变化
-    watch(savePassword, (newValue) => {
-      // 如果取消选中“记住密码”，同时取消选中“自动登录”
-      if (!newValue) {
-        autoLogin.value = false;
-      }
-    });
+    // 加密函数
+    function encryptPWD(password) {
+      const encryptor = new JSEncrypt()
+      const key = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALiY4DWLKMiLRypsz4A8zdWyQF1fjZGof66PkXDt1AAwuEoKo8rNG9oP5iMZYr0TRDflCUebkP384qzDUFqcA3cCAwEAAQ=="
+      encryptor.setPublicKey(key)
+      return encryptor.encrypt(password + '')
+    }
 
-    // 记住密码  在组件挂载时从本地存储加载保存的凭据并自动登录
-    onMounted(() => {
-      const savedUsername = localStorage.getItem("username");
-      const savedPassword = localStorage.getItem("password");
-      const auto = localStorage.getItem("autoLogin");
-      systemEventBus.$on("deny-token",(res)=>{
-        flagToken = res
-      })
-      systemEventBus.$on("access-token",(res)=>{
-        flagToken = res
-      })
-
-      if (savedUsername && savedPassword) {
-        username.value = savedUsername;
-        password.value = savedPassword;
-        savePassword.value = true;
-
-        if (auto) {
-          autoLogin.value = true;
-          timeoutId = setTimeout(handleLogin, 1500);
-        }
-      }
-    });
-
-    // 处理自动登录的变化
-    const handleAutoLoginChange = () => {
-      // 如果“自动登录”被选中，将自动登录标志保存到本地存储
-      if (autoLogin.value) {
-        localStorage.setItem("autoLogin", "true");
-      } else {
-        clearTimeout(timeoutId);
-        localStorage.removeItem("autoLogin");
-      }
-    };
-
-    // 处理登录
-    const handleLogin = () => {
-      // router.push("/overview");
-
-      // 加密函数
-      function encryptPWD (password) {
-        const encryptor = new JSEncrypt()
-        const key = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALiY4DWLKMiLRypsz4A8zdWyQF1fjZGof66PkXDt1AAwuEoKo8rNG9oP5iMZYr0TRDflCUebkP384qzDUFqcA3cCAwEAAQ=="
-        encryptor.setPublicKey(key)
-        return encryptor.encrypt(password+'')
-      }
-
+    // 尝试登录
+    function tryLogin() {
       const customUrl = "http://lab.zhongyaohui.club/login";
       const postData = {
         username: username.value.trim(),
@@ -132,53 +68,75 @@ export default {
       if (postData.username === "" || postData.password === "") {
         ElMessage({
           showClose: true,
-          message: "输入的用户名或密码不能为空！",
+          message: "输入的内容不能为空！",
           type: "error",
         });
       } else {
-        // ElLoading.service({ background: "rgba(0,0,0,.5)" });
-        post(customUrl, postData).then((res) => {
-          // ElLoading.service().close();
-          if (res.code === 21200) {
-            // 如果“记住密码”被选中，将凭据保存到本地存储
-            if (savePassword.value) {
-              localStorage.setItem("username", username.value);
-              localStorage.setItem("password", password.value);
-            } else {
-              // 如果“记住密码”未被选中，清除本地存储的凭据
-              localStorage.removeItem("username");
-              localStorage.removeItem("password");
-            }
-            // 调用 Vuex 的 setRole mutation，将 role 存入 Vuex
-            store.commit("setUserdata", res.data);
-            localStorage.setItem("token",res.data.token)
-            // 跳转到 '/monitoring' 页面
-            // router.push("/monitoring");
+        post(customUrl, postData)
+          .then(handleLoginResponse)
+          .catch((error) => {
+            console.error("登录失败:", error);
+          });
+      }
+    }
 
-            if(flagToken == "is-allowed"){
-              ipcRenderer.send("login-access"); // 向主进程通信
-            }
+    // 处理登录响应
+    function handleLoginResponse(res) {
+      if (res.code === 21200) {
+        const userData = res.data;
 
-          } else {
-            // ElLoading.service().close();
-            ElMessage({
-              showClose: true,
-              message: "用户名或密码错误！",
-              type: "error",
-            });
-          }
+        // 如果“记住密码”被选中，保存凭据到本地存储
+        if (recordPassword.value) {
+          Estore.set("logindata", {
+            username: username.value,
+            password: password.value,
+          });
+          Estore.set("recordPassword", recordPassword.value);
+        } else {
+          // 如果“记住密码”未选中，清除本地存储的凭据
+          Estore.delete("logindata");
+          Estore.set("recordPassword", recordPassword.value);
+        }
+
+        // 将用户数据存入 Vuex
+        store.commit("setUserdata", userData);
+
+        // 登录成功后将 token 存入本地存储
+        const token = userData.token;
+        Estore.set("token", token);
+
+        // 跳转到 '/monitoring' 页面
+        ipcRenderer.send("login-access");
+      } else {
+        ElMessage({
+          showClose: true,
+          message: "用户名或密码错误！",
+          type: "error",
         });
       }
-    };
+    }
+
+    // 记住密码  在组件挂载时从本地存储加载保存的凭据并自动登录
+    onMounted(() => {
+      recordPassword.value = Estore.get('recordPassword')
+      // 判断是否记住密码
+      if (Estore.get('recordPassword')) {
+        let logindata = Estore.get('logindata')
+        let savedUsername = logindata.username
+        let savedPassword = logindata.password
+        // 确保保存的信息有值
+        if (savedUsername && savedPassword) {
+          username.value = savedUsername;
+          password.value = savedPassword;
+        }
+      }
+    });
 
     return {
       username,
       password,
-      publickey,
-      savePassword,
-      autoLogin,
-      handleAutoLoginChange,
-      handleLogin,
+      recordPassword,
+      tryLogin
     };
   },
 };
@@ -187,11 +145,6 @@ export default {
 
 
 <style lang="scss" scoped>
-#wrapper {
-  // background-color: rgb(10, 9, 100);
-  // height: 100vh;
-  border-radius: 10px;
-  width: 400px;
   #loginBox {
     width: 27%;
     max-width: 470px;
@@ -206,34 +159,41 @@ export default {
     top: 50%;
     transform: translate(-50%, -50%);
   }
+
   #logo {
     display: block;
     margin-top: 30px !important;
     margin-bottom: 30px !important;
+
     img {
       width: 20%;
     }
     p {
-      font-size: 30px;
+      font-size: 27px;
       letter-spacing: 2px;
       color: rgb(1, 71, 175);
     }
   }
+
   .inputBox {
     width: 68%;
     text-align: left;
     margin: 10px auto !important;
+
     p {
       display: block;
       margin-bottom: 5px !important;
     }
   }
+
   #checkBox {
+    // border: 1px solid black;
     width: 300px;
     margin: 20px auto !important;
     display: flex;
     justify-content: space-between;
   }
+
   #loginBtn {
     margin: 20px auto !important;
     width: 140px;
@@ -241,5 +201,5 @@ export default {
     font-size: 20px;
     letter-spacing: 4px;
   }
-}
+
 </style>
