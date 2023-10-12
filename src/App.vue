@@ -51,9 +51,9 @@ export default {
           ipcRenderer.send('openDialog',"日志记载")
         }
       })
-      console.log(route.currentRoute.value.path);
+      // console.log(route.currentRoute.value.path);
       url = route.currentRoute.value.path === '/login' || '/' ? true : false;
-      console.log(url);
+      // console.log(url);
     })    
     return{
       locale: zhCn,

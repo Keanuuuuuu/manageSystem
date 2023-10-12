@@ -10,17 +10,18 @@ const { app, BrowserWindow, ipcMain, Menu } = require('electron')
 
 const path = require('path')
 const NODE_ENV = process.env.NODE_ENV
- 
-console.log(NODE_ENV);
 
-// 保持对window对象的全局引用，如果不这么做的话，当JavaScript对象被
-// 垃圾回收的时候，window对象将会自动的关闭
-let win = null
+// 持久化保存数据的库和初始化
+const Store = require('electron-store');
+Store.initRenderer()
+
+console.log(NODE_ENV);
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = true;
 
-function createWindow () {
-  // 创建浏览器窗口。
+// 创建主进程窗口对象
+let win = null  // 保持对window对象的全局引用，如果不这么做的话，当JavaScript对象被垃圾回收的时候，window对象将会自动的关闭
+function createWindow() {
   win = new BrowserWindow({
     width: 2000,
     height: 1000,
@@ -41,17 +42,17 @@ function createWindow () {
     title: '中央空调管理', // 自定义当前应用的标题
   })
   // win.setAspectRatio(1) //设置窗口保持的比例
-  if(NODE_ENV === 'development'){
+  if (NODE_ENV === 'development') {
     win.loadURL('http://localhost:5173/#/monitoring')
-  }else{
+  } else {
     win.loadFile(NODE_ENV === 'development'
-    ? 'http://localhost:5173/'
-    : path.join(__dirname,'dist/index.html'), {
+      ? 'http://localhost:5173/'
+      : path.join(__dirname, 'dist/index.html'), {
       hash: 'monitoring'
     })
   }
 
-  
+
   // 当 window 被关闭，这个事件会被触发。
   win.on('closed', () => {
     // 取消引用 window 对象，如果你的应用支持多窗口的话，
@@ -60,7 +61,8 @@ function createWindow () {
     win = null
   })
 }
- 
+
+// 创建登录窗口对象
 let loginWindow = null
 function createLoginWindow() {
   loginWindow = new BrowserWindow({
@@ -69,6 +71,7 @@ function createLoginWindow() {
     frame: false,
     autoHideMenuBar: true,
     transparent: true,
+    // resizable:false,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false       //隔离取消掉
@@ -77,19 +80,18 @@ function createLoginWindow() {
     title: '登录',
   })
 
-  if(NODE_ENV === 'development'){
+  if (NODE_ENV === 'development') {
     loginWindow.loadURL('http://localhost:5173/#/login')
-  }else{
+  } else {
     loginWindow.loadFile(NODE_ENV === 'development'
-    ? 'http://localhost:5173/'
-    : path.join(__dirname,'dist/index.html'), {
+      ? 'http://localhost:5173/'
+      : path.join(__dirname, 'dist/index.html'), {
       hash: 'login'
     })
   }
 
-
   loginWindow.on('closed', () => {
-    // loginWindow = null
+    loginWindow = null
     // if (loginWindow === null) {
     //   createWindow()
     // }
@@ -98,14 +100,13 @@ function createLoginWindow() {
 
 
 // app相当于整个应用程序，拥有不同的生命周期
-
 // Electron 会在初始化后并准备
 // 创建浏览器窗口时，调用这个函数。
 // 部分 API 在 ready 事件触发后才能使用。
 // app.on('ready', createWindow)
 
 app.on('ready', createLoginWindow)
- 
+
 // 当全部窗口关闭时退出。
 app.on('window-all-closed', () => {
   // 在 macOS 上，除非用户用 Cmd + Q 确定地退出，
@@ -114,7 +115,7 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
- 
+
 app.on('activate', () => {
   // 在macOS上，当单击dock图标并且没有其他窗口打开时，
   // 通常在应用程序中重新创建一个窗口。
@@ -123,17 +124,9 @@ app.on('activate', () => {
   }
 })
 
-ipcMain.on('login-deny-token', () => {
-  if(win !== null){
-    win.hide()
-    win = null
-  }
-  console.log(1);
-  createLoginWindow()
-})
-
-ipcMain.on('login-deny-logout', () => {
-  if(win !== null){
+// 登录进程与主进程间窗口的转换
+ipcMain.on('login-deny', () => {
+  if (win !== null) {
     win.hide()
     win = null
   }
@@ -142,8 +135,7 @@ ipcMain.on('login-deny-logout', () => {
 })
 
 ipcMain.on('login-access', () => {
-  if(loginWindow !== null){
-    // loginWindow.hide()
+  if (loginWindow !== null) {
     loginWindow.close()
     loginWindow = null
   }
@@ -151,32 +143,34 @@ ipcMain.on('login-access', () => {
   createWindow()
 })
 
+// 主进程窗口操作
 ipcMain.on('window-min', () => {
   win.minimize()
 })
 
 ipcMain.on('window-close', () => {
-  if(Dialog !== null){
+  if (Dialog !== null) {
     Dialog.hide()
   }
   win.hide();
 })
 
+// 登录窗口操作
 ipcMain.on('login-min', () => {
   loginWindow.minimize()
 })
 
 ipcMain.on('login-close', () => {
-  if(loginWindow !== null){
+  if (loginWindow !== null) {
     loginWindow.hide()
   }
   loginWindow.hide();
 })
 
 let Dialog = null
-ipcMain.on('openDialog', ()=>{
+ipcMain.on('openDialog', () => {
   console.log(Dialog);
-  if(Dialog !== null){
+  if (Dialog !== null) {
     Dialog.focus() // 存在 则聚焦
     return
   }
@@ -201,12 +195,12 @@ ipcMain.on('openDialog', ()=>{
   })
 
   // Dialog.loadURL('http://localhost:5173/#/log')
-  if(NODE_ENV === 'development'){
+  if (NODE_ENV === 'development') {
     Dialog.loadURL('http://localhost:5173/#/log')
-  }else{
+  } else {
     Dialog.loadFile(NODE_ENV === 'development'
-    ? 'http://localhost:5173/'
-    : path.join(__dirname,'dist/index.html'), {
+      ? 'http://localhost:5173/'
+      : path.join(__dirname, 'dist/index.html'), {
       hash: 'log'
     })
   }
@@ -214,15 +208,17 @@ ipcMain.on('openDialog', ()=>{
   // Dialog.webContents.openDevTools()
 
   ipcMain.on('log-window-min', () => {
-    if(Dialog !== null){
+    if (Dialog !== null) {
       Dialog.minimize()
     }
   })
-  
+
   ipcMain.on('log-window-close', () => {
-    if(Dialog !== null){
+    if (Dialog !== null) {
       Dialog.hide()
       Dialog = null
     }
   })
 })
+
+
