@@ -1,27 +1,25 @@
 <template>
-  <div id="wrapper">
-    <div id="loginBox">
-      <LoginTitleBar></LoginTitleBar>
-      <div id="logo">
-        <img src="../assets/airCondition.png" />
-        <p>中央空调集中管理平台</p>
+  <div id="loginBox">
+    <LoginTitleBar></LoginTitleBar>
+    <div id="logo">
+      <img src="../assets/airCondition.png" draggable="false" />
+      <p>中央空调集中管理平台</p>
+    </div>
+    <div id="main">
+      <div class="inputBox">
+        <p>用户名</p>
+        <el-input v-model="username" clearable />
       </div>
-      <div id="main">
-        <div class="inputBox">
-          <p>用户名</p>
-          <el-input v-model="username" clearable />
-        </div>
-        <div class="inputBox">
-          <p>密码</p>
-          <el-input v-model="password" clearable type="password" show-password />
-        </div>
-        <div id="checkBox">
-          <el-checkbox v-model="recordPassword" label="记住密码" size="large" />
-          <el-link>忘记密码？</el-link>
-        </div>
-        <div id="loginBtn">
-          <el-button color="#626aef" id="loginBtn" @click="tryLogin">登录</el-button>
-        </div>
+      <div class="inputBox">
+        <p>密码</p>
+        <el-input v-model="password" clearable type="password" show-password />
+      </div>
+      <div id="checkBox">
+        <el-checkbox v-model="recordPassword" label="记住密码" size="large" />
+        <el-link class="foo">忘记密码？</el-link>
+      </div>
+      <div id="loginBtn">
+        <el-button color="#626aef" id="loginBtn" @click="tryLogin">登录</el-button>
       </div>
     </div>
   </div>
@@ -70,6 +68,7 @@ export default {
           showClose: true,
           message: "输入的内容不能为空！",
           type: "error",
+          offset:360
         });
       } else {
         post(customUrl, postData)
@@ -112,6 +111,7 @@ export default {
           showClose: true,
           message: "用户名或密码错误！",
           type: "error",
+          offset:360
         });
       }
     }
@@ -145,61 +145,62 @@ export default {
 
 
 <style lang="scss" scoped>
-  #loginBox {
-    width: 27%;
-    max-width: 470px;
-    min-width: 400px;
-    height: 65%;
-    max-height: 550px;
-    min-height: 500px;
-    border-radius: 10px;
-    background-color: #fff;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+#loginBox {
+  width: 27%;
+  max-width: 470px;
+  min-width: 400px;
+  height: 65%;
+  max-height: 550px;
+  min-height: 500px;
+  border-radius: 10px;
+  background-color: #fff;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#logo {
+  user-select: none;
+  display: block;
+  margin-top: 30px !important;
+  margin-bottom: 30px !important;
+  -webkit-app-region: drag; 
+  img {
+    width: 20%;
   }
 
-  #logo {
+  p {
+    font-size: 27px;
+    letter-spacing: 2px;
+    color: rgb(1, 71, 175);
+  }
+}
+
+.inputBox {
+  width: 68%;
+  text-align: left;
+  margin: 10px auto !important;
+
+  p {
     display: block;
-    margin-top: 30px !important;
-    margin-bottom: 30px !important;
-
-    img {
-      width: 20%;
-    }
-    p {
-      font-size: 27px;
-      letter-spacing: 2px;
-      color: rgb(1, 71, 175);
-    }
+    margin-bottom: 5px !important;
+    user-select: none;
   }
+}
 
-  .inputBox {
-    width: 68%;
-    text-align: left;
-    margin: 10px auto !important;
+#checkBox {
+  width: 300px;
+  margin: 20px auto !important;
+  display: flex;
+  justify-content: space-between;
+}
 
-    p {
-      display: block;
-      margin-bottom: 5px !important;
-    }
-  }
-
-  #checkBox {
-    // border: 1px solid black;
-    width: 300px;
-    margin: 20px auto !important;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  #loginBtn {
-    margin: 20px auto !important;
-    width: 140px;
-    height: 45px;
-    font-size: 20px;
-    letter-spacing: 4px;
-  }
-
+#loginBtn {
+  margin: 20px auto !important;
+  width: 140px;
+  height: 45px;
+  font-size: 20px;
+  letter-spacing: 4px;
+}
 </style>
