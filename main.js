@@ -71,7 +71,7 @@ function createLoginWindow() {
     frame: false,
     autoHideMenuBar: true,
     transparent: true,
-    // resizable:false,
+    resizable:false,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false       //隔离取消掉
@@ -156,10 +156,6 @@ ipcMain.on('window-close', () => {
 })
 
 // 登录窗口操作
-ipcMain.on('login-min', () => {
-  loginWindow.minimize()
-})
-
 ipcMain.on('login-close', () => {
   if (loginWindow !== null) {
     loginWindow.hide()
