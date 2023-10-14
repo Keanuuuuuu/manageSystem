@@ -28,7 +28,7 @@
 <script>
 import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
-import { post, get } from "../utils/http.js";
+import { post } from "../utils/http.js";
 import { ElMessage } from "element-plus";
 import { JSEncrypt } from "jsencrypt";
 import { useIpcRenderer } from "@vueuse/electron";
@@ -68,7 +68,7 @@ export default {
           showClose: true,
           message: "输入的内容不能为空！",
           type: "error",
-          offset:360
+          offset: 360
         });
       } else {
         post(customUrl, postData)
@@ -100,9 +100,13 @@ export default {
         // 将用户数据存入 Vuex
         store.commit("setUserdata", userData);
 
-        // 登录成功后将 token 存入本地存储
-        const token = userData.token;
-        Estore.set("token", token);
+        // 只在第一次登录/token过期后/切换账号时 存入token
+        if (!Estore.get('token')) {
+          console.log('只在第一次登录/token过期后/切换账号时 存入token');
+          // 登录成功后将 token 存入本地存储
+          const token = userData.token;
+          Estore.set("token",token);
+        }
 
         // 跳转到 '/monitoring' 页面
         ipcRenderer.send("login-access");
@@ -111,7 +115,7 @@ export default {
           showClose: true,
           message: "用户名或密码错误！",
           type: "error",
-          offset:360
+          offset: 360
         });
       }
     }
@@ -165,7 +169,8 @@ export default {
   display: block;
   margin-top: 30px !important;
   margin-bottom: 30px !important;
-  -webkit-app-region: drag; 
+  -webkit-app-region: drag;
+
   img {
     width: 20%;
   }
