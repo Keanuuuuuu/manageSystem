@@ -119,6 +119,7 @@
       :value_two="value_two"
       :value_three="value_three"
       :num="num"
+      :selected="[...selected]"
       @updateDialogValue="value_one = $event"
       @updateDialogMode="value_two = $event"
       @updateDialogWind="value_three = $event"
@@ -151,6 +152,7 @@ import addDialog from '../components/addDialog.vue'
 import intelligentControl from '../components/intelligentControlDialog.vue'
 import MonitorDisplayHead from '../components/ControlComponents/Monitor_display_head.vue'
 import MonitorDisplayControl from '../components/ControlComponents/Monitor_display_control.vue'
+import { ElMessage } from "element-plus"
 
 export default{
   components: { 
@@ -223,20 +225,20 @@ export default{
             console.log('open', params, currentEl, bindingEl, e)
           }
         },
-        {
-          label: '实时控制',
-          tips: 'Edit',
-          fn: (params, currentEl, bindingEl, e) => {
-            // titleName.value = params.number + "号空调"
-            dialogVisible.value = true
-            add_dialogValue.value = false
-            // 展示对应的内部dialog时，要把别的设置为false
-            control_dialogValue.value = true
-            console.log(params.id)
-            store.commit('Current_control', params.id)
-            getAirconditionPost()
-          }
-        },
+        // {
+        //   label: '实时控制',
+        //   tips: 'Edit',
+        //   fn: (params, currentEl, bindingEl, e) => {
+        //     // titleName.value = params.number + "号空调"
+        //     dialogVisible.value = true
+        //     add_dialogValue.value = false
+        //     // 展示对应的内部dialog时，要把别的设置为false
+        //     control_dialogValue.value = true
+        //     console.log(params.id)
+        //     store.commit('Current_control', params.id)
+        //     getAirconditionPost()
+        //   }
+        // },
         {
           label: '删除节点',
           tips: 'Delete',
@@ -269,6 +271,7 @@ export default{
     let value_two = ref()
     let value_three = ref()
     let num = ref()
+    let selected = ref(new Set())
     let loading = ref(true)
     let titleChange = ref(null)
     const data = reactive([
@@ -461,9 +464,8 @@ export default{
       const res = await post('/getMachineStatusById',{
         id: "16"
       })
-      
-      // total.value = res.length
-      console.log("测试查询接口：",res.data);
+
+      // console.log("测试查询接口：",res.data);
       let obj = {
         id:'16'
       }
@@ -487,15 +489,15 @@ export default{
     }
 
     // 修改节点的POST请求
-    async function modifyNodePost(node) {
-      console.log(currentControlValue.value, node[0],node[1],node[3],node[2]);
+    async function modifyNodePost(selectedobj, res) {
+      console.log(selectedobj, res);
       const changeNode = await post('/controlMachine',
           {
-            "name":`${currentControlValue.value}`, 
-            "status": `${node[0]}`,
-            "mode": `${node[1]}`,
-            "temperature": `${node[3]}`,
-            "windSpeed": `${node[2]}`
+            "name":`${selectedobj}`, 
+            "status": `${res[0]}`,
+            "mode": `${res[1]}`,
+            "temperature": `${res[3]}`,
+            "windSpeed": `${res[2]}`
           }
       )
       console.log(changeNode)
@@ -545,24 +547,37 @@ export default{
     const userdataValue = computed(() => store.state.userdata)
     console.log('userdata:',userdataValue.value);
     function confirm() {
-      // console.log(switchValue.value, modeValue.value, windValue.value, temperatureValue.value)
+      console.log(switchValue.value, modeValue.value, windValue.value, temperatureValue.value)
       // 拿到数据后发送请求，后期需完善数据是否输入及格式检测
       let res = switchString(switchValue.value, modeValue.value, windValue.value, temperatureValue.value)
-      // console.log(res)
-      modifyNodePost(res)
 
       // 发送请求后关闭窗口
       dialogVisible.value = false
+      
+      if([...selected.value].length === 0){
+        ElMessage({
+          showClose: true,
+          message: "控制的空调数目为空或控制项不完整",
+          type: "warning",
+        });
+        return
+      }
+
+      for(let selectedobj of [...selected.value]){
+        modifyNodePost(selectedobj, res)
+      }
     }
 
     function cancel() {
       // 触发cancel dialog不关闭，数据清空
-      store.commit('Switch_control', '')
-      num.value = ''
-      console.log(num.value)
+      selected.value.clear()
+      // store.commit('Switch_control', '')
+      // num.value = ''
+      // console.log(num.value)
     }
 
     function close() {
+      selected.value.clear()
       dialogVisible.value = false
       control_dialogValue.value = false
       add_dialogValue.value = false
@@ -602,7 +617,9 @@ export default{
     }
 
     const handleSelectionChange = (ev) => { // 当选择项发生变化时会触发该事件
-      console.log(ev)
+      for(let evobj of ev){
+        selected.value.add(evobj.name)
+      }
     }
 
     const headerRowStyle = ({ row, rowIndex }) => { // 修改表头的回调函数
@@ -657,6 +674,7 @@ export default{
       value_two,
       value_three,
       num,
+      selected,
       tableData, // 定义列表内表格数据
       handleSelectionChange, // 当选择项发生变化时会触发该事件
       headerRowStyle, // 修改表头颜色的回调函数

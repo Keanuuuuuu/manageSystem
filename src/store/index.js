@@ -6,10 +6,10 @@ export default createStore({
     state: {
         currentControl:'', //标记当前正在控制内机的id
         number: '',
-        Switch: '',
-        Mode: '',
-        Wind: '',
-        Temperature: 16,
+        Switch: '开',
+        Mode: '制冷',
+        Wind: '自动',
+        Temperature: 25,
         userdata: null, //存储用户身份信息包括权限  1、2、3分别对应超级管理员、管理员和普通用户
     },
     mutations: {

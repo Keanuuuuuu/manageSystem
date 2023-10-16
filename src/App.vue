@@ -47,7 +47,7 @@ export default {
     onMounted(()=>{
       systemEventBus.$on('showDialog', (res)=>{
         if(res === "日志记载"){
-          console.log(res);
+          // console.log(res);
           ipcRenderer.send('openDialog',"日志记载")
         }
       })

@@ -29,7 +29,7 @@ export function switchString(...items) {
 
     res[3] = items[3]
 
-    res[4] = parseInt(items[4])
+    res[3] = parseInt(items[3])
 
     return res
 }

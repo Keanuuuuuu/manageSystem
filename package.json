@@ -45,6 +45,7 @@
     "@vueuse/electron": "^10.4.1",
     "concurrently": "^7.6.0",
     "cross-env": "^7.0.3",
+    "default-passive-events": "^2.0.0",
     "electron": "^23.1.1",
     "electron-builder": "^24.6.3",
     "jsencrypt": "^3.3.2",

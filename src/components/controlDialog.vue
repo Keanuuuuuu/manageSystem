@@ -1,5 +1,9 @@
 <template>
   <div class="contentDialog">
+    当前选中：
+    <div v-for="item in selected" :key="item.index">
+      {{ item }}
+    </div>
     <div class="control Switch_control">
       <span>开/关</span>
       <el-select 
@@ -51,7 +55,7 @@
       @change="Temperature_change"
       :modelValue="num"
       :min="16"
-      :max="25"
+      :max="30"
       controls-position="right"
       class="Temperature_select"
     />
@@ -66,16 +70,23 @@ export default {
   name:'controlDialog',
   props: {
     value_one: {
-      type: String
+      type: String,
+      default: "开"
     },
     value_two: {
-      type: String
+      type: String,
+      default: "制冷"
     },
     value_three: {
-      type: String
+      type: String,
+      default: "自动"
     },
     num: {
-      type: Number
+      type: Number,
+      default: 25
+    },
+    selected:{
+      type: Array
     }
   },
   setup(props, { emit }) {
@@ -138,7 +149,6 @@ export default {
 
     function Switch_change(event) {
       store.commit('Switch_control', event)
-      console.log(switchValue.value)
       emit('updateDialogValue', event)
     }
 
@@ -155,7 +165,6 @@ export default {
 
     function Temperature_change(event) {
       store.commit('Temperature_control', event)
-      console.log(event);
       emit('updateDialogNum', event)
     }
 
