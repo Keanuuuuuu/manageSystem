@@ -142,6 +142,7 @@
 
 import { post, get } from '../utils/http.js'
 import { switchString } from '../utils/digitalTransformation.js'
+import ConcurrencyRequest from '../utils/ConcurrencyRequest.js'
 import  Test  from '../utils/treeArr.js'
 import { reactive, toRaw } from 'vue'
 import { ref, onMounted, computed } from 'vue'
@@ -170,6 +171,11 @@ export default{
     
     let h = true
     const array = reactive([])
+    const tableData = reactive([])
+    const obj = reactive({
+      id: '16',
+      name: '16栋'
+    })
     const options = reactive({
         useLongPressInMobile: true,
         menuWrapperCss: {
@@ -456,19 +462,12 @@ export default{
       children: 'children',
       label: 'label',
     })
-    const tableData = reactive([ // 定义列表内表格数据
-    ])
 
     // 获取原始列表
     async function getAirconditionPost() {
       const res = await post('/getMachineStatusById',{
         id: "16"
       })
-
-      // console.log("测试查询接口：",res.data);
-      let obj = {
-        id:'16'
-      }
       array.value = res.data
       handleNodeClick(obj, array.value)
       loading.value = false
@@ -490,8 +489,9 @@ export default{
 
     // 修改节点的POST请求
     async function modifyNodePost(selectedobj, res) {
-      console.log(selectedobj, res);
-      const changeNode = await post('/controlMachine',
+      // console.log(selectedobj, res);
+      return new Promise((resolve, reject)=>{
+        post('/controlMachine',
           {
             "name":`${selectedobj}`, 
             "status": `${res[0]}`,
@@ -499,8 +499,12 @@ export default{
             "temperature": `${res[3]}`,
             "windSpeed": `${res[2]}`
           }
-      )
-      console.log(changeNode)
+        ).then((res)=>{
+          resolve(res)
+        },(resaon)=>{
+          reject(resaon)
+        })
+      })
     }
 
     // 页面挂载时刷新请求
@@ -545,9 +549,9 @@ export default{
     const windValue = computed(() => store.state.Wind)
     const temperatureValue = computed(() => store.state.Temperature)
     const userdataValue = computed(() => store.state.userdata)
-    console.log('userdata:',userdataValue.value);
+    // console.log('userdata:',userdataValue.value);
     function confirm() {
-      console.log(switchValue.value, modeValue.value, windValue.value, temperatureValue.value)
+      // console.log(switchValue.value, modeValue.value, windValue.value, temperatureValue.value)
       // 拿到数据后发送请求，后期需完善数据是否输入及格式检测
       let res = switchString(switchValue.value, modeValue.value, windValue.value, temperatureValue.value)
 
@@ -566,6 +570,8 @@ export default{
       for(let selectedobj of [...selected.value]){
         modifyNodePost(selectedobj, res)
       }
+
+      getAirconditionPost();
     }
 
     function cancel() {
@@ -605,11 +611,12 @@ export default{
       children: Array
     };
 
-    const handleNodeClick = (data, treeArr) => {
+    const handleNodeClick = (data) => {
+      obj.id = data.id;
+      obj.name = data.name;
       // 想在下次点击事件触发前把数组删除干净，不过当table数组过长应该性能不好
       let res = Test(data.id, array.value)
       titleChange.value = data.name
-      // console.log('111',data.id, treeArr, res);
       tableData.splice(0, tableData.length);
       res.forEach(e => {
         tableData.push(e);

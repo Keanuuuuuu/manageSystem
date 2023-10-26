@@ -8,13 +8,13 @@ export function switchString(...items) {
     }
 
     if(items[1] === '制冷'){
-        res[1] = 1
-    }else if(items[1] === '制热'){
         res[1] = 2
+    }else if(items[1] === '制热'){
+        res[1] = 1
     }else if(items[1] === '送风'){
-        res[1] = 3
-    }else if(items[1] === '除湿'){
         res[1] = 4
+    }else if(items[1] === '除湿'){
+        res[1] = 8
     }
 
     if(items[2] === '自动'){
