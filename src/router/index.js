@@ -4,6 +4,7 @@ import Monitoring from '../pages/monitoring.vue'
 import Log from '../pages/log.vue'
 import ID from '../pages/id.vue'
 import Login from '../pages/login.vue'
+import PWD from '../pages/findPWD.vue'
 
 const routes = [
   {
@@ -29,6 +30,10 @@ const routes = [
   {
     path:'/login',
     component:Login
+  },
+  {
+    path:'/findPWD',
+    component:PWD
   },
   // ...其他路由配置
 ]

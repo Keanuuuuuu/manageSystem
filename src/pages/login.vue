@@ -16,7 +16,7 @@
       </div>
       <div id="checkBox">
         <el-checkbox v-model="recordPassword" label="记住密码" size="large" />
-        <el-link class="foo">忘记密码？</el-link>
+        <el-link @click="findPWD">忘记密码？</el-link>
       </div>
       <div id="loginBtn">
         <el-button color="#626aef" id="loginBtn" @click="tryLogin">登录</el-button>
@@ -120,6 +120,11 @@ export default {
       }
     }
 
+    // 跳转至找回密码
+    function findPWD(){
+      ipcRenderer.send("findPWD-open")
+    }
+
     // 记住密码  在组件挂载时从本地存储加载保存的凭据并自动登录
     onMounted(() => {
       recordPassword.value = Estore.get('recordPassword')
@@ -140,7 +145,8 @@ export default {
       username,
       password,
       recordPassword,
-      tryLogin
+      tryLogin,
+      findPWD
     };
   },
 };
@@ -150,12 +156,8 @@ export default {
 
 <style lang="scss" scoped>
 #loginBox {
-  width: 27%;
-  max-width: 470px;
-  min-width: 400px;
-  height: 65%;
-  max-height: 550px;
-  min-height: 500px;
+  width: 395px;
+  height: 505px;
   border-radius: 10px;
   background-color: #fff;
   position: absolute;
@@ -167,8 +169,8 @@ export default {
 #logo {
   user-select: none;
   display: block;
-  margin-top: 30px !important;
-  margin-bottom: 30px !important;
+  margin-top: 30px;
+  margin-bottom: 30px;
   -webkit-app-region: drag;
 
   img {
@@ -182,27 +184,31 @@ export default {
   }
 }
 
+#main{
+  margin-top: 35px;
+}
+
 .inputBox {
   width: 68%;
   text-align: left;
-  margin: 10px auto !important;
+  margin: 10px auto;
 
   p {
     display: block;
-    margin-bottom: 5px !important;
+    margin-bottom: 5px;
     user-select: none;
   }
 }
 
 #checkBox {
-  width: 300px;
+  width: 260px;
   margin: 20px auto !important;
   display: flex;
   justify-content: space-between;
 }
 
 #loginBtn {
-  margin: 20px auto !important;
+  margin: 22px auto 20px;
   width: 140px;
   height: 45px;
   font-size: 20px;

@@ -11,6 +11,11 @@ const { app, BrowserWindow, ipcMain, Menu } = require('electron')
 const path = require('path')
 const NODE_ENV = process.env.NODE_ENV
 
+let mainWindow = null  // 保持对window对象的全局引用，如果不这么做的话，当JavaScript对象被垃圾回收的时候，window对象将会自动的关闭
+let loginWindow = null
+let PWDWindow = null
+let Dialog = null
+
 // 持久化保存数据的库和初始化
 const Store = require('electron-store');
 Store.initRenderer()
@@ -20,9 +25,8 @@ console.log(NODE_ENV);
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = true;
 
 // 创建主进程窗口对象
-let win = null  // 保持对window对象的全局引用，如果不这么做的话，当JavaScript对象被垃圾回收的时候，window对象将会自动的关闭
-function createWindow() {
-  win = new BrowserWindow({
+function createMainWindow() {
+  mainWindow = new BrowserWindow({
     width: 2000,
     height: 1000,
     minHeight: 600,
@@ -41,11 +45,11 @@ function createWindow() {
     // icon: './public/favicon.ico', // 设置一个图片路径，可以自定义当前应用的显示图标
     title: '中央空调管理', // 自定义当前应用的标题
   })
-  // win.setAspectRatio(1) //设置窗口保持的比例
+  // mainWindow.setAspectRatio(1) //设置窗口保持的比例
   if (NODE_ENV === 'development') {
-    win.loadURL('http://localhost:5173/#/monitoring')
+    mainWindow.loadURL('http://localhost:5173/#/monitoring')
   } else {
-    win.loadFile(NODE_ENV === 'development'
+    mainWindow.loadFile(NODE_ENV === 'development'
       ? 'http://localhost:5173/'
       : path.join(__dirname, 'dist/index.html'), {
       hash: 'monitoring'
@@ -54,20 +58,19 @@ function createWindow() {
 
 
   // 当 window 被关闭，这个事件会被触发。
-  win.on('closed', () => {
+  mainWindow.on('closed', () => {
     // 取消引用 window 对象，如果你的应用支持多窗口的话，
     // 通常会把多个 window 对象存放在一个数组里面，
     // 与此同时，你应该删除相应的元素。
-    win = null
+    mainWindow = null
   })
 }
 
 // 创建登录窗口对象
-let loginWindow = null
 function createLoginWindow() {
   loginWindow = new BrowserWindow({
     width: 500,
-    height: 500,
+    height: 510,
     frame: false,
     autoHideMenuBar: true,
     transparent: true,
@@ -92,18 +95,44 @@ function createLoginWindow() {
 
   loginWindow.on('closed', () => {
     loginWindow = null
-    // if (loginWindow === null) {
-    //   createWindow()
-    // }
   })
 }
 
+// 创建忘记密码窗口对象
+function createfindPWDWindow() {
+  PWDWindow = new BrowserWindow({
+    width: 2000,
+    height: 1000,
+    minHeight: 600,
+    minWidth: 1000,
+    frame: false, // 用于自定义menu，设置为false可以将默认的菜单栏隐藏，包括叉、最小化、拖动与放大缩小
+    autoHideMenuBar: true, // 在显示默认菜单的同时，隐藏那些Flie等菜单
+    webPreferences: {
+      nodeIntegration: true,        //是否可以使用node.js的API
+      contextIsolation: false       //隔离取消掉，把主进程和渲染进程打通
+    },
+    title: '忘记密码', // 自定义当前应用的标题
+  })
+  if (NODE_ENV === 'development') {
+    PWDWindow.loadURL('http://localhost:5173/#/findPWD')
+  } else {
+    PWDWindow.loadFile(NODE_ENV === 'development'
+      ? 'http://localhost:5173/'
+      : path.join(__dirname, 'dist/index.html'), {
+      hash: 'monitoring'
+    })
+  }
+
+  // 当 window 被关闭，这个事件会被触发。
+  PWDWindow.on('closed', () => {
+    PWDWindow = null
+  })
+}
 
 // app相当于整个应用程序，拥有不同的生命周期
 // Electron 会在初始化后并准备
 // 创建浏览器窗口时，调用这个函数。
 // 部分 API 在 ready 事件触发后才能使用。
-// app.on('ready', createWindow)
 
 app.on('ready', createLoginWindow)
 
@@ -119,18 +148,17 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   // 在macOS上，当单击dock图标并且没有其他窗口打开时，
   // 通常在应用程序中重新创建一个窗口。
-  if (win === null) {
-    createWindow()
+  if (mainWindow === null) {
+    createMainWindow()
   }
 })
 
 // 登录进程与主进程间窗口的转换
 ipcMain.on('login-deny', () => {
-  if (win !== null) {
-    win.hide()
-    win = null
+  if (mainWindow !== null) {
+    mainWindow.close()
+    mainWindow = null
   }
-  console.log(1);
   createLoginWindow()
 })
 
@@ -139,20 +167,19 @@ ipcMain.on('login-access', () => {
     loginWindow.close()
     loginWindow = null
   }
-  console.log(2);
-  createWindow()
+  createMainWindow()
 })
 
 // 主进程窗口操作
 ipcMain.on('window-min', () => {
-  win.minimize()
+  mainWindow.minimize()
 })
 
 ipcMain.on('window-close', () => {
   if (Dialog !== null) {
     Dialog.hide()
   }
-  win.hide();
+  mainWindow.hide();
 })
 
 // 登录窗口操作
@@ -163,7 +190,28 @@ ipcMain.on('login-close', () => {
   loginWindow.hide();
 })
 
-let Dialog = null
+// 找回密码窗口操作
+ipcMain.on('findPWD-open',()=>{
+  if (loginWindow !== null) {
+    loginWindow.close()
+    loginWindow = null
+  }
+  createfindPWDWindow()
+})
+
+ipcMain.on('findPWD-min', () => {
+  PWDWindow.minimize()
+})
+
+ipcMain.on('findPWD-close', () => {
+  if (PWDWindow !== null) {
+    PWDWindow.close()
+    PWDWindow = null
+  }
+  createLoginWindow()
+})
+
+
 ipcMain.on('openDialog', () => {
   console.log(Dialog);
   if (Dialog !== null) {

@@ -17,13 +17,8 @@ const instance = axios.create({
 // 请求拦截器 在发送请求之前做些什么
 instance.interceptors.request.use((config) => {
   //鉴权函数 token失效后跳转至login
-  if (config.auth) { // 如果设置了标志，直接返回配置，不触发拦截器
-    console.log(config);
-    return config
-  } else {
-    authorizeGet()
-    return config
-  }
+  authorizeGet()
+  return config
 },
   error => {
     // 对请求错误做些什么

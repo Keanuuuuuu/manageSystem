@@ -7,6 +7,10 @@
     <router-view/>
   </template>
 
+  <template v-else-if="$route.path == '/findPWD' ">
+    <router-view/>
+  </template>
+
   <template v-else>
     <el-config-provider :locale="locale">
       <div class="body">
@@ -70,7 +74,6 @@ export default {
   // 如果不设置清除样式无法填满背景
 }
 
-// @import url("//unpkg.com/element-ui@2.15.13/lib/theme-chalk/index.css");
 .body {
   width: 100%;
   position: absolute;
