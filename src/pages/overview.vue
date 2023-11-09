@@ -17,7 +17,7 @@
       </el-select>
       <el-button>手动刷新数据</el-button>
     </div>
-    <el-row :gutter="30">
+    <el-row :gutter="30" id="data">
       <el-col :span="6">
         <div class="ep-bg-purple short" id="hourse">
           <h2>房间</h2>
@@ -32,7 +32,7 @@
         ><div class="grid-content ep-bg-purple" id="data">
           <h2>中央空调内机运行信息</h2>
           <el-icon class="icon"><Cpu /></el-icon>
-          <el-table class="center" :data="tableData" style="width: 95%" height="420">
+          <el-table class="center" :data="tableData" style="width: 95%;height: 80%;">
             <el-table-column prop="date" label="房间" width="120" />
             <el-table-column prop="name" label="内机" width="100" />
             <el-table-column prop="state" label="开/关" width="100" />
@@ -74,11 +74,17 @@ export default {
 <style lang="scss" scoped>
 #container {
   width: 90%;
+  height: 90%;
+}
+
+#data {
+  position: relative;
 }
 
 .center{
+  top: 45%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%,-50%);
   position: relative;
 }
 
@@ -97,12 +103,12 @@ export default {
 }
 
 .grid-content {
-  height: 520px;
+  height: 70vh;
   position: relative;
 }
 
 .short {
-  height: 250px;
+  height: 34vh;
   position: relative;
 }
 .ep-bg-purple.short:nth-child(2) {

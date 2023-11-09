@@ -20,6 +20,7 @@ function authGet(url) {
 
 // 封装的方法，发送带有 Token 的 GET 请求
 export async function authorizeGet() {
+  console.log('进入鉴权');
   const token = Estore.get('token')
   // token有值
   if (token) {
@@ -27,6 +28,7 @@ export async function authorizeGet() {
     const apiUrlTemplate = 'http://lab.zhongyaohui.club/login/{token}';
     const apiUrl = apiUrlTemplate.replace('{token}', token);
     await authGet(apiUrl).then((res) => {
+      console.log(res);
       // token失效则清空token凭据并跳转至登录页
       if (res.code === 21401) {
         Estore.set("token", null);

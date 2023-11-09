@@ -1,3 +1,11 @@
+<!-- 
+* @description: login登录窗口右上角的关闭组件
+* @fileName: index.vue
+* @author: 文洋
+* @date: 2023-11-08
+* @version: 1.0
+!-->
+
 <template>
   <div class="main-top">
       <div class="right">

@@ -5,12 +5,8 @@
         <router-link class="list-group-item overview" active-class="active" to="/overview">总览</router-link>
         <router-link class="list-group-item monitoring" active-class="active" to="/monitoring"
           v-if="monitoring">内机监控</router-link>
-        <!-- <router-link class="list-group-item log" active-class="active" to="/log">日志记载</router-link>
-        <router-link class="list-group-item id" active-class="active" to="/id">账号管理</router-link> -->
         <el-tooltip class="box-item" effect="dark" content="切换账号" placement="left-end">
-          <el-icon id="power" @click="logout"> 
-            <Switch />
-          </el-icon>
+          <el-icon id="power" @click="logout"><Switch /></el-icon>
         </el-tooltip>
       </div>
       <router-view></router-view>
@@ -108,7 +104,7 @@ export default {
   .bar {
     border-bottom: 1px solid black;
     box-sizing: border-box;
-    height: 10vh;
+    height: 60px;
     // 各个路由界面的高度百分比 + 顶部路由按键的高度百分比 = 100% 即整个arti组件的高度
   }
 }
