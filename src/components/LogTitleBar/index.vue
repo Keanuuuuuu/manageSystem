@@ -41,7 +41,7 @@ export default{
   min-width: 600px;
   height: 35px;
   // background-color: #3098e2;
-  background-color: rgb(98,106,239);
+  background-color: #2f317c;
   -webkit-app-region: drag; //事件处可以禁用拖拽区域
   color: white;
   .left {
