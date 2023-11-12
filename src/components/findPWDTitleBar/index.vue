@@ -1,8 +1,15 @@
+<!-- 
+* @description: 找回密码页面上方的自定义titleBar 
+* @fileName: index.vue
+* @author: 文洋
+* @date: 2023-11-09
+* @version:1.0 
+!-->
 <template>
     <div class="main-top">
       <div>
         <div class="left">
-          <span>忘记密码</span>
+          <span>找回密码</span>
         </div>
         <div class="right">
           <span class="window-min" @click="windowMin">
@@ -42,7 +49,7 @@
   .main-top {
     width: 100%;
     min-width: 1200px;
-    background-color: rgb(98,106,239);
+    background-color: #2f317c;
     -webkit-app-region: drag; //事件处可以禁用拖拽区域
     display: flex;
     flex-direction: column;
@@ -63,6 +70,7 @@
         display: inline-block;
         text-align: center;
         -webkit-app-region: no-drag; //事件处可以禁用拖拽区域
+        color: white;
       }
       .window-min:hover {
         // background-color: rgb(81, 164, 219);

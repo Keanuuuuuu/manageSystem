@@ -19,7 +19,7 @@
         <el-link @click="findPWD">忘记密码？</el-link>
       </div>
       <div id="loginBtn">
-        <el-button color="#626aef" id="loginBtn" @click="tryLogin">登录</el-button>
+        <el-button color="#2f349a" id="loginBtn" @click="tryLogin">登录</el-button>
       </div>
     </div>
   </div>
