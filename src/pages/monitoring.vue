@@ -541,6 +541,15 @@ export default{
       }
     }
 
+    const deleteDialogfn = (value) => {
+      console.log('deleteDialogSubmit',value);
+      if(value.nodeProperties === "房间"){
+        // 调用删除房间的接口
+      }else if(value.nodeProperties === "设备"){
+        // 调用删除内机的接口
+      }
+    }
+
     return {
       getAirconditionPost,
       modifyNode,
@@ -588,6 +597,7 @@ export default{
       handleSelectionChange, // 当选择项发生变化时会触发该事件
       headerRowStyle, // 修改表头颜色的回调函数
       addDialogfn,
+      deleteDialogfn,
       addType, // 用来判断添加节点时添加房间还是设备
       deleteType, // 用来删除节点
       deleteRoom,

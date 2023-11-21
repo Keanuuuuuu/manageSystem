@@ -64,9 +64,7 @@ const ruleFormRoom = reactive({
 
 onMounted(()=>{
   // 这里要根据用户右键的位置来判断此次是添加房间还是设备
-  ruleFormRoom.nodeProperties = props.addType.value
-  ruleFormRoom.__buildingId = props.addType.__buildingId
-  ruleFormRoom.__roomId = props.addType.__roomId
+  ruleFormRoom.nodeProperties = props.deleteType.value
 })
 
 const rules = reactive({
@@ -98,7 +96,7 @@ const rules = reactive({
 })
 
 watchEffect(()=>{
-  ruleFormRoom.nodeProperties = props.addType.value
+  ruleFormRoom.nodeProperties = props.deleteType.value
   if(ruleFormRoom.nodeProperties === "房间"){
     rules._machineId[0].required = false
     rules._machineName[0].required = false
@@ -111,8 +109,6 @@ watchEffect(()=>{
   }
   
   if(ruleFormRoom.nodeProperties === "设备"){
-    ruleFormRoom.__buildingId = props.addType.__buildingId
-    ruleFormRoom.__roomId = props.addType.__roomId
     rules._machineId[0].required = true
     rules._machineName[0].required = true
     rules._gatewayId[0].required = true
