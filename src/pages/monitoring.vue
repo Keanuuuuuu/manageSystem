@@ -15,7 +15,7 @@
                 ...options_tree
               }"
             >
-              <span>{{ node.label }}</span>
+              <span>{{ data.label }}</span>
               <div v-show="!data.children">
                 <span>
                   <span>  --color  </span>
@@ -127,20 +127,37 @@
     ></control-dialog>
     <add-dialog
       v-show="add_dialogValue"
+      :addType="addType"
       @addDialogSubmit="addDialogfn"
     ></add-dialog>
+    <delete-dialog
+      v-show="delete_dialogValue"
+      :deleteType="deleteType"
+      @deleteDialogSubmit="deleteDialogfn"
+    ></delete-dialog>
     <intelligent-control
       v-show="intelligent_controlValue"
     ></intelligent-control>
-    <el-button @click="cancel">取消</el-button>
-    <el-button @click="confirm">确定</el-button>
+    <el-button 
+      v-show="control_dialogValue || intelligent_controlValue"
+      @click="cancel"
+    >
+      取消
+    </el-button>
+    <el-button
+      v-show="control_dialogValue || intelligent_controlValue"
+      @click="confirm"
+    >
+      确定
+    </el-button>
   </el-dialog>
 
 </template>
   
 <script>
 
-import { post, get } from '../utils/http.js'
+import { post, get, postTwo, postThree } from '../utils/http.js'
+import { copyPost, copyGet, copyPostTwo, copyDel, copyPut } from '../utils/http copy.js'
 import { switchString } from '../utils/digitalTransformation.js'
 import ConcurrencyRequest from '../utils/ConcurrencyRequest.js'
 import  Test  from '../utils/treeArr.js'
@@ -150,6 +167,7 @@ import { MouseMenuDirective, MouseMenuCtx } from '@howdyjs/mouse-menu'
 import { mapMutations, mapState, useStore } from 'vuex'
 import controlDialog from '../components/controlDialog.vue'
 import addDialog from '../components/addDialog.vue'
+import deleteDialog from '../components/deleteDialog/index.vue'
 import intelligentControl from '../components/intelligentControlDialog.vue'
 import MonitorDisplayHead from '../components/ControlComponents/Monitor_display_head.vue'
 import MonitorDisplayControl from '../components/ControlComponents/Monitor_display_control.vue'
@@ -160,7 +178,8 @@ export default{
     controlDialog, 
     MonitorDisplayHead, 
     MonitorDisplayControl, 
-    addDialog, 
+    addDialog,
+    deleteDialog,
     intelligentControl 
   },
   name:'monitoring',
@@ -169,52 +188,12 @@ export default{
   },
   setup({ emit }) {
     
-    let h = true
-    const array = reactive([])
+    const array = ref([])
     const tableData = reactive([])
     const obj = reactive({
       id: '16',
       name: '16栋'
     })
-    const options = reactive({
-        useLongPressInMobile: true,
-        menuWrapperCss: {
-          background: "#FFFFFF"
-        },
-        menuItemCss: {
-
-        },
-        menuList: [
-          {
-            label: '添加节点',
-            tips: 'Add',
-            fn: (params, currentEl, bindingEl, e) => console.log('open', params, currentEl, bindingEl, e)
-          },
-          {
-            label: '修改节点',
-            tips: 'Edit',
-            fn: (params, currentEl, bindingEl, e) => {
-              titleName.value = params.number + "号空调"
-              dialogVisible.value = true
-              add_dialogValue.value = false
-              control_dialogValue.value = true
-              // 展示弹窗
-              console.log(params.number)
-              store.commit('number_control', params.number)
-            }
-          },
-          {
-            label: '删除节点',
-            tips: 'Delete',
-            fn: (params, currentEl, bindingEl, e) => console.log('delete', params, currentEl, bindingEl, e)
-          },
-          {
-            label: '智能控制',
-            tips: 'Control',
-            fn: (params, currentEl, bindingEl, e) => console.log('rename', params, currentEl, bindingEl, e)
-          }
-        ]
-      })
     const options_tree = reactive({
       useLongPressInMobile: true,
       menuWrapperCss: {
@@ -231,35 +210,58 @@ export default{
             console.log('open', params, currentEl, bindingEl, e)
           }
         },
-        // {
-        //   label: '实时控制',
-        //   tips: 'Edit',
-        //   fn: (params, currentEl, bindingEl, e) => {
-        //     // titleName.value = params.number + "号空调"
-        //     dialogVisible.value = true
-        //     add_dialogValue.value = false
-        //     // 展示对应的内部dialog时，要把别的设置为false
-        //     control_dialogValue.value = true
-        //     console.log(params.id)
-        //     store.commit('Current_control', params.id)
-        //     getAirconditionPost()
-        //   }
-        // },
         {
           label: '删除节点',
           tips: 'Delete',
-          fn: (params) => console.log('delete', params)
+          fn: (params) =>{
+            if (params.id.length === 6 ) {
+              delteType.value = "房间"
+            }else if(params.id.length === 8){
+              deleteType.value = "设备"
+              // addType.__buildingId = params.id.slice(0,2)
+              // addType.__roomId = params.id.slice(0,6)
+            }else if(params.id.length === 2){
+              ElMessage({
+                showClose: true,
+                message: "楼栋节点不支持删除操作",
+                type: "warning",
+              });
+              return ;
+            }
+            console.log(params)
+            dialogVisible.value = true
+            delete_dialogValue.value = true
+            // 展示对应的内部dialog时，要把别的设置为false
+            control_dialogValue.value = false
+            add_dialogValue.value = false
+            // 增加节点后刷新
+          }
         },
         {
           label: '新增节点',
           tips: 'Add',
           // hidden: h,
           fn: (params, currentEl, bindingEl, e) => { 
+            if (params.id.length === 2 || params.id.length === 4 ) {
+              addType.value = "房间"
+            }else if(params.id.length === 6){
+              addType.value = "设备"
+              addType.__buildingId = params.id.slice(0,2)
+              addType.__roomId = params.id.slice(0,6)
+            }else if(params.id.length === 8){
+              ElMessage({
+                showClose: true,
+                message: "设备不支持添加节点",
+                type: "warning",
+              });
+              return ;
+            }
             console.log('rename', params, currentEl, bindingEl, e)
             dialogVisible.value = true
             add_dialogValue.value = true
             // 展示对应的内部dialog时，要把别的设置为false
             control_dialogValue.value = false
+            delete_dialogValue.value = false
             // 增加节点后刷新
           }
         }
@@ -268,6 +270,7 @@ export default{
     let dialogVisible = ref(false)
     let control_dialogValue = ref(false)
     let add_dialogValue = ref(false)
+    let delete_dialogValue = ref(false)
     let intelligent_controlValue = ref(false)
     let titleName = ref('')
     let total = ref(100)
@@ -280,182 +283,21 @@ export default{
     let selected = ref(new Set())
     let loading = ref(true)
     let titleChange = ref(null)
-    const data = reactive([
+    let addType = reactive({
+      value:null,
+      __buildingId:1,
+      __roomId:1
+    })
+    let deleteType = reactive({
+      value: null,
+    })
+    let data = ref([
       {
-        id:'16',
-        label: '内机监控',
+        id:'内机监控',
+        label: '内机监控2',
         name:'',
         children: [
-          {
-            id:'16',
-            label: '16',
-            name: '16栋',
-            children: [
-              {
-                id:'16_201',
-                label: '16_201',
-                name: '16栋16_201室',
-                children: [
-                  {
-                    id:'16_201_1',
-                    label: '16_201_1',
-                    name: '16栋16_201室16_201_1',
-                  },
-                  {
-                    id:'16_201_2',
-                    label: '16_201_2',
-                    name: '16栋16_201室16_201_2',
-                  },
-                  {
-                    id:'16_201_3',
-                    label: '16_201_3',
-                    name: '16栋16_201室16_201_3',
-                  }
-                ]
-              },
-              {
-                id:'16_202',
-                label: '16_202',
-                name: '16栋16_202室',
-                children: [
-                  {
-                    id:'16_202_1',
-                    label: '16_202_1',
-                    name: '16栋16_202室16_202_1',
-                  },
-                  {
-                    id:'16_202_2',
-                    label: '16_202_2',
-                    name: '16栋16_202室16_202_2',
-                  },
-                  {
-                    id:'16_202_3',
-                    label: '16_202_3',
-                    name: '16栋16_202室16_202_3',
-                  },
-                  {
-                    id:'16_202_4',
-                    label: '16_202_4',
-                    name: '16栋16_202室16_202_4',
-                  }
-                ]
-              },
-              {
-                id:'16_203',
-                label: '16_203',
-                name: '16栋16_203室',
-                children: [
-                  {
-                    id:'16_203_1',
-                    label: '16_203_1',
-                    name: '16栋16_203室16_203_1',
-                  },
-                  {
-                    id:'16_203_2',
-                    label: '16_203_2',
-                    name: '16栋16_203室16_203_2',
-                  },
-                  {
-                    id:'16_203_3',
-                    label: '16_203_3',
-                    name: '16栋16_203室16_203_3',
-                  }
-                ]
-              },
-              {
-                id:'16_204',
-                label: '16_204',
-                name: '16栋16_204室',
-                children: [
-                  {
-                    id:'16_204_1',
-                    label: '16_204_1',
-                    name: '16栋16_204室16_204_1',
-                  },
-                  {
-                    id:'16_204_2',
-                    label: '16_204_2',
-                    name: '16栋16_204室16_204_2',
-                  },
-                  {
-                    id:'16_204_3',
-                    label: '16_204_3',
-                    name: '16栋16_204室16_204_3',
-                  }
-                ]
-              },
-              {
-                id:'16_205',
-                label: '16_205',
-                name: '16栋16_205室',
-                children: [
-                  {
-                    id:'16_205_1',
-                    label: '16_205_1',
-                    name: '16栋16_205室16_205_1',
-                  },
-                  {
-                    id:'16_205_2',
-                    label: '16_205_2',
-                    name: '16栋16_205室16_205_2',
-                  },
-                  {
-                    id:'16_205_3',
-                    label: '16_205_3',
-                    name: '16栋16_205室16_205_3',
-                  },
-                ]
-              },
-              {
-                id:'16_206',
-                label: '16_206',
-                name: '16栋16_206室',
-                children: [
-                  {
-                    id:'16_206_1',
-                    label: '16_206_1',
-                    name: '16栋16_206室16_206_1',
-                  },
-                  {
-                    id:'16_206_2',
-                    label: '16_206_2',
-                    name: '16栋16_206室16_206_2',
-                  },
-                  {
-                    id:'16_206_3',
-                    label: '16_206_3',
-                    name: '16栋16_206室16_206_3',
-                  },
-                  {
-                    id:'16_206_4',
-                    label: '16_206_4',
-                    name: '16栋16_206室16_206_4',
-                  },
-                  {
-                    id:'16_206_5',
-                    label: '16_206_5',
-                    name: '16栋16_206室16_206_5',
-                  },
-                  {
-                    id:'16_206_6',
-                    label: '16_206_6',
-                    name: '16栋16_206室16_206_6',
-                  },
-                  {
-                    id:'16_206_7',
-                    label: '16_206_7',
-                    name: '16栋16_206室16_206_7',
-                  },
-                  {
-                    id:'16_206_8',
-                    label: '16_206_8',
-                    name: '16栋16_206室16_206_8',
-                  },
-                ]
-              }
-            ],
-          },
-        ],
+        ]
       },
     ])
     const defaultProps = reactive({
@@ -465,12 +307,18 @@ export default{
 
     // 获取原始列表
     async function getAirconditionPost() {
-      const res = await post('/getMachineStatusById',{
+      const res = await copyPost('/machinestate',{
         id: "16"
       })
+      console.log(res);
       array.value = res.data
       handleNodeClick(obj, array.value)
       loading.value = false
+    }
+
+    async function getTreeArr(){
+      const res = await copyPost('/leftbar')
+      data.value = res.data
     }
 
     // 获取所有的IP
@@ -487,29 +335,75 @@ export default{
       console.log("查询设备下的内机数量:",res);
     }
 
-    // 修改节点的POST请求
+    // 修改内机状态的POST请求
     async function modifyNodePost(selectedobj, res) {
-      // console.log(selectedobj, res);
+      console.log(selectedobj, res);
       return new Promise((resolve, reject)=>{
-        post('/controlMachine',
+        copyPostTwo('/controlMachine',
           {
-            "name":`${selectedobj}`, 
+            "name":selectedobj, 
             "status": `${res[0]}`,
             "mode": `${res[1]}`,
             "temperature": `${res[3]}`,
             "windSpeed": `${res[2]}`
           }
-        ).then((res)=>{
+        ).then(async (res)=>{
+          console.log(res);
+          await getAirconditionPost();
           resolve(res)
-        },(resaon)=>{
-          reject(resaon)
+        },async (resaon)=>{
+          reject(resaon);
+          await getAirconditionPost();
         })
       })
+    }
+
+    // 添加房间
+    const addRoom = async (value)=> {
+      const res = await copyPut('/room',{
+        "buildingId": value.BuildingName, //楼栋id
+        "id": value.roomName, //房间id
+        "label": value.roomName //房间label
+      })
+      await getTreeArr()
+      console.log("添加房间:",res);
+    }
+
+    // 删除房间
+    const deleteRoom = async (value)=>{
+      const res = await copyDel('/machine',{
+        "machineId": "16_201_4", //内机的id
+        "roomId":"16_201" //所属房间的id
+      })
+      await getTreeArr()
+      console.log(res);
+    }
+
+    // 添加设备
+    const addDevice = async (value)=>{
+      const res = await copyPut('/machine',{
+        "machineId": value._machineId, //内机id（必填，让用户填写）
+        "machineName": value._machineName, //内机名称/label（必填，让用户填写）
+        "gatewayId": value._gatewayId, //所属网关id（必填，让用户填写）
+        "deviceId": value._deviceId, //所属设备id（必填，让用户填写）
+        "deviceOrder": +value._deviceOrder, //所属设备地址（必填，让用户填写）
+        "machineOrder": +value._machineOrder, //内机地址（必填，让用户填写）
+        "roomId": value.__roomId, //所属房间id（必填，前端自带，不让用户填）
+        "buildingId": value.__buildingId, //所属楼栋id（必填，前端自带，不让用户填）
+        "privateGatewayIp": value.privateGatewayIp, //私有网关ip（非必填，让用户填写）
+        "belongToGroup": value.belongToGroup, //所属机组（非必填，让用户填写）
+        "headName": value.headName, //负责人名称（非必填，让用户填写）
+        "headPhone": value.headPhone, //负责人电话（非必填，让用户填写）
+        "headEmail": value.headEmail, //负责人邮箱（非必填，让用户填写）
+        "notes": value.notes, //备注（非必填，让用户填写）
+      })
+      console.log(res);
     }
 
     // 页面挂载时刷新请求
     onMounted(() => {
       getAirconditionPost()
+      getTreeArr()
     })
 
     // 获取原始数组列表后，根据故障码渲染内机故障颜色
@@ -567,11 +461,12 @@ export default{
         return
       }
 
-      for(let selectedobj of [...selected.value]){
-        modifyNodePost(selectedobj, res)
-      }
+      modifyNodePost([...selected.value], res)
+      // for(let selectedobj of [...selected.value]){
+      //   modifyNodePost(selectedobj, res)
+      // }
 
-      getAirconditionPost();
+      // getAirconditionPost();
     }
 
     function cancel() {
@@ -586,6 +481,7 @@ export default{
       selected.value.clear()
       dialogVisible.value = false
       control_dialogValue.value = false
+      delete_dialogValue.value = false
       add_dialogValue.value = false
       intelligent_controlValue.value = false
     }
@@ -616,6 +512,7 @@ export default{
       obj.name = data.name;
       // 想在下次点击事件触发前把数组删除干净，不过当table数组过长应该性能不好
       let res = Test(data.id, array.value)
+      console.log(res);
       titleChange.value = data.name
       tableData.splice(0, tableData.length);
       res.forEach(e => {
@@ -625,7 +522,7 @@ export default{
 
     const handleSelectionChange = (ev) => { // 当选择项发生变化时会触发该事件
       for(let evobj of ev){
-        selected.value.add(evobj.name)
+        selected.value.add(evobj.id)
       }
     }
 
@@ -636,7 +533,12 @@ export default{
     }
 
     const addDialogfn = (value) => {
-      console.log('fuqin',value);
+      console.log('addDialogSubmit',value);
+      if(value.nodeProperties === "房间"){
+        addRoom(value)
+      }else if(value.nodeProperties === "设备"){
+        addDevice(value)
+      }
     }
 
     return {
@@ -652,7 +554,6 @@ export default{
       handleNodeClick,
       ...storeMutations,
       array,
-      options, // 列表节点右击配置项
       options_tree, // 菜单栏右击配置项
       editVisible,
       editItemData,
@@ -662,6 +563,7 @@ export default{
       dialogVisible, // 整个Dialog是否展示控制
       control_dialogValue, // 实时控制弹窗控制
       add_dialogValue, // 添加节点弹窗控制
+      delete_dialogValue, // 删除窗口
       intelligent_controlValue, // 智能控制弹窗控制
       titleName,
       currentControlValue,
@@ -685,7 +587,10 @@ export default{
       tableData, // 定义列表内表格数据
       handleSelectionChange, // 当选择项发生变化时会触发该事件
       headerRowStyle, // 修改表头颜色的回调函数
-      addDialogfn
+      addDialogfn,
+      addType, // 用来判断添加节点时添加房间还是设备
+      deleteType, // 用来删除节点
+      deleteRoom,
     }
   }
 }
