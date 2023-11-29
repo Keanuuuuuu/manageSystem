@@ -119,7 +119,7 @@ export default {
   overflow: hidden;
   transition: all 0.3s;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: $border-radius;
   background-color: rgb(231,238,243);
   h2 {
     display: block;
