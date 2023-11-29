@@ -49,7 +49,7 @@
   .main-top {
     width: 100%;
     min-width: 1200px;
-    background-color: #2f317c;
+    background-color: $color-theme;
     -webkit-app-region: drag; //事件处可以禁用拖拽区域
     display: flex;
     flex-direction: column;

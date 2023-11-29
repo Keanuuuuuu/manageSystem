@@ -27,7 +27,7 @@
 
             <div id="other" @mousemove="handleMove" @mouseleave="leave">
                 <div id="wrapper" :style="{ left: `${moveValue}%` }">
-                    <div id="pic"><img src="../assets/logo.ico" alt=""></div>
+                    <div id="pic"><img src="../assets/airCondition.png" alt=""></div>
                     <div id="title">
                         <p>中央空调<br>集中管理平台</p>
                     </div>
@@ -100,7 +100,7 @@ export default {
     margin-top: 10vh;
     width: 550px;
     height: 360px;
-    border-radius: 5px;
+    border-radius: $border-radius;
     box-shadow: 0px 0px 40px 15px rgb(233, 239, 248);
     background-color: #fff;
     position: relative;

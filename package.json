@@ -1,13 +1,13 @@
 {
   "name": "manage-system",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "main": "main.js",
   "homepage": "./",
   "scripts": {
     "dev": "cross-env NODE_ENV=development concurrently \"vite\" \"electron .\"",
     "build": "vite build",
     "electron:serve": "concurrently -k \"yarn dev\" \"yarn electron\"",
-    "electron:build": "vite build && electron-builder --config electron.config.json"
+    "electron:build": "vite build && electron-builder  --config electron.config.json"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
@@ -23,22 +23,6 @@
     "vue": "^3.0.4",
     "vue-router": "^4.1.6",
     "vuex": "^4.1.0"
-  },
-  "build": {
-    "appId": "com.wss.app",
-    "directories": {
-      "output": "builder"
-    },
-    "win": {
-      "target": [
-        "nsis",
-        "zip"
-      ]
-    },
-    "files": [
-      "build/**/*",
-      "main.js"
-    ]
   },
   "devDependencies": {
     "@vue/compiler-sfc": "^3.0.4",

@@ -1,4 +1,18 @@
 {
-  "files": ["main.js", "preload.js", "./dist"],
-  "productName": "test"
+  "productName": "中央空调集中管理平台",
+  "appId": "com.wss.app",
+  "directories": {
+    "output": "dist_electron"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true
+  },
+  "win": {
+    "icon": "./src/assets/logo.ico",
+    "target": [
+      "nsis",
+      "zip"
+    ]
+  }
 }

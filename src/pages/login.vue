@@ -156,9 +156,10 @@ export default {
 
 <style lang="scss" scoped>
 #loginBox {
-  width: 395px;
-  height: 505px;
-  border-radius: 10px;
+  width: 375px;
+  height: 480px;
+  border: 1px solid rgb(217,217,218);
+  border-radius: $border-radius;
   background-color: #fff;
   position: absolute;
   left: 50%;
@@ -189,7 +190,7 @@ export default {
 }
 
 .inputBox {
-  width: 68%;
+  width: 65%;
   text-align: left;
   margin: 10px auto;
 
@@ -208,7 +209,7 @@ export default {
 }
 
 #loginBtn {
-  margin: 22px auto 20px;
+  margin: 10px auto 20px;
   width: 140px;
   height: 45px;
   font-size: 20px;

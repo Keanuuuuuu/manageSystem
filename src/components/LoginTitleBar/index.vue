@@ -59,7 +59,7 @@ export default {
     }
     .window-close:hover {
       background-color: red;
-      border-top-right-radius: 10px;
+      border-top-right-radius: $border-radius;
     }
   }
 }
