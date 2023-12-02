@@ -44,7 +44,8 @@
         @updateIntelligent_controlValue="intelligent_controlValue = $event"
         @reload="
           loading = $event,
-          getAirconditionPost()
+          getAirconditionPost(),
+          getTreeArr()
         "
       >
       </monitor-display-control>
@@ -214,12 +215,14 @@ export default{
           label: '删除节点',
           tips: 'Delete',
           fn: (params) =>{
+            console.log(params.id.length);
             if (params.id.length === 6 ) {
-              delteType.value = "房间"
+              deleteType.value = "房间"
             }else if(params.id.length === 8){
               deleteType.value = "设备"
-              // addType.__buildingId = params.id.slice(0,2)
-              // addType.__roomId = params.id.slice(0,6)
+              // 在这里获取楼栋ID和房间ID的原因是，根据接口文档，当用户删除设备的时候，这两项是不需要填写或自动填写的
+              deleteType.__buildingId = params.id.slice(0,2)
+              deleteType.__roomId = params.id.slice(0,6)
             }else if(params.id.length === 2){
               ElMessage({
                 showClose: true,
@@ -228,7 +231,6 @@ export default{
               });
               return ;
             }
-            console.log(params)
             dialogVisible.value = true
             delete_dialogValue.value = true
             // 展示对应的内部dialog时，要把别的设置为false
@@ -256,7 +258,6 @@ export default{
               });
               return ;
             }
-            console.log('rename', params, currentEl, bindingEl, e)
             dialogVisible.value = true
             add_dialogValue.value = true
             // 展示对应的内部dialog时，要把别的设置为false
@@ -290,6 +291,8 @@ export default{
     })
     let deleteType = reactive({
       value: null,
+      __buildingId:1,
+      __roomId:1
     })
     let data = ref([
       {
@@ -366,17 +369,12 @@ export default{
         "label": value.roomName //房间label
       })
       await getTreeArr()
+      ElMessage({
+        showClose: true,
+        message: `"${res.msg}"`,
+        type: "warning",
+      });
       console.log("添加房间:",res);
-    }
-
-    // 删除房间
-    const deleteRoom = async (value)=>{
-      const res = await copyDel('/machine',{
-        "machineId": "16_201_4", //内机的id
-        "roomId":"16_201" //所属房间的id
-      })
-      await getTreeArr()
-      console.log(res);
     }
 
     // 添加设备
@@ -397,7 +395,43 @@ export default{
         "headEmail": value.headEmail, //负责人邮箱（非必填，让用户填写）
         "notes": value.notes, //备注（非必填，让用户填写）
       })
+      await getTreeArr();
+      ElMessage({
+        showClose: true,
+        message: `"${res.msg}"`,
+        type: "warning",
+      });
       console.log(res);
+    }
+
+    // 删除房间
+    const deleteRoom = async (value)=>{
+      const res = await copyDel('/room',{
+        "buildingId": value.BuildingName, //内机的id
+        "id": value.roomName //所属房间的id
+      })
+      await getTreeArr();
+      ElMessage({
+        showClose: true,
+        message: `"${res.msg}"`,
+        type: "warning",
+      });
+      console.log("删除房间:",res);
+    }
+
+    // 删除内机
+    const deleteMachine = async (value)=>{
+      const res = await copyDel('/machine',{
+        "machineId": value._machineId, //内机的id
+        "roomId": value.roomName //所属房间的id
+      })
+      await getTreeArr();
+      ElMessage({
+        showClose: true,
+        message: `"${res.msg}"`,
+        type: "warning",
+      });
+      console.log("删除内机:",res);
     }
 
     // 页面挂载时刷新请求
@@ -512,7 +546,6 @@ export default{
       obj.name = data.name;
       // 想在下次点击事件触发前把数组删除干净，不过当table数组过长应该性能不好
       let res = Test(data.id, array.value)
-      console.log(res);
       titleChange.value = data.name
       tableData.splice(0, tableData.length);
       res.forEach(e => {
@@ -536,8 +569,10 @@ export default{
       console.log('addDialogSubmit',value);
       if(value.nodeProperties === "房间"){
         addRoom(value)
+        dialogVisible.value = false
       }else if(value.nodeProperties === "设备"){
         addDevice(value)
+        dialogVisible.value = false
       }
     }
 
@@ -545,8 +580,12 @@ export default{
       console.log('deleteDialogSubmit',value);
       if(value.nodeProperties === "房间"){
         // 调用删除房间的接口
+        deleteRoom(value)
+        dialogVisible.value = false
       }else if(value.nodeProperties === "设备"){
         // 调用删除内机的接口
+        deleteMachine(value);
+        dialogVisible.value = false
       }
     }
 

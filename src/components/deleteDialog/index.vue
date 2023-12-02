@@ -17,11 +17,11 @@
         <el-radio label="设备" />
       </el-radio-group>
     </el-form-item>
-    <el-form-item label="私有网关IP:" prop="gatewayIp" v-show="ruleFormRoom.nodeProperties === '设备'" label-width="120px">
-      <el-input v-model="ruleFormRoom.privateGatewayIp" />
+    <el-form-item label="内机的ID:" prop="_machineId" v-show="ruleFormRoom.nodeProperties === '设备'" label-width="120px">
+      <el-input v-model="ruleFormRoom._machineId" />
     </el-form-item>
-    <el-form-item label="所属机组:" prop="gatewayIp" v-show="ruleFormRoom.nodeProperties === '设备'" label-width="120px">
-      <el-input v-model="ruleFormRoom.belongToGroup" />
+    <el-form-item label="所属房间ID:" prop="roomName" v-show="ruleFormRoom.nodeProperties === '设备'" label-width="120px">
+      <el-input v-model="ruleFormRoom.roomName" />
     </el-form-item>
 
     <el-form-item label="楼栋名称:" prop="BuildingName" v-show="ruleFormRoom.nodeProperties === '房间'" label-width="120px">
@@ -59,7 +59,8 @@ const ruleFormRoomRef = ref()
 const ruleFormRoom = reactive({
   nodeProperties: '',
   roomName: '',
-  BuildingName: ''
+  BuildingName: '',
+  _machineId: '',
 })
 
 onMounted(()=>{
@@ -69,29 +70,29 @@ onMounted(()=>{
 
 const rules = reactive({
   roomName: [
-    { required: true, message: 'Please input Activity name', trigger: 'blur' }
+    { required: true, message: '此项为必填项', trigger: 'blur' }
     // { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
   ],
   BuildingName: [
-    { required: true, message: 'Please input Activity name', trigger: 'blur' }
+    { required: true, message: '此项为必填项', trigger: 'blur' }
   ],
   _machineId: [
-    { required: true, message: 'Please input Activity name', trigger: 'blur' },
+    { required: true, message: '此项为必填项', trigger: 'blur' },
   ],
   _machineName: [
-    { required: true, message: 'Please input Activity name', trigger: 'blur' },
+    { required: true, message: '此项为必填项', trigger: 'blur' },
   ],
   _gatewayId: [
-    { required: true, message: 'Please input Activity name', trigger: 'blur' },
+    { required: true, message: '此项为必填项', trigger: 'blur' },
   ],
   _deviceId: [
-    { required: true, message: 'Please input Activity name', trigger: 'blur' },
+    { required: true, message: '此项为必填项', trigger: 'blur' },
   ],
   _deviceOrder: [
-    { required: true, message: 'Please input Activity name', trigger: 'blur' },
+    { required: true, message: '此项为必填项', trigger: 'blur' },
   ],
   _machineOrder: [
-    { required: true, message: 'Please input Activity name', trigger: 'blur' },
+    { required: true, message: '此项为必填项', trigger: 'blur' },
   ],
 })
 
@@ -115,7 +116,7 @@ watchEffect(()=>{
     rules._deviceId[0].required = true
     rules._deviceOrder[0].required = true
     rules._machineOrder[0].required = true
-    rules.roomName[0].required = false
+    rules.roomName[0].required = true
     rules.BuildingName[0].required = false
   }
 })

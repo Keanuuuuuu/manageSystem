@@ -4,7 +4,7 @@ import { authorizeGet } from './authorize'
 
 const instance = axios.create({
   // 配置请求根路径
-  baseURL: 'http://192.168.0.124',
+  baseURL: 'https://7737xu2887.goho.co',
   // 配置超时时间
   timeout: 50000,
   // 配置请求头信息
@@ -15,7 +15,7 @@ const instance = axios.create({
 
 const instanceTwo = axios.create({
   // 配置请求根路径
-  baseURL: 'http://192.168.0.124:8080',
+  baseURL: 'https://7737xu2887.goho.co:8080',
   // 配置超时时间
   timeout: 50000,
   // 配置请求头信息
@@ -28,9 +28,7 @@ const instanceTwo = axios.create({
 // 请求拦截器 在发送请求之前做些什么
 instance.interceptors.request.use((config) => {
   //鉴权函数 token失效后跳转至login
-    console.log(config);
   if (config.auth) { // 如果设置了标志，直接返回配置，不触发拦截器
-    console.log(config);
     return config
   } else {
     authorizeGet()
@@ -44,7 +42,6 @@ instance.interceptors.request.use((config) => {
       message: `"${error}"`,
       type: "error",
     });
-    console.log(error) // 打印错误信息
     return Promise.reject(error)
   }
 )
@@ -62,7 +59,6 @@ instance.interceptors.response.use(
       message: `"${error}"`,
       type: "error",
     });
-    console.log(error) // 打印错误信息
     return Promise.reject(error)
   }
 )
@@ -71,7 +67,6 @@ instance.interceptors.response.use(
 instanceTwo.interceptors.request.use((config) => {
   //鉴权函数 token失效后跳转至login
   if (config.auth) { // 如果设置了标志，直接返回配置，不触发拦截器
-    console.log(config);
     return config
   } else {
     authorizeGet()
@@ -85,7 +80,6 @@ instanceTwo.interceptors.request.use((config) => {
       message: `"${error}"`,
       type: "error",
     });
-    console.log(error) // 打印错误信息
     return Promise.reject(error)
   }
 )
@@ -103,7 +97,6 @@ instanceTwo.interceptors.response.use(
       message: `"${error}"`,
       type: "error",
     });
-    console.log(error) // 打印错误信息
     return Promise.reject(error)
   }
 )

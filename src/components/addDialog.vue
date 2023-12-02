@@ -116,29 +116,29 @@ onMounted(()=>{
 
 const rules = reactive({
   roomName: [
-    { required: true, message: 'Please input Activity name', trigger: 'blur' }
+    { required: true, message: '此项为必填项', trigger: 'blur' }
     // { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
   ],
   BuildingName: [
     { required: true, message: 'Please input Activity name', trigger: 'blur' }
   ],
   _machineId: [
-    { required: true, message: 'Please input Activity name', trigger: 'blur' },
+    { required: true, message: '此项为必填项', trigger: 'blur' },
   ],
   _machineName: [
-    { required: true, message: 'Please input Activity name', trigger: 'blur' },
+    { required: true, message: '此项为必填项', trigger: 'blur' },
   ],
   _gatewayId: [
-    { required: true, message: 'Please input Activity name', trigger: 'blur' },
+    { required: true, message: '此项为必填项', trigger: 'blur' },
   ],
   _deviceId: [
-    { required: true, message: 'Please input Activity name', trigger: 'blur' },
+    { required: true, message: '此项为必填项', trigger: 'blur' },
   ],
   _deviceOrder: [
-    { required: true, message: 'Please input Activity name', trigger: 'blur' },
+    { required: true, message: '此项为必填项', trigger: 'blur' },
   ],
   _machineOrder: [
-    { required: true, message: 'Please input Activity name', trigger: 'blur' },
+    { required: true, message: '此项为必填项', trigger: 'blur' },
   ],
 })
 
