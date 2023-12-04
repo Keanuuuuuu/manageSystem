@@ -18,10 +18,10 @@
       </el-radio-group>
     </el-form-item>
     <el-form-item label="内机的ID:" prop="_machineId" v-show="ruleFormRoom.nodeProperties === '设备'" label-width="120px">
-      <el-input v-model="ruleFormRoom._machineId" />
+      <el-input v-model="ruleFormRoom._machineId" disabled/>
     </el-form-item>
     <el-form-item label="所属房间ID:" prop="roomName" v-show="ruleFormRoom.nodeProperties === '设备'" label-width="120px">
-      <el-input v-model="ruleFormRoom.roomName" />
+      <el-input v-model="ruleFormRoom.roomName" disabled/>
     </el-form-item>
 
     <el-form-item label="楼栋名称:" prop="BuildingName" v-show="ruleFormRoom.nodeProperties === '房间'" label-width="120px">
@@ -65,7 +65,9 @@ const ruleFormRoom = reactive({
 
 onMounted(()=>{
   // 这里要根据用户右键的位置来判断此次是添加房间还是设备
-  ruleFormRoom.nodeProperties = props.deleteType.value
+  ruleFormRoom.nodeProperties = props.deleteType.value;
+  ruleFormRoom._machineId = props.deleteType._machineId;
+  ruleFormRoom.roomName = props.deleteType.__buildingId;
 })
 
 const rules = reactive({
@@ -135,7 +137,9 @@ const submitForm = async (formEl) => {
 
 const resetForm = (formEl) => {
   if (!formEl) return
-  formEl.resetFields()
+  console.log(formEl);
+  // 逻辑待完善，清除的时候，会把不能输入的项也清空了
+  // formEl.resetFields()
 }
 </script>
 

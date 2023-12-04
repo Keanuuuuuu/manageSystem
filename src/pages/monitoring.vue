@@ -221,8 +221,8 @@ export default{
             }else if(params.id.length === 8){
               deleteType.value = "设备"
               // 在这里获取楼栋ID和房间ID的原因是，根据接口文档，当用户删除设备的时候，这两项是不需要填写或自动填写的
-              deleteType.__buildingId = params.id.slice(0,2)
-              deleteType.__roomId = params.id.slice(0,6)
+              deleteType.__buildingId = params.id.slice(0,6)
+              deleteType._machineId = params.id
             }else if(params.id.length === 2){
               ElMessage({
                 showClose: true,
@@ -286,13 +286,13 @@ export default{
     let titleChange = ref(null)
     let addType = reactive({
       value:null,
-      __buildingId:1,
-      __roomId:1
+      __buildingId:'若无值请刷新',
+      __roomId:'若无值请刷新'
     })
     let deleteType = reactive({
       value: null,
-      __buildingId:1,
-      __roomId:1
+      __buildingId:'若无值请刷新',
+      _machineId:'若无值请刷新'
     })
     let data = ref([
       {
