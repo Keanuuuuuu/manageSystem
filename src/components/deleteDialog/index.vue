@@ -25,10 +25,10 @@
     </el-form-item>
 
     <el-form-item label="楼栋名称:" prop="BuildingName" v-show="ruleFormRoom.nodeProperties === '房间'" label-width="120px">
-      <el-input v-model="ruleFormRoom.BuildingName" />
+      <el-input v-model="ruleFormRoom.BuildingName" disabled/>
     </el-form-item>
     <el-form-item label="房间名称:" prop="roomName" v-show="ruleFormRoom.nodeProperties === '房间'" label-width="120px">
-      <el-input v-model="ruleFormRoom.roomName" />
+      <el-input v-model="ruleFormRoom.roomName" disabled/>
     </el-form-item>
 
     <el-form-item label="负责人名称:" prop="gatewayIp" label-width="120px">
@@ -67,7 +67,8 @@ onMounted(()=>{
   // 这里要根据用户右键的位置来判断此次是添加房间还是设备
   ruleFormRoom.nodeProperties = props.deleteType.value;
   ruleFormRoom._machineId = props.deleteType._machineId;
-  ruleFormRoom.roomName = props.deleteType.__buildingId;
+  ruleFormRoom.roomName = props.deleteType.roomName;
+  ruleFormRoom.BuildingName = props.deleteType.__buildingId;
 })
 
 const rules = reactive({
@@ -101,23 +102,17 @@ const rules = reactive({
 watchEffect(()=>{
   ruleFormRoom.nodeProperties = props.deleteType.value
   if(ruleFormRoom.nodeProperties === "房间"){
+    ruleFormRoom.BuildingName = props.deleteType.__buildingId;
+    ruleFormRoom.roomName = props.deleteType.roomName;
     rules._machineId[0].required = false
-    rules._machineName[0].required = false
-    rules._gatewayId[0].required = false
-    rules._deviceId[0].required = false
-    rules._deviceOrder[0].required = false
-    rules._machineOrder[0].required = false
     rules.roomName[0].required = true
     rules.BuildingName[0].required = true
   }
   
   if(ruleFormRoom.nodeProperties === "设备"){
+    ruleFormRoom._machineId = props.deleteType._machineId;
+    ruleFormRoom.roomName = props.deleteType.__buildingId;
     rules._machineId[0].required = true
-    rules._machineName[0].required = true
-    rules._gatewayId[0].required = true
-    rules._deviceId[0].required = true
-    rules._deviceOrder[0].required = true
-    rules._machineOrder[0].required = true
     rules.roomName[0].required = true
     rules.BuildingName[0].required = false
   }

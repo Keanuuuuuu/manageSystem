@@ -120,7 +120,7 @@ const rules = reactive({
     // { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
   ],
   BuildingName: [
-    { required: true, message: 'Please input Activity name', trigger: 'blur' }
+    { required: true, message: '此项为必填项', trigger: 'blur' }
   ],
   _machineId: [
     { required: true, message: '此项为必填项', trigger: 'blur' },

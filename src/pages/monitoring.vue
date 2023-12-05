@@ -215,13 +215,16 @@ export default{
           label: '删除节点',
           tips: 'Delete',
           fn: (params) =>{
-            console.log(params.id.length);
+            // deleteType.__buildingId = '若无值请刷新';
+            // deleteType._machineId = '若无值请刷新';
+            deleteType.__buildingId = params.id.slice(0,2)
+            deleteType.roomName = params.id.slice(0,6)
             if (params.id.length === 6 ) {
               deleteType.value = "房间"
-            }else if(params.id.length === 8){
+            }else if(params.id.length >= 8){
               deleteType.value = "设备"
               // 在这里获取楼栋ID和房间ID的原因是，根据接口文档，当用户删除设备的时候，这两项是不需要填写或自动填写的
-              deleteType.__buildingId = params.id.slice(0,6)
+              console.log(params);
               deleteType._machineId = params.id
             }else if(params.id.length === 2){
               ElMessage({
@@ -242,8 +245,9 @@ export default{
         {
           label: '新增节点',
           tips: 'Add',
-          // hidden: h,
           fn: (params, currentEl, bindingEl, e) => { 
+            addType.__buildingId = params.id.slice(0,2);
+            addType.__roomId = params.id.slice(0,6);
             if (params.id.length === 2 || params.id.length === 4 ) {
               addType.value = "房间"
             }else if(params.id.length === 6){
@@ -321,6 +325,7 @@ export default{
 
     async function getTreeArr(){
       const res = await copyPost('/leftbar')
+      console.log(res);
       data.value = res.data
     }
 
