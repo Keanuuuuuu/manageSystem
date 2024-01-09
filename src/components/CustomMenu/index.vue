@@ -1,3 +1,10 @@
+<!-- 
+* @description: 客制化菜单栏
+* @fileName: index.vue
+* @author:刘世博 文洋
+* @date: 2024-01-09
+* @version: 
+!-->
 <template>
   <div class="custom-menu-container">
     <!-- <div class="custom-menu">

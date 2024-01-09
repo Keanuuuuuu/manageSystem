@@ -22,24 +22,21 @@
 </template>
 
 <script>
-import Logo from "./components/Logo.vue";
-import Navigator from "./components/navigator.vue";
-import Menu from "./components/menu.vue";
-import Arti from "./components/arti.vue";
-import TitleBar from "./components/TitleBar/index.vue";
 import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+
+import Arti from "./components/arti.vue";
+import TitleBar from "./components/TitleBar/mainTitleBar.vue";
+
 import systemEventBus from "./systemEventBus";
 import { useIpcRenderer } from "@vueuse/electron";
 import { ElConfigProvider } from 'element-plus';
 import zhCn from 'element-plus/lib/locale/lang/zh-cn';
-import { useRouter } from "vue-router";
+
 
 export default {
   name: "App",
   components: {
-    Logo,
-    Navigator,
-    Menu,
     Arti,
     TitleBar,
     ElConfigProvider

@@ -1,18 +1,21 @@
+<!-- 
+* @description: 内机监控操作部分（按钮）
+* @fileName: Monitor_display_control.vue
+* @author:刘世博 文洋
+* @date: 2024-01-09
+* @version: 
+!-->
 <template>
   <div class="Monitor_display_control">
-      <el-button class="btn" @click="reload">状态刷新</el-button>
-      <el-button class="btn" @click="changeDialogVisible">实时控制</el-button>
-      <el-button class="btn" @click="intelligentControlDialogVisible">智能控制</el-button>
-      <el-button class="btn">数据统计</el-button>
-      <el-input
-        :modelValue="input"
-        placeholder="Please input"
-        class="input-with-select"
-        >
-        <template #prepend>
-          <el-button :icon="Search" />
-        </template>
-      </el-input>
+    <el-button class="btn" @click="reload">状态刷新</el-button>
+    <el-button class="btn" @click="changeDialogVisible">实时控制</el-button>
+    <el-button class="btn" @click="intelligentControlDialogVisible">智能控制</el-button>
+    <el-button class="btn">数据统计</el-button>
+    <el-input :modelValue="input" placeholder="Please input" class="input-with-select">
+      <template #prepend>
+        <el-button :icon="Search" />
+      </template>
+    </el-input>
   </div>
 </template>
   
@@ -31,7 +34,7 @@ export default {
     intelligent_controlValue: {
       type: Boolean
     },
-    loading:{
+    loading: {
       type: Boolean
     }
   },
@@ -57,7 +60,7 @@ export default {
       emit('updateIntelligent_controlValue', intelligent_controlValue.value)
     }
 
-    function reload(){
+    function reload() {
       loading.value = true
       emit('reload', loading.value)
     }
@@ -76,16 +79,18 @@ export default {
 </script>
   
 <style lang="scss" scoped>
-.Monitor_display_control{
+.Monitor_display_control {
   height: 10%;
   display: flex;
   flex-direction: row;
-  .input-with-select{
+
+  .input-with-select {
     height: 50%;
     width: 20%;
     margin: auto 10px;
   }
-  .btn{
+
+  .btn {
     height: 50%;
     margin: auto 10px;
   }

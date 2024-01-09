@@ -36,9 +36,10 @@
         </div>
     </div>
 </template>
+
 <script>
 import { ref } from "vue";
-import findPWDTitleBar from "../components/findPWDTitleBar/index.vue";
+import findPWDTitleBar from "../components/TitleBar/PWDTitleBar.vue";
 import { throttle } from "../utils/Throttling";
 
 export default {
@@ -56,10 +57,10 @@ export default {
             let currentX = event.clientX
             if (currentX > previousX) {
                 // 鼠标向右移动
-                moveValue.value = 54
+                moveValue.value = 55
             } else if (currentX < previousX) {
                 // 鼠标向左移动
-                moveValue.value = 46
+                moveValue.value = 45
             } else {
                 moveValue.value = 50
             }
@@ -98,8 +99,8 @@ export default {
 
 #main {
     margin-top: 10vh;
-    width: 550px;
-    height: 360px;
+    width: 500px;
+    height: 340px;
     border-radius: $border-radius;
     box-shadow: 0px 0px 40px 15px rgb(233, 239, 248);
     background-color: #fff;

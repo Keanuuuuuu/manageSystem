@@ -1,3 +1,5 @@
+// 限制并发请求
+
 export default class ConcurrencyRequest{
   constructor({maxControlNumber}){
     this.maxControlNumber = maxControlNumber;

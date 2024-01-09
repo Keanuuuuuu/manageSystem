@@ -30,7 +30,7 @@
     <div class="Monitor">
       <monitor-display-head :titleChange="titleChange"></monitor-display-head>
       <!-- 以上为内机监控界面的总览显示 -->
-      
+
       <monitor-display-control :dialogVisible="dialogVisible" :control_dialogValue="control_dialogValue"
         :intelligent_controlValue="intelligent_controlValue" :loading="loading"
         @updateDialogVisible="dialogVisible = $event" @updateControl_dialogValue="control_dialogValue = $event"
@@ -108,22 +108,24 @@
 <script>
 
 import { reactive, toRaw, ref, onMounted, computed } from 'vue'
-import { post, del, put } from '../api/http.js'
+import { post, del, put } from '@/api/http.js'
 import { ElMessage } from "element-plus"
 
-import { switchString } from '../utils/digitalTransformation.js'
-import ConcurrencyRequest from '../utils/ConcurrencyRequest.js'
-import { Test } from '../utils/treeArr.js'
+import { switchString } from '@/utils/digitalTransformation.js'
+import ConcurrencyRequest from '@/utils/ConcurrencyRequest.js'
+import { Test } from '@/utils/treeArr.js'
 
-import { MouseMenuDirective, MouseMenuCtx } from '@howdyjs/mouse-menu'
-import { mapMutations, mapState, useStore } from 'vuex'
+import { MouseMenuDirective } from '@howdyjs/mouse-menu'
+import { mapMutations, useStore } from 'vuex'
 
-import controlDialog from '../components/controlDialog.vue'
-import addDialog from '../components/addDialog.vue'
-import deleteDialog from '../components/deleteDialog/index.vue'
-import MonitorDisplayHead from '../components/ControlComponents/Monitor_display_head.vue'
-import MonitorDisplayControl from '../components/ControlComponents/Monitor_display_control.vue'
-import intelligentControl from '../components/intelligentControlDialog.vue'
+import controlDialog from '@/components/Dialog/controlDialog.vue'
+import intelligentControl from '@/components/Dialog/intelligentControlDialog.vue'
+import addDialog from '@/components/Dialog/addDialog.vue'
+import deleteDialog from '@/components/Dialog/deleteDialog.vue'
+
+import MonitorDisplayHead from '@/components/ControlComponents/Monitor_display_head.vue'
+import MonitorDisplayControl from '@/components/ControlComponents/Monitor_display_control.vue'
+
 
 export default {
   components: {

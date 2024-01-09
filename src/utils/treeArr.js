@@ -1,4 +1,4 @@
-function Test(id, realTree) {
+export function Test(id, realTree) {
     let treeArr = {
         "16":[
               {
@@ -146,9 +146,7 @@ function Test(id, realTree) {
       }      
     
     let result = extractAirConditioners(ans)
-    
     return result
 }
 
 // console.log(Test()); 
-export default Test

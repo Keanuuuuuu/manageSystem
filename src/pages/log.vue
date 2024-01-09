@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import LogTitleBar from '../components/LogTitleBar/index.vue';
+import LogTitleBar from '../components/TitleBar/logTitleBar.vue';
 import { ElConfigProvider } from 'element-plus';
 import zhCn from 'element-plus/lib/locale/lang/zh-cn';
 export default{
