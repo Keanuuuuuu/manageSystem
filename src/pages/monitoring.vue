@@ -1,3 +1,10 @@
+<!-- 
+* @description: 内机监控核心页面
+* @fileName: monitoring.vue
+* @author: 刘世博 文洋
+* @date: 2024-01-09
+* @version: 
+!-->
 <template>
   <div class="content">
     <!-- 左侧节点树 -->
@@ -23,6 +30,7 @@
     <div class="Monitor">
       <monitor-display-head :titleChange="titleChange"></monitor-display-head>
       <!-- 以上为内机监控界面的总览显示 -->
+      
       <monitor-display-control :dialogVisible="dialogVisible" :control_dialogValue="control_dialogValue"
         :intelligent_controlValue="intelligent_controlValue" :loading="loading"
         @updateDialogVisible="dialogVisible = $event" @updateControl_dialogValue="control_dialogValue = $event"
@@ -33,6 +41,7 @@
           ">
       </monitor-display-control>
       <!-- 以上为内机监控界面的控制显示 -->
+
       <div class="Monitor_the_display_data_list">
         <el-table ref="multipleTableRef"
           :data="tableData ? tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize) : []"
@@ -78,39 +87,43 @@
 
 
   <el-dialog :modelValue="dialogVisible" :title="titleName" @closed="close" width="600px" align-center>
+
     <control-dialog v-show="control_dialogValue" :value_one="value_one" :value_two="value_two" :value_three="value_three"
       :num="num" :selected="[...selected]" @updateDialogValue="value_one = $event" @updateDialogMode="value_two = $event"
-      @updateDialogWind="value_three = $event" @updateDialogNum="num = $event"></control-dialog>
+      @updateDialogWind="value_three = $event" @updateDialogNum="num = $event">
+    </control-dialog>
+
+    <intelligent-control v-show="intelligent_controlValue"></intelligent-control>
+
     <add-dialog v-show="add_dialogValue" :addType="addType" @addDialogSubmit="addDialogfn"></add-dialog>
+
     <delete-dialog v-show="delete_dialogValue" :deleteType="deleteType"
       @deleteDialogSubmit="deleteDialogfn"></delete-dialog>
-    <intelligent-control v-show="intelligent_controlValue"></intelligent-control>
-    <el-button v-show="control_dialogValue || intelligent_controlValue" @click="cancel">
-      取消
-    </el-button>
-    <el-button v-show="control_dialogValue || intelligent_controlValue" @click="confirm">
-      确定
-    </el-button>
+
+    <el-button v-show="control_dialogValue || intelligent_controlValue" @click="cancel">取消</el-button>
+    <el-button v-show="control_dialogValue || intelligent_controlValue" @click="confirm">确定</el-button>
   </el-dialog>
 </template>
   
 <script>
 
-import { post,del,put } from '../utils/http.js'
+import { reactive, toRaw, ref, onMounted, computed } from 'vue'
+import { post, del, put } from '../api/http.js'
+import { ElMessage } from "element-plus"
+
 import { switchString } from '../utils/digitalTransformation.js'
 import ConcurrencyRequest from '../utils/ConcurrencyRequest.js'
-import Test from '../utils/treeArr.js'
-import { reactive, toRaw } from 'vue'
-import { ref, onMounted, computed } from 'vue'
+import { Test } from '../utils/treeArr.js'
+
 import { MouseMenuDirective, MouseMenuCtx } from '@howdyjs/mouse-menu'
 import { mapMutations, mapState, useStore } from 'vuex'
+
 import controlDialog from '../components/controlDialog.vue'
 import addDialog from '../components/addDialog.vue'
 import deleteDialog from '../components/deleteDialog/index.vue'
-import intelligentControl from '../components/intelligentControlDialog.vue'
 import MonitorDisplayHead from '../components/ControlComponents/Monitor_display_head.vue'
 import MonitorDisplayControl from '../components/ControlComponents/Monitor_display_control.vue'
-import { ElMessage } from "element-plus"
+import intelligentControl from '../components/intelligentControlDialog.vue'
 
 export default {
   components: {
@@ -217,7 +230,7 @@ export default {
       ]
     })
 
-    
+
     let dialogVisible = ref(false)
     let control_dialogValue = ref(false)
     let add_dialogValue = ref(false)
@@ -271,7 +284,7 @@ export default {
     }
 
     async function getTreeArr() {
-      const res = await post('/leftbar',null, {
+      const res = await post('/leftbar', null, {
         baseURL: 'http://lab.zhongyaohui.club/'
       })
       // console.log('左侧树节点===================》',res);
@@ -303,9 +316,9 @@ export default {
             "mode": `${res[1]}`,
             "temperature": `${res[3]}`,
             "windSpeed": `${res[2]}`
-          },{
-            baseURL:'http://lab.bitstone14.xyz/'
-          }
+          }, {
+          baseURL: 'http://lab.bitstone14.xyz/'
+        }
         ).then(async (res) => {
           console.log(res);
           await getAirconditionPost();
@@ -365,7 +378,7 @@ export default {
       const res = await del('/room', {
         "buildingId": value.BuildingName, //内机的id
         "id": value.roomName //所属房间的id
-      },{
+      }, {
         baseURL: 'http://lab.zhongyaohui.club/'
       })
       await getTreeArr();
@@ -379,11 +392,11 @@ export default {
 
     // 删除内机
     const deleteMachine = async (value) => {
-      console.log('****************************',value._machineId,value.roomName);
+      console.log('****************************', value._machineId, value.roomName);
       const res = await del('/machine', {
         "machineId": value._machineId, //内机的id
         "roomId": value.roomName //所属房间的id
-      },{
+      }, {
         baseURL: 'http://lab.zhongyaohui.club/'
       })
       console.log(res);
