@@ -20,15 +20,16 @@ function authGet(url) {
 
 // 封装的方法，发送带有 Token 的 GET 请求
 export async function authorizeGet() {
-  console.log('进入鉴权');
+  // console.log('进入鉴权');
   const token = Estore.get('token')
+  // console.log(token);
   // token有值
   if (token) {
     // 构建动态的 apiUrl
     const apiUrlTemplate = 'http://lab.zhongyaohui.club/login/{token}';
     const apiUrl = apiUrlTemplate.replace('{token}', token);
     await authGet(apiUrl).then((res) => {
-      console.log(res);
+      // console.log(res);
       // token失效则清空token凭据并跳转至登录页
       if (res.code === 21401) {
         Estore.set("token", null);
@@ -39,6 +40,7 @@ export async function authorizeGet() {
         });
         // send a message 重新创建登录窗口，并关闭主窗口
         setTimeout(() => {
+          // console.log('失效了=================》');
           ipcRenderer.send("login-deny");
         }, 1000);
       }

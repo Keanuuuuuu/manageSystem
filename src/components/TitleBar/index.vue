@@ -63,20 +63,21 @@ export default{
     height: 35px;
     line-height: 35px;
     padding-left: 15px;
+    font-size: 13.5px;
   }
   .right {
     float: right;
     .window-min,
     .window-close {
-      width: 30px;
+      font-size: 14px;
+      width: 50px;
       height: 35px;
-      line-height: 35px;
+      line-height: 40px;
       display: inline-block;
       text-align: center;
       -webkit-app-region: no-drag; //事件处可以禁用拖拽区域
     }
     .window-min:hover {
-      // background-color: rgb(81, 164, 219);
       background-color: rgb(119, 124, 207);
     }
     .window-close:hover {

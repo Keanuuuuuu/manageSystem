@@ -4,29 +4,8 @@ import { authorizeGet } from './authorize'
 
 const instance = axios.create({
   // 配置请求根路径
-  baseURL: 'https://7737xu2887.goho.co',
-  // 配置超时时间
-  timeout: 50000,
-  // 配置请求头信息
-  headers: {
-    'Content-Type': 'application/json;charset=UTF-8'
-  }
-})
-
-const instanceTwo = axios.create({
-  // 配置请求根路径
-  baseURL: 'https://7737xu2887.goho.co:52964',
-  // 配置超时时间
-  timeout: 50000,
-  // 配置请求头信息
-  headers: {
-    'Content-Type': 'application/json;charset=UTF-8'
-  }
-})
-
-const instanceThree = axios.create({
-  // 配置请求根路径
-  baseURL: 'http://139.9.188.179:8004',
+  // baseURL: 'https://7737xu2887.goho.co',
+  baseURL: 'http://lab.zhongyaohui.club/',
   // 配置超时时间
   timeout: 50000,
   // 配置请求头信息
@@ -73,31 +52,19 @@ instance.interceptors.response.use(
 )
 
 
-
-
 export function get(url, params = {}) {
   return instance.get(url, {
     params
   })
 }
 
-export function post(url, data, headers) {
-  const config = headers ? headers : {}
-  return instance.post(url, data, config)
+export function post(url, postData, postUrl) {
+  return instance.post(url, postData, postUrl)
 }
 
-export function postTwo(url, data, headers) {
-  const config = headers ? headers : {}
-  return instanceTwo.post(url, data, config)
-}
-
-export function postThree(url, data, headers) {
-  const config = headers ? headers : {}
-  return instanceThree.post(url, data, config)
-}
-
-export function del(url) {
-  return instance.delete(url)
+export function del(url,data,delUrl) {
+  let deleteData = {data}  //接口原因 需要再包裹一层对象
+  return instance.delete(url,deleteData,delUrl)
 }
 
 export function put(url, data) {
