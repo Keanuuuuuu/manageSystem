@@ -1,3 +1,5 @@
+// 将输入的字符串转换为特定的数值数组 空调对应的模式
+
 export function switchString(...items) {
     console.log(items);
     let res = []

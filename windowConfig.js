@@ -1,3 +1,5 @@
+// 配置窗口对象
+
 const path = require('path')
 
 exports.mainWindowConfig = {

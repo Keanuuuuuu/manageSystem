@@ -1,3 +1,10 @@
+<!-- 
+* @description: 内机监控头部
+* @fileName: Monitor_display_head.vue
+* @author:刘世博 文洋
+* @date: 2024-01-09
+* @version: 
+!-->
 <template>
   <div class="Monitor_display_head">
     <div class="title">

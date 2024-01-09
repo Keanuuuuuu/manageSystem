@@ -1,3 +1,5 @@
+// 定义窗口对象的操作
+
 const { BrowserWindow } = require('electron');
 const { mainWindowConfig, loginWindowConfig, findPWDWindowConfig, dialogConfig } = require('./windowConfig');
 const path = require('path')

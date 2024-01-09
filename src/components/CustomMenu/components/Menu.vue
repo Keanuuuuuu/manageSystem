@@ -1,3 +1,10 @@
+<!-- 
+* @description: 定制化菜单 系统/视图/工具/帮助
+* @fileName: Menu.vue
+* @author: 刘世博 文洋
+* @date: 2024-01-09
+* @version: 
+!-->
 <template>
   <div class="menu-container"> 
     <!-- v-for="( item ) in menu" :key="item.label" -->
@@ -24,6 +31,7 @@ import { ref, onDeactivated, onMounted, watch, computed, provide, getCurrentInst
 import eventBus from "../eventBus"
 import systemEventBus from '../../../systemEventBus'
 import { tokenFun } from '../../../utils/token'
+// 此处的token充当了一个唯一标识符的角色，用于识别特定的组件实例，并确保其与事件通信时的准确性和隔离性。
 
 export default {
   props:['menu'],

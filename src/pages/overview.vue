@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { post, get } from "../utils/http.js";
+import { post, get } from "../api/http.js";
 import { ref } from "vue";
 import reloadTime from "../data/overview/reloadTime";
 import machineStatus from "../data/overview/machineStatus"

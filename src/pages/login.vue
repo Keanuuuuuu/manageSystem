@@ -28,11 +28,11 @@
 <script>
 import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
-import { post } from "../utils/http.js";
+import { post } from "../api/http.js";
 import { ElMessage } from "element-plus";
 import { JSEncrypt } from "jsencrypt";
 import { useIpcRenderer } from "@vueuse/electron";
-import LoginTitleBar from '../components/LoginTitleBar/index.vue'
+import LoginTitleBar from '../components/TitleBar/loginTitleBar.vue'
 
 export default {
   name: "Login",

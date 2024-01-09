@@ -6,3 +6,5 @@ function code() {
 export function tokenFun() {
   return (code() + code() + "-" + code() + "-" + code() + "-" + code() + "-" + code() + code() + code());
 }
+
+// 充当了一个唯一标识符的角色，用于识别特定的组件实例，并确保其与事件通信时的准确性和隔离性。

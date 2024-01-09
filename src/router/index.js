@@ -2,7 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import Overview from '../pages/overview.vue'
 import Monitoring from '../pages/monitoring.vue'
 import Log from '../pages/log.vue'
-import ID from '../pages/id.vue'
+import Acount from '../pages/acount.vue'
 import Login from '../pages/login.vue'
 import PWD from '../pages/findPWD.vue'
 
@@ -24,8 +24,8 @@ const routes = [
     component:Log
   },
   {
-    path:'/id',
-    component:ID
+    path:'/acount',
+    component:Acount
   },
   {
     path:'/login',
