@@ -1,3 +1,10 @@
+<!-- 
+* @description: 路由显示一栏/右侧切换账号
+* @fileName: arti.vue
+* @author:刘世博 文洋
+* @date: 2024-01-10
+* @version: 
+!-->
 <template>
   <el-row class="top_navigation_bar">
     <el-col :span="24">
@@ -5,8 +12,11 @@
         <router-link class="list-group-item overview" active-class="active" to="/overview">总览</router-link>
         <router-link class="list-group-item monitoring" active-class="active" to="/monitoring"
           v-if="monitoring">内机监控</router-link>
-        <el-tooltip class="box-item" effect="dark" content="切换账号" placement="left-end">
-          <el-icon id="power" @click="logout"><Switch /></el-icon>
+        
+          <el-tooltip class="box-item" effect="dark" content="切换账号" placement="left-end">
+          <el-icon id="power" @click="logout">
+            <Switch />
+          </el-icon>
         </el-tooltip>
       </div>
       <router-view></router-view>
@@ -15,16 +25,13 @@
 </template>
 
 <script>
-import Bar from './bar.vue';
+
 import { onMounted, ref, onBeforeMount } from 'vue';
 import { useRouter } from "vue-router";
-import systemEventBus from '../systemEventBus';
+import systemEventBus from '@/utils/systemEventBus';
 import { useIpcRenderer } from "@vueuse/electron";
 
 export default {
-  components: {
-    Bar
-  },
   name: 'arti',
   setup() {
     let monitoring = ref(false)
@@ -102,9 +109,18 @@ export default {
   }
 
   .bar {
+    display: flex;
     border-bottom: 1px solid black;
     box-sizing: border-box;
     height: 60px;
+    div{
+    margin: 0 5px;
+    width: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
     // 各个路由界面的高度百分比 + 顶部路由按键的高度百分比 = 100% 即整个arti组件的高度
   }
 }
@@ -125,5 +141,4 @@ a {
 
 .router-link-exact-active {
   background-color: #E7EEF3;
-}
-</style>
+}</style>

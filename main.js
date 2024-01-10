@@ -23,7 +23,7 @@ app.on('activate', () => {
 })
 
 
-// 主进程窗口操作
+// 主应用窗口操作
 ipcMain.on('window-min', () => {
     windows.mainWindow.minimize()
 })

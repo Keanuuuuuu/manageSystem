@@ -22,13 +22,14 @@
 </template>
 
 <script>
+
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
 import Arti from "./components/arti.vue";
 import TitleBar from "./components/TitleBar/mainTitleBar.vue";
 
-import systemEventBus from "./systemEventBus";
+import systemEventBus from "@/utils/systemEventBus";
 import { useIpcRenderer } from "@vueuse/electron";
 import { ElConfigProvider } from 'element-plus';
 import zhCn from 'element-plus/lib/locale/lang/zh-cn';
@@ -48,7 +49,7 @@ export default {
     onMounted(()=>{
       systemEventBus.$on('showDialog', (res)=>{
         if(res === "日志记载"){
-          // console.log(res);
+          console.log('///////////////////////////');
           ipcRenderer.send('openDialog',"日志记载")
         }
       })
@@ -62,7 +63,7 @@ export default {
       url
     }
   }
-};
+}
 </script>
 
 <style lang="scss">
