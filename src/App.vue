@@ -12,40 +12,35 @@
   </template>
 
   <template v-else>
-    <el-config-provider :locale="locale">
       <div class="body">
         <TitleBar></TitleBar>
         <Arti></Arti>
       </div>
-    </el-config-provider>
   </template>
 </template>
 
 <script>
-
-import { onMounted, ref } from "vue";
+import { onMounted } from "vue";
 import { useRouter } from "vue-router";
+
 
 import Arti from "./components/arti.vue";
 import TitleBar from "./components/TitleBar/mainTitleBar.vue";
 
 import systemEventBus from "@/utils/systemEventBus";
 import { useIpcRenderer } from "@vueuse/electron";
-import { ElConfigProvider } from 'element-plus';
-import zhCn from 'element-plus/lib/locale/lang/zh-cn';
 
 
 export default {
   name: "App",
   components: {
     Arti,
-    TitleBar,
-    ElConfigProvider
+    TitleBar
   },
   setup(){
     let route = useRouter();
-    let url = ref(false)
     const ipcRenderer = useIpcRenderer();
+
     onMounted(()=>{
       systemEventBus.$on('showDialog', (res)=>{
         if(res === "日志记载"){
@@ -53,23 +48,26 @@ export default {
           ipcRenderer.send('openDialog',"日志记载")
         }
       })
-      // console.log(route.currentRoute.value.path);
-      url = route.currentRoute.value.path === '/login' || '/' ? true : false;
-      // console.log(url);
     })    
     return{
-      locale: zhCn,
-      route,
-      url
+      route
     }
   }
 }
 </script>
 
 <style lang="scss">
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 0px;
+}
+
 * {
-  margin:0;
-  // 如果不设置清除样式无法填满背景
+  margin:0; // 如果不设置清除样式无法填满背景
 }
 
 .body {

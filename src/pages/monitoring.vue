@@ -5,12 +5,14 @@
 * @date: 2024-01-09
 * @version: 
 !-->
+
+
 <template>
   <div class="content">
     <!-- 左侧节点树 -->
     <div class="tree">
       <el-scrollbar>
-        <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" :default-expand-all="true">
+        <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" :default-expand-all="true" :expand-on-click-node="false">
           <template #default="{ node, data }">
             <span class="custom-tree-node" v-mouse-menu="{ params: data, ...options_tree }">
               <span>{{ data.label }}</span>

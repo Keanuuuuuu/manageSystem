@@ -1,3 +1,5 @@
+// electron的main.js
+
 const { app, ipcMain } = require('electron');
 const { windows, createMainWindow, createLoginWindow, createPWDWindow, createDialog } = require('./windowManager');
 const Store = require('electron-store');

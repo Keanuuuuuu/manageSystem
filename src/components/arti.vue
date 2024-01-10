@@ -1,5 +1,5 @@
 <!-- 
-* @description: 路由显示一栏/右侧切换账号
+* @description: 路由显示一栏/右侧切换账号 ；以及下方的主题内容
 * @fileName: arti.vue
 * @author:刘世博 文洋
 * @date: 2024-01-10
@@ -12,13 +12,14 @@
         <router-link class="list-group-item overview" active-class="active" to="/overview">总览</router-link>
         <router-link class="list-group-item monitoring" active-class="active" to="/monitoring"
           v-if="monitoring">内机监控</router-link>
-        
-          <el-tooltip class="box-item" effect="dark" content="切换账号" placement="left-end">
+
+        <el-tooltip class="box-item" effect="dark" content="切换账号" placement="left-end">
           <el-icon id="power" @click="logout">
             <Switch />
           </el-icon>
         </el-tooltip>
       </div>
+
       <router-view></router-view>
     </el-col>
   </el-row>
@@ -113,14 +114,16 @@ export default {
     border-bottom: 1px solid black;
     box-sizing: border-box;
     height: 60px;
-    div{
-    margin: 0 5px;
-    width: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
+
+    div {
+      margin: 0 5px;
+      width: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
     // 各个路由界面的高度百分比 + 顶部路由按键的高度百分比 = 100% 即整个arti组件的高度
   }
 }

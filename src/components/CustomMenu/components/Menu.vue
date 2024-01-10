@@ -133,7 +133,6 @@ export default {
 .menu-container {
   width: 70px;
   padding: 0 10px;
-  background-color: white;
   color: #23262F;
   cursor: pointer;
   border: #E6E8EC 2px solid;
