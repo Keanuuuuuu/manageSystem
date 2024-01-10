@@ -6,19 +6,20 @@
 
 <script>
 import { onMounted, getCurrentInstance, inject } from 'vue'
-import eventBus from '../eventBus';
+import systemEventBus from '@/utils/systemEventBus'
+
 export default {
-  props:{
-    value:{
-      type:String
+  props: {
+    value: {
+      type: String
     },
-    type:{
+    type: {
       type: Number
     }
   },
-  setup(props){
-    const chooseItem = (res)=>{
-      eventBus.$emit('chooseItem', props.value, props.type, token)
+  setup(props) {
+    const chooseItem = (res) => {
+      systemEventBus.$emit('chooseItem', props.value, props.type, token)
     }
 
     // 获取实例
@@ -28,7 +29,7 @@ export default {
     // 缓存token
     page.token = token
 
-    onMounted(()=>{
+    onMounted(() => {
 
     })
 
@@ -40,14 +41,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-li{
-  list-style-type:none;
+li {
+  list-style-type: none;
   width: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-li:hover{
+
+li:hover {
   background-color: gray;
   transition: all .2s;
 }

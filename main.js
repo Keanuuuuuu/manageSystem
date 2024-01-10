@@ -1,3 +1,5 @@
+// electron的main.js
+
 const { app, ipcMain } = require('electron');
 const { windows, createMainWindow, createLoginWindow, createPWDWindow, createDialog } = require('./windowManager');
 const Store = require('electron-store');
@@ -23,7 +25,7 @@ app.on('activate', () => {
 })
 
 
-// 主进程窗口操作
+// 主应用窗口操作
 ipcMain.on('window-min', () => {
     windows.mainWindow.minimize()
 })

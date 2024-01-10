@@ -164,9 +164,6 @@ export default {
 }
 
 .inputBox {
-
-    // justify-self: flex-start;
-    // align-self: flex-start;
     p {
         float: left;
     }

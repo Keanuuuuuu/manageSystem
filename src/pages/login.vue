@@ -1,3 +1,11 @@
+<!-- 
+* @description: 登录页面 
+* @fileName: login.vue
+* @author: 文洋
+* @date: 2024-01-10
+* @version: 
+!-->
+
 <template>
   <div id="loginBox">
     <LoginTitleBar></LoginTitleBar>
@@ -32,7 +40,7 @@ import { post } from "../api/http.js";
 import { ElMessage } from "element-plus";
 import { JSEncrypt } from "jsencrypt";
 import { useIpcRenderer } from "@vueuse/electron";
-import LoginTitleBar from '../components/TitleBar/loginTitleBar.vue'
+import LoginTitleBar from '@/components/TitleBar/loginTitleBar.vue'
 
 export default {
   name: "Login",
@@ -43,8 +51,8 @@ export default {
     const username = ref("");
     const password = ref("");
     let recordPassword = ref(false);
-    const Store = require('electron-store');
-    const Estore = new Store();
+    const electronStore = require('electron-store');
+    const Estore = new electronStore();
     const store = useStore();
     const ipcRenderer = useIpcRenderer();
 

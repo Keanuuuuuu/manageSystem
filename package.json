@@ -19,6 +19,7 @@
     "electron-store": "^8.1.0",
     "element-plus": "^2.2.36",
     "jsencrypt": "^3.3.2",
+    "pinia": "^2.1.7",
     "vite": "^4.4.9",
     "vue": "^3.0.4",
     "vue-router": "^4.1.6",
