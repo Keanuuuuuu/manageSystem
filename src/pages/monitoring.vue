@@ -12,7 +12,8 @@
     <!-- 左侧节点树 -->
     <div class="tree">
       <el-scrollbar>
-        <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" :default-expand-all="true" :expand-on-click-node="false">
+        <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" :default-expand-all="true"
+          :expand-on-click-node="false">
           <template #default="{ node, data }">
             <span class="custom-tree-node" v-mouse-menu="{ params: data, ...options_tree }">
               <span>{{ data.label }}</span>
@@ -118,7 +119,10 @@ import ConcurrencyRequest from '@/utils/ConcurrencyRequest.js'
 import { Test } from '@/utils/treeArr.js'
 
 import { MouseMenuDirective } from '@howdyjs/mouse-menu'
-import { mapMutations, useStore } from 'vuex'
+
+import { useCustomStore } from '@/store'; // 引入pinia
+
+
 
 import controlDialog from '@/components/Dialog/controlDialog.vue'
 import intelligentControl from '@/components/Dialog/intelligentControlDialog.vue'
@@ -143,6 +147,8 @@ export default {
     MouseMenu: MouseMenuDirective
   },
   setup({ emit }) {
+    const store = useCustomStore();
+
 
     // 页面挂载时刷新请求
     onMounted(() => {
@@ -439,18 +445,16 @@ export default {
       editVisible.value = false
     }
 
-    // vuex相关操作
-    const store = useStore()
-    const storeMutations = mapMutations(['Current_control', 'Switch_control', 'Mode_control', 'Wind_control', 'Temperature_control', 'setUserdata'])
 
-    const currentControlValue = computed(() => store.state.currentControl)
-    const numberValue = computed(() => store.state.number)
-    const switchValue = computed(() => store.state.Switch)
-    const modeValue = computed(() => store.state.Mode)
-    const windValue = computed(() => store.state.Wind)
-    const temperatureValue = computed(() => store.state.Temperature)
-    const userdataValue = computed(() => store.state.userdata)
-    // console.log('userdata:',userdataValue.value);
+    // pinia
+    const currentControlValue = computed(() => store.currentControl);
+    const numberValue = computed(() => store.number);
+    const switchValue = computed(() => store.Switch);
+    const modeValue = computed(() => store.Mode);
+    const windValue = computed(() => store.Wind);
+    const temperatureValue = computed(() => store.Temperature);
+
+
     function confirm() {
       // console.log(switchValue.value, modeValue.value, windValue.value, temperatureValue.value)
       // 拿到数据后发送请求，后期需完善数据是否输入及格式检测
@@ -573,7 +577,6 @@ export default {
       loading,
       titleChange,
       handleNodeClick,
-      ...storeMutations,
       array,
       options_tree, // 菜单栏右击配置项
       editVisible,

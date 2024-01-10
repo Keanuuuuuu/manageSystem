@@ -11,14 +11,15 @@
     <div v-for="item in selected" :key="item.index">
       {{ item }}
     </div>
+
     <div class="control Switch_control">
       <span>开/关</span>
-      <el-select 
-        :modelValue="value_one" 
-        placeholder="选择开关状态" 
+      <el-select
+        :modelValue="switchValue"
+        placeholder="选择开关状态"
         class="Switch_select"
-        @change="Switch_change"
-        >
+        @change="switchChange"
+      >
         <el-option
           v-for="item in options_one"
           :key="item.value"
@@ -26,14 +27,15 @@
         />
       </el-select>
     </div>
+
     <div class="control Mode_control">
       <span>模式</span>
-      <el-select 
-        :modelValue="value_two" 
-        placeholder="选择空调模式" 
+      <el-select
+        :modelValue="modeValue"
+        placeholder="选择空调模式"
         class="Mode_select"
-        @change="Mode_change"
-        >
+        @change="modeChange"
+      >
         <el-option
           v-for="item in options_two"
           :key="item.value"
@@ -41,14 +43,15 @@
         />
       </el-select>
     </div>
+
     <div class="control Wind_speed_control">
       <span>风速</span>
-      <el-select 
-        :modelValue="value_three" 
-        placeholder="选择风速挡位" 
+      <el-select
+        :modelValue="windValue"
+        placeholder="选择风速挡位"
         class="Wind_select"
-        @change="Wind_change"
-        >
+        @change="windChange"
+      >
         <el-option
           v-for="item in options_three"
           :key="item.value"
@@ -56,48 +59,52 @@
         />
       </el-select>
     </div>
+
     <div class="control Temperature_control">
       <span>温度</span>
       <el-input-number
-      @change="Temperature_change"
-      :modelValue="num"
-      :min="16"
-      :max="30"
-      controls-position="right"
-      class="Temperature_select"
-    />
+        @change="temperatureChange"
+        :modelValue="temperatureValue"
+        :min="16"
+        :max="30"
+        controls-position="right"
+        class="Temperature_select"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import { reactive, ref, computed } from 'vue'
-import { mapMutations, mapState, useStore } from 'vuex'
+import { ref, computed } from 'vue';
+import { useCustomStore } from '@/store'; // 引入pinia
+
 export default {
-  name:'controlDialog',
+  name: 'controlDialog',
   props: {
     value_one: {
       type: String,
-      default: "开"
+      default: '开',
     },
     value_two: {
       type: String,
-      default: "制冷"
+      default: '制冷',
     },
     value_three: {
       type: String,
-      default: "自动"
+      default: '自动',
     },
     num: {
       type: Number,
-      default: 25
+      default: 25,
     },
-    selected:{
-      type: Array
-    }
+    selected: {
+      type: Array,
+    },
   },
   setup(props, { emit }) {
-    const options_one = reactive([
+    const store = useCustomStore();
+
+    const options_one = ref([
       {
         value: '开',
         label: 'Option1',
@@ -105,9 +112,9 @@ export default {
       {
         value: '关',
         label: 'Option2',
-      }
-    ])
-    const options_two = reactive([
+      },
+    ]);
+    const options_two = ref([
       {
         value: '制冷',
         label: 'Option1',
@@ -124,8 +131,8 @@ export default {
         value: '除湿',
         label: 'Option4',
       }
-    ])
-    const options_three = reactive([
+    ]);
+    const options_three = ref([
       {
         value: '自动',
         label: 'Option1',
@@ -142,57 +149,50 @@ export default {
         value: '高速',
         label: 'Option4',
       }
-    ])
+    ]);
 
-    // vuex相关操作
-    const store = useStore()
-    const storeMutations = mapMutations(['Switch_control', 'Mode_control', 'Wind_control', 'Temperature_control'])
+    const switchValue = computed(() => store.Switch);
+    const modeValue = computed(() => store.Mode);
+    const windValue = computed(() => store.Wind);
+    const temperatureValue = computed(() => store.Temperature);
 
-    const numberValue = computed(() => store.state.number)
-    const switchValue = computed(() => store.state.Switch)
-    const modeValue = computed(() => store.state.Mode)
-    const windValue = computed(() => store.state.Wind)
-    const temperatureValue = computed(() => store.state.Temperature)
-
-    function Switch_change(event) {
-      store.commit('Switch_control', event)
-      emit('updateDialogValue', event)
+    function switchChange(event) {
+      store.setSwitch(event);
+      emit('updateDialogValue', event);
     }
 
-    function Mode_change(event) {
-      store.commit('Mode_control', event)
-      emit('updateDialogMode', event)
+    function modeChange(event) {
+      store.setMode(event);
+      emit('updateDialogMode', event);
     }
 
-    function Wind_change(event) {
-      // console.log(event)
-      store.commit('Wind_control', event)
-      emit('updateDialogWind', event)
+    function windChange(event) {
+      store.setWind(event);
+      emit('updateDialogWind', event);
     }
 
-    function Temperature_change(event) {
-      store.commit('Temperature_control', event)
-      emit('updateDialogNum', event)
+    function temperatureChange(event) {
+      store.setTemperature(event);
+      emit('updateDialogNum', event);
     }
 
     return {
       options_one,
       options_two,
       options_three,
-      Switch_change,
-      Mode_change,
-      Wind_change,
-      Temperature_change,
-      ...storeMutations,
+      switchChange,
+      modeChange,
+      windChange,
+      temperatureChange,
       switchValue,
       modeValue,
       windValue,
       temperatureValue,
-      numberValue
-    }
-  }
-}
+    };
+  },
+};
 </script>
+
 
 <style lang="scss" scoped>
 .contentDialog{
