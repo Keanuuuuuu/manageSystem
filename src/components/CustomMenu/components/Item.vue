@@ -1,3 +1,10 @@
+<!-- 
+* @description: 菜单中的每一项具体内容
+* @fileName: Item.vue
+* @author:刘世博 文洋
+* @date: 2024-01-11
+* @version: 
+!-->
 <template>
   <li @click="chooseItem">
     <slot></slot>
@@ -10,12 +17,8 @@ import systemEventBus from '@/utils/systemEventBus'
 
 export default {
   props: {
-    value: {
-      type: String
-    },
-    type: {
-      type: Number
-    }
+    value: String,
+    type:Number,
   },
   setup(props) {
     const chooseItem = (res) => {

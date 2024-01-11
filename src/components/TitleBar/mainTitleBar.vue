@@ -1,7 +1,7 @@
 <!-- 
 * @description: 主界面的客制化titleBar 
 * @fileName: index.vue
-* @author: 文洋
+* @author: 文洋 刘世博
 * @date: 2024-01-09
 * @version: 
 !-->
@@ -19,9 +19,6 @@
           <el-icon><CloseBold /></el-icon>
         </span>
       </div>
-    </div>
-    <div class="menu">
-      <CustomMenu></CustomMenu>
     </div>
   </div>
 </template>
@@ -90,12 +87,6 @@ export default{
     .window-close:hover {
       background-color: red;
     }
-  }
-  .menu{
-    width: 100%;
-    background-color: rgb(231,238,243);
-    margin-top:auto;
-    border-bottom:2px solid rgb(217, 219, 223);
   }
 }
 </style>

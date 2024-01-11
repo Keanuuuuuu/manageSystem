@@ -83,11 +83,9 @@ export default {
 #container {
   width: 90%;
   height: 90%;
+  text-align: center;
 }
 
-#data {
-  position: relative;
-}
 
 .center{
   top: 45%;
@@ -101,9 +99,9 @@ export default {
   top: 20px;
   display: flex;
   justify-items: center;
-  height: 80px;
+  margin-bottom: 50px;
   p {
-    line-height: 30px;
+    line-height: 0px;
   }
   button {
     margin-left: 15px;

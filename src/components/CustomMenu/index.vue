@@ -7,21 +7,6 @@
 !-->
 <template>
   <div class="custom-menu-container">
-    <!-- <div class="custom-menu">
-      <div class="menu-item" v-for="item in menuItems" :key="item.label" @click="handleItemClick(item)">
-        {{ item.label }}
-        <div v-if="asClick && item.submenu" class="submenu">
-          <div
-            class="submenu-item"
-            v-for="subItem in item.submenu"
-            :key="subItem.label"
-            @click="handleSubItemClick(subItem)"
-          >
-            {{ subItem.label }}
-          </div>
-        </div>
-      </div>
-    </div> -->
     <Menu :menu="menu1">
       <template #selectDropDown>
         <Item :value="value1_1" :type="3">修改密码</Item>
@@ -56,7 +41,7 @@
 import Menu from './components/Menu.vue'
 import Item from './components/Item.vue'
 export default {
-  components:{
+  components: {
     Menu,
     Item
   },
@@ -79,14 +64,14 @@ export default {
       ],
     },
   },
-  data(){
-    return{
+  data() {
+    return {
       asClick: false,
       menu1: "系统",
       menu2: "视图",
       menu3: "工具",
       menu4: "帮助",
-      value1_1: "修改密码",
+      value1_1: "修改密码",  
       value1_2: "修改信息",
       value1_3: "退出系统",
       value1_4: "未读信息",
@@ -98,7 +83,7 @@ export default {
       value3_4: "报警设置",
       value4_1: "帮助"
     }
-  },  
+  },
   methods: {
     handleItemClick(item) {
       this.asClick = true
@@ -111,7 +96,7 @@ export default {
         item.click();
       }
     },
-    blur(){
+    blur() {
       this.asClick = false
     }
   },
@@ -125,7 +110,12 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: row;
+
+  width: 100%;
+    background-color: rgb(231,238,243);
+    border-bottom:2px solid rgb(217, 219, 223);
 }
+
 .custom-menu {
   background-color: #333;
   color: white;
@@ -140,9 +130,11 @@ export default {
   justify-content: flex-start;
   cursor: pointer;
 }
-.menu-item:hover{
+
+.menu-item:hover {
   background-color: white;
 }
+
 .submenu {
   position: absolute;
   top: 100%;
@@ -153,12 +145,13 @@ export default {
   border: 1px solid #222;
   z-index: 1000;
 }
+
 .submenu-item {
   padding: 5px 10px;
   cursor: pointer;
   color: white;
 }
+
 .submenu-item:hover {
   background-color: white;
-}
-</style>
+}</style>

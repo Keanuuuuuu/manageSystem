@@ -18,7 +18,7 @@ function createMainWindow() {
   windows.mainWindow = new BrowserWindow(mainWindowConfig);
   // 创建主窗口的逻辑...
   if (NODE_ENV === 'development') {
-    windows.mainWindow.loadURL('http://localhost:5173/#/monitoring')
+    windows.mainWindow.loadURL('http://localhost:5173/#/overview')
   } else {
     windows.mainWindow.loadFile(NODE_ENV === 'development' ? 'http://localhost:5173/' : path.join(__dirname, 'dist/index.html'),
       {

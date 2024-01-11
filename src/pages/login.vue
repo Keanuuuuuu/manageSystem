@@ -8,7 +8,6 @@
 
 <template>
   <div id="loginBox">
-    <LoginTitleBar></LoginTitleBar>
     <div id="logo">
       <img src="../assets/airCondition.png" draggable="false" />
       <p>中央空调集中管理平台</p>
@@ -35,25 +34,21 @@
 
 <script>
 import { ref, onMounted } from "vue";
-import { useStore } from "vuex";
+import { useCustomStore } from '@/store'; // 引入pinia
 import { post } from "../api/http.js";
 import { ElMessage } from "element-plus";
 import { JSEncrypt } from "jsencrypt";
 import { useIpcRenderer } from "@vueuse/electron";
-import LoginTitleBar from '@/components/TitleBar/loginTitleBar.vue'
 
 export default {
   name: "Login",
-  components: {
-    LoginTitleBar
-  },
   setup() {
     const username = ref("");
     const password = ref("");
     let recordPassword = ref(false);
     const electronStore = require('electron-store');
     const Estore = new electronStore();
-    const store = useStore();
+    const store = useCustomStore();
     const ipcRenderer = useIpcRenderer();
 
     // 加密函数
@@ -105,8 +100,7 @@ export default {
           Estore.set("recordPassword", recordPassword.value);
         }
 
-        // 将用户数据存入 Vuex
-        store.commit("setUserdata", userData);
+        store.setUserdata(userData)
 
         // 只在第一次登录/token过期后/切换账号时 存入token
         if (!Estore.get('token')) {
@@ -173,23 +167,34 @@ export default {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  overflow: hidden;
 }
 
 #logo {
   user-select: none;
   display: block;
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin-top: 25px;
+  // border: 1px solid black;
   -webkit-app-region: drag;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  text-align: center;
+  height: 120px;
 
   img {
-    width: 20%;
+    // border: 1px solid black;
+    width: 80px;
   }
 
   p {
+    // border: 1px solid black;
     font-size: 27px;
     letter-spacing: 2px;
     color: rgb(1, 71, 175);
+    margin: 0px;
   }
 }
 
@@ -217,7 +222,7 @@ export default {
 }
 
 #loginBtn {
-  margin: 10px auto 20px;
+  margin: 10px auto 0px;
   width: 140px;
   height: 45px;
   font-size: 20px;
