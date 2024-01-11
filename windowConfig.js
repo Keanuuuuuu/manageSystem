@@ -17,8 +17,8 @@ exports.mainWindowConfig = {
 }
 
 exports.loginWindowConfig = {
-  width: 385,
-  height: 490,
+  width: 380,
+  height: 485,
   frame: false,
   autoHideMenuBar: true,
   transparent: true,

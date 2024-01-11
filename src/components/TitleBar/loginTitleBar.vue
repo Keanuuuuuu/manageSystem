@@ -40,12 +40,16 @@ export default {
 
 <style lang="scss" scoped>
 .main-top {
-  width: 100%;
+  z-index: 999;
+  width: 375px;
   -webkit-app-region: drag; //事件处可以禁用拖拽区域
   color: rgba(0, 0, 0, 0.726);
   position: fixed;
+  top: 3px;
+  left: 3px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
+  // border: 1px solid black;
 
   .right {
     float: right;

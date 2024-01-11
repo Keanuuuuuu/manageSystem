@@ -1,21 +1,25 @@
 <template>
-  <template v-if="$route.path == '/' || $route.path == '/login' ">
-    <router-view/>
+  <template v-if="$route.path == '/' || $route.path == '/login'">
+    <LoginTitleBar></LoginTitleBar>
+    <router-view />
   </template>
 
-  <template v-else-if="$route.path == '/log' ">
-    <router-view/>
+  <template v-else-if="$route.path == '/log'">
+    <router-view />
   </template>
 
-  <template v-else-if="$route.path == '/findPWD' ">
-    <router-view/>
+  <template v-else-if="$route.path == '/findPWD'">
+    <router-view />
   </template>
 
   <template v-else>
-      <div class="body">
-        <TitleBar></TitleBar>
-        <Arti></Arti>
-      </div>
+    <div class="body">
+      <TitleBar></TitleBar>
+      <CustomMenu></CustomMenu>
+      <!-- <Menu></Menu> -->
+      <Navigator :routes="routes" :currentRoute="currentRoute"></Navigator>
+      <router-view></router-view>
+    </div>
   </template>
 </template>
 
@@ -24,8 +28,12 @@ import { onMounted } from "vue";
 import { useRouter } from "vue-router";
 
 
-import Arti from "./components/arti.vue";
-import TitleBar from "./components/TitleBar/mainTitleBar.vue";
+import Navigator from "@/components/Navigator.vue";
+import LoginTitleBar from '@/components/TitleBar/loginTitleBar.vue'
+import TitleBar from "@/components/TitleBar/mainTitleBar.vue";
+
+import CustomMenu from "@/components/CustomMenu/index.vue"
+import Menu from '@/components/Menu/index.vue'
 
 import systemEventBus from "@/utils/systemEventBus";
 import { useIpcRenderer } from "@vueuse/electron";
@@ -34,40 +42,50 @@ import { useIpcRenderer } from "@vueuse/electron";
 export default {
   name: "App",
   components: {
-    Arti,
-    TitleBar
+    Navigator,
+    TitleBar,
+    LoginTitleBar,
+    Menu,
+    CustomMenu
   },
-  setup(){
+  computed: {
+    routes() {
+      return this.$router.options.routes;
+    },
+    currentRoute() {
+      return this.$route;
+    },
+  },
+  setup() {
     let route = useRouter();
     const ipcRenderer = useIpcRenderer();
 
-    onMounted(()=>{
-      systemEventBus.$on('showDialog', (res)=>{
-        if(res === "日志记载"){
+    onMounted(() => {
+      systemEventBus.$on('showDialog', (res) => {
+        if (res === "日志记载") {
           console.log('///////////////////////////');
-          ipcRenderer.send('openDialog',"日志记载")
+          ipcRenderer.send('openDialog', "日志记载")
         }
       })
-    })    
-    return{
+    })
+    return {
       route
     }
   }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 0px;
+  margin: 0px;
 }
 
 * {
-  margin:0; // 如果不设置清除样式无法填满背景
+  margin: 0; // 如果不设置清除样式无法填满背景
 }
 
 .body {
@@ -75,43 +93,10 @@ export default {
   position: absolute;
   top: 50%;
   left: 50%;
-  height: 100vh;
+  height: 100%;
   transform: translate(-50%, -50%);
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding-left: calc(100vw - 100%);
-  .logo {
-    height: 10%; 
-    // 顶部logo的高度加上下面Arti组件的高度为100%，例：这里为10%，那Arti整个高度为90%
-  }
-  .el-row {
-    // border: 1px solid black;
-    box-sizing: border-box;
-    min-width: 1200px;
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-  .bg-purple-dark {
-    background: #E7EEF3;
-  }
-  .bg-purple {
-    background: #d3dce6;
-  }
-  .bg-purple-light {
-    background: #e5e9f2;
-  }
-  .grid-content {
-    min-height: 50px;
-    height: 100%;
-  }
-  .grid-content1 {
-    min-height: 500px;
-    height: 100%;
-  }
-  .row-bg {
-    padding: 10px 0;
-    background-color: #f9fafc;
-  }
 }
 </style>

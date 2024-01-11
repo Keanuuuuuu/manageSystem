@@ -105,10 +105,11 @@ export default {
           selectValue.value = res
           console.log(res);
           if (type === 1) {
+            console.log('type11111111');
             systemEventBus.$emit('showFunc', res)
           }
           if (type === 2) {
-            console.log(type);
+            console.log('type2222222');
             systemEventBus.$emit('showDialog', res)
           }
           selectOpen.value = false
@@ -132,6 +133,7 @@ export default {
 <style lang="scss" scoped>
 .menu-container {
   width: 70px;
+  margin: 3px 0px 0px 5px;
   padding: 0 10px;
   color: #23262F;
   cursor: pointer;
@@ -141,7 +143,7 @@ export default {
 
   .menu-button {
     height: 20px;
-
+    text-align: center;
     span {
       user-select: none;
     }
