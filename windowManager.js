@@ -18,7 +18,7 @@ function createMainWindow() {
   windows.mainWindow = new BrowserWindow(mainWindowConfig);
   // 创建主窗口的逻辑...
   if (NODE_ENV === 'development') {
-    windows.mainWindow.loadURL('http://localhost:5173/#/overview')
+    windows.mainWindow.loadURL('http://localhost:5173/#/routes/overview')
   } else {
     windows.mainWindow.loadFile(NODE_ENV === 'development' ? 'http://localhost:5173/' : path.join(__dirname, 'dist/index.html'),
       {
@@ -36,7 +36,7 @@ function createLoginWindow() {
   windows.loginWindow = new BrowserWindow(loginWindowConfig);
   // 创建登录窗口的逻辑...
   if (NODE_ENV === 'development') {
-    windows.loginWindow.loadURL('http://localhost:5173/#/login')
+    windows.loginWindow.loadURL('http://localhost:5173/#/dialog/login')
   } else {
     windows.loginWindow.loadFile(NODE_ENV === 'development'
       ? 'http://localhost:5173/'
@@ -54,7 +54,7 @@ function createPWDWindow() {
   windows.PWDWindow = new BrowserWindow(findPWDWindowConfig);
   // 创建忘记密码窗口的逻辑...
   if (NODE_ENV === 'development') {
-    windows.PWDWindow.loadURL('http://localhost:5173/#/findPWD')
+    windows.PWDWindow.loadURL('http://localhost:5173/#/dialog/findPWD')
   } else {
     windows.PWDWindow.loadFile(NODE_ENV === 'development'
       ? 'http://localhost:5173/'
@@ -72,7 +72,7 @@ function createDialog() {
   windows.dialog = new BrowserWindow(dialogConfig)
   // 创建日志弹窗逻辑...
   if (NODE_ENV === 'development') {
-    windows.dialog.loadURL('http://localhost:5173/#/log')
+    windows.dialog.loadURL('http://localhost:5173/#/dialog/log')
   } else {
     windows.dialog.loadFile(NODE_ENV === 'development'
       ? 'http://localhost:5173/'

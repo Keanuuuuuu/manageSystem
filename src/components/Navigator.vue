@@ -8,8 +8,8 @@
 <template>
   <div class="bar">
     <div class="tab-bar">
-      <!-- 显示所有打开过的标签页 -->
-      <div v-for="route in routes" :key="route.name" @click="switchTab(route)" class="tab">
+      <!-- 只显示初始标签页 -->
+      <div v-for="route in navigatorRoutes" :key="route.name" @click="switchTab(route)" class="tab">
         {{ route.name }}
         <span @click="closeTab(route)">✖</span>
       </div>
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { onMounted, ref, onBeforeMount } from 'vue';
+import { onMounted, ref, onBeforeMount, computed } from 'vue';
 import { useRouter } from "vue-router";
 import systemEventBus from '@/utils/systemEventBus';
 import { useIpcRenderer } from "@vueuse/electron";
@@ -35,19 +35,29 @@ export default {
   name: 'Navigator',
   props: {
     routes: Array, // 路由数组
-    currentRoute: Object,  // 当前路由
   },
   setup(props) {
-    console.log('routes=======================>', props.routes);
-    console.log('current======================>', props.currentRoute);
-
-    let monitoring = ref(false)
     const ipcRenderer = useIpcRenderer();
     const router = useRouter();
     const Store = require('electron-store');
     const Estore = new Store();
+    const navigatorRoutes = ref(props.routes[1].children)
 
-    const logout = () => {
+    onMounted(() => {
+      console.log(props.routes[1].children);
+      systemEventBus.$on('openDialog', (res) => {
+        console.log(res);
+        ipcRenderer.send('openDialog')
+      })
+
+      systemEventBus.$on('GoRoutes', (path) => {
+        console.log(path);
+        router.push(path)
+      })
+    })
+
+
+    function logout() {
       // 清空logindata和token
       Estore.set('logindata', {
         username: null,
@@ -58,56 +68,40 @@ export default {
       ipcRenderer.send("login-deny")
     }
 
-    onBeforeMount(() => {
-      if (monitoring.value === false) {
-        // 初始时只添加 "页面总览" 的路由标签页
-        props.routes.push({ name: '页面总览' });
-        router.push("/overview");
-      }
-    })
+    function switchTab(route) {
+      // 切换到对应路由
+      router.push({ name: route.name });
+    }
 
-    onMounted(() => {
-      systemEventBus.$on('showFunc', (res) => {
-        console.log('打开内机监控');
-        if (res === "内机监控") {
-          monitoring.value = true
-          // 切换路由时只添加不存在于 routes 数组的标签页
-          if (!props.routes.some((route) => route.name === '内机监控')) {
-            props.routes.push({ name: '内机监控' });
-          }
-          router.push("/monitoring");
-        }
-      })
-    })
+    function closeTab(route) {
+      const routesArray = navigatorRoutes.value;
+
+      // 要删除的路径
+      let pathToDelete = route.path
+
+      // 查找要删除元素的索引
+      let indexToDelete = routesArray.findIndex(route => route.path === pathToDelete);
+
+      // 确保索引存在且不是第一位元素
+      if (indexToDelete !== -1 && indexToDelete !== 0) {
+        // 使用 splice 方法删除指定索引的元素
+        routesArray.splice(indexToDelete, 1);
+      }
+
+      console.log(route);
+    }
+
 
     return {
+      navigatorRoutes,
       logout,
-      monitoring
+      switchTab,
+      closeTab
     }
-  },
-  methods: {
-    switchTab(route) {
-      // 只有当标签页不存在于 routes 数组中时，再添加到数组
-      if (!this.routes.some((r) => r.name === route.name)) {
-        this.routes.push({ name: route.name });
-      }
-      this.$router.push({ name: route.name });
-    },
-    closeTab(route) {
-      // 移出数组前判断是否是当前路由
-      if (this.currentRoute.name === route.name) {
-        this.$router.push({ name: '页面总览' }); // 导航至默认路由 （总览）
-      }
-
-      // 移除相应的标签页
-      const index = this.routes.findIndex((r) => r.name === route.name);
-      if (index !== -1) {
-        this.routes.splice(index, 1);
-      }
-    },
-  },
+  }
 }
 </script>
+
 
 <style lang="scss" scoped>
 .bar {

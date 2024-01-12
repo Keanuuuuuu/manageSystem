@@ -21,7 +21,7 @@ export default {
     type:Number,
   },
   setup(props) {
-    const chooseItem = (res) => {
+    const chooseItem = () => {
       systemEventBus.$emit('chooseItem', props.value, props.type, token)
     }
 
@@ -31,10 +31,6 @@ export default {
     const token = inject('token');
     // 缓存token
     page.token = token
-
-    onMounted(() => {
-
-    })
 
     return {
       chooseItem
@@ -46,14 +42,15 @@ export default {
 <style lang="scss" scoped>
 li {
   list-style-type: none;
-  width: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 80px;
+  padding: 4px 20px;
 }
 
 li:hover {
-  background-color: gray;
+  background-color: rgb(185,190,194);
   transition: all .2s;
 }
 </style>

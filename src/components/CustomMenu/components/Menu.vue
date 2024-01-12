@@ -7,13 +7,13 @@
 !-->
 <template>
   <div class="menu-container">
-    <!-- v-for="( item ) in menu" :key="item.label" -->
+
     <div ref="menu_button" class="menu-button" @click="handleClick">
       <!-- 选中内容 -->
       <span>{{ menu }}</span>
-      <!-- <span>{{ selectValue }}</span> -->
     </div>
-    <!-- 菜单框 -->
+
+    <!-- 下拉内容 -->
     <teleport to="body">
       <transition name="menu">
         <div ref="menu_dropdown" v-show="selectOpen" :style="dropdownStyle" class="menu-dropdown">
@@ -103,14 +103,14 @@ export default {
       systemEventBus.$on('chooseItem', (res, type, token) => {
         if (token === page.token) {
           selectValue.value = res
-          console.log(res);
-          if (type === 1) {
-            console.log('type11111111');
-            systemEventBus.$emit('showFunc', res)
+          console.log(type);
+          if (type === "routes") {
+            console.log('路由类型');
+            systemEventBus.$emit('GoRoutes', res)
           }
-          if (type === 2) {
-            console.log('type2222222');
-            systemEventBus.$emit('showDialog', res)
+          if (type === "dialog") {
+            console.log('弹窗类型');
+            systemEventBus.$emit('openDialog', res)
           }
           selectOpen.value = false
         }
@@ -124,7 +124,6 @@ export default {
       selectValue,
       dropdownStyle,
       handleClick,
-      token
     }
   }
 }
@@ -156,7 +155,6 @@ export default {
 
 .menu-dropdown {
   position: fixed;
-  width: 150px;
   background-color: white;
   cursor: pointer;
 
