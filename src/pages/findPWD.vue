@@ -89,12 +89,13 @@ export default {
 }
 
 #container {
+    overflow: hidden;
     width: 100%;
     height: calc(100vh - 35px);
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: rgb(249, 251, 255);
+    // background-color: rgb(249, 251, 255);
 }
 
 #main {

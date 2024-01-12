@@ -9,29 +9,29 @@
   <div class="custom-menu-container">
     <Menu :menu="menu1">
       <template #selectDropDown>
-        <Item :value="value1_1" :type="3">修改密码</Item>
-        <Item :value="value1_2" :type="3">修改信息</Item>
-        <Item :value="value1_3" :type="3">退出系统</Item>
-        <Item :value="value1_4" :type="3">未读信息</Item>
+        <Item :value="value1_1" :type="dialog">修改密码</Item>
+        <Item :value="value1_2" :type="dialog">修改信息</Item>
+        <Item :value="value1_3" :type="dialog">退出系统</Item>
+        <Item :value="value1_4" :type="dialog">未读信息</Item>
       </template>
     </Menu>
     <Menu :menu="menu2">
       <template #selectDropDown>
-        <Item :value="value2_1" :type="1">内机监控</Item>
-        <Item :value="value2_2" :type="1">系统总览</Item>
+        <Item :value="value2_1" :type="routes">内机监控</Item>
+        <Item :value="value2_2" :type="routes">系统总览</Item>
       </template>
     </Menu>
     <Menu :menu="menu3">
       <template #selectDropDown>
-        <Item :value="value3_1" :type="2">智能控制</Item>
-        <Item :value="value3_2" :type="2">日志记载</Item>
-        <Item :value="value3_3" :type="2">账号管理</Item>
-        <Item :value="value3_4" :type="2">报警设置</Item>
+        <Item :value="value3_1" :type="dialog">智能控制</Item>
+        <Item :value="value3_2" :type="dialog">日志记载</Item>
+        <Item :value="value3_3" :type="routes">账号管理</Item>
+        <Item :value="value3_4" :type="dialog">报警设置</Item>
       </template>
     </Menu>
     <Menu :menu="menu4">
       <template #selectDropDown>
-        <Item :value="value4_1" :type="4">帮助</Item>
+        <Item :value="value4_1" :type="dialog">帮助</Item>
       </template>
     </Menu>
   </div>
@@ -45,28 +45,10 @@ export default {
     Menu,
     Item
   },
-  props: {
-    menuItems: {
-      type: Array,
-      default: () => [
-        {
-          label: "111",
-          submenu: [
-            {
-              label: "112"
-            }
-          ]
-        },
-        {
-          label: "111",
-          submenu: []
-        }
-      ],
-    },
-  },
   data() {
     return {
-      asClick: false,
+      routes:"routes",
+      dialog:"dialog",
       menu1: "系统",
       menu2: "视图",
       menu3: "工具",
@@ -75,29 +57,13 @@ export default {
       value1_2: "修改信息",
       value1_3: "退出系统",
       value1_4: "未读信息",
-      value2_1: "内机监控",
-      value2_2: "系统总览",
+      value2_1: "/routes/monitoring",
+      value2_2: "/routes/overview",
       value3_1: "智能控制",
       value3_2: "日志记载",
-      value3_3: "账号管理",
+      value3_3: "/routes/acount",
       value3_4: "报警设置",
       value4_1: "帮助"
-    }
-  },
-  methods: {
-    handleItemClick(item) {
-      this.asClick = true
-      if (item.click) {
-        item.click();
-      }
-    },
-    handleSubItemClick(item) {
-      if (item.click) {
-        item.click();
-      }
-    },
-    blur() {
-      this.asClick = false
     }
   },
 };
