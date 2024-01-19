@@ -5,15 +5,17 @@
   </template>
 
   <template v-else-if="$route.path == '/dialog/log'">
+    <LogTitleBar></LogTitleBar>
     <router-view />
   </template>
 
   <template v-else-if="$route.path == '/dialog/findPWD'">
+    <findPWDTitleBar></findPWDTitleBar>
     <router-view />
   </template>
 
   <template v-else>
-    <div class="body">
+    <div class="mainApp">
       <TitleBar></TitleBar>
       <CustomMenu></CustomMenu>
       <Navigator></Navigator>
@@ -29,9 +31,10 @@ import { useRouter } from "vue-router";
 import Navigator from "@/components/Navigator.vue";
 import LoginTitleBar from '@/components/TitleBar/loginTitleBar.vue'
 import TitleBar from "@/components/TitleBar/mainTitleBar.vue";
+import LogTitleBar from '@/components/TitleBar/logTitleBar.vue';
+import findPWDTitleBar from "@/components/TitleBar/PWDTitleBar.vue";
 
 import CustomMenu from "@/components/CustomMenu/index.vue"
-
 
 
 export default {
@@ -40,6 +43,8 @@ export default {
     Navigator,
     TitleBar,
     LoginTitleBar,
+    LogTitleBar,
+    findPWDTitleBar,
     CustomMenu
   },
   setup() {
@@ -60,7 +65,7 @@ export default {
   color: #2c3e50;
 }
 
-.body {
+.mainApp {
   width: 100%;
   position: absolute;
   top: 50%;

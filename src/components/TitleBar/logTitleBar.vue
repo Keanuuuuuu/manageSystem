@@ -47,7 +47,6 @@ export default{
   width: 100%;
   min-width: 600px;
   height: 35px;
-  // background-color: #3098e2;
   background-color: $color-theme;
   -webkit-app-region: drag; //事件处可以禁用拖拽区域
   color: white;

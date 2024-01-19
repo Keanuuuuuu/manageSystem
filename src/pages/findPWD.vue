@@ -7,7 +7,6 @@
 !-->
 <template>
     <div>
-        <findPWDTitleBar></findPWDTitleBar>
         <div id="container">
             <div id="main">
                 <div class="mainBox" id="step1">
@@ -39,13 +38,9 @@
 
 <script>
 import { ref } from "vue";
-import findPWDTitleBar from "../components/TitleBar/PWDTitleBar.vue";
 import { throttle } from "../utils/Throttling";
 
 export default {
-    components: {
-        findPWDTitleBar
-    },
     setup() {
         let moveValue = ref(50)
         let previousX = 50

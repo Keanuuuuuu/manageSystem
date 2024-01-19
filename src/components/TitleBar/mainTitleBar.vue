@@ -15,6 +15,9 @@
         <span class="window-min" @click="windowMin">
           <el-icon><SemiSelect /></el-icon>
         </span>
+        <span class="window-resize" @click="windowResize">
+          <el-icon><CopyDocument /></el-icon>
+        </span>
         <span class="window-close" @click="windowClose">
           <el-icon><CloseBold /></el-icon>
         </span>
@@ -25,28 +28,23 @@
 
 <script>
 import { useIpcRenderer } from "@vueuse/electron"
-import CustomMenu from "../CustomMenu/index.vue"
-import { onUnmounted } from 'vue'
+
 
 export default{
-  components:{
-    CustomMenu
-  },
   setup(){
     const ipcRenderer = useIpcRenderer();
     const windowMin = ()=>{
-      console.log(ipcRenderer);
-      ipcRenderer.send("window-min"); // 向主进程通信
+      ipcRenderer.send("window-min"); // 向主进程通信 最小化
+    }
+    const windowResize = ()=>{
+      ipcRenderer.send("window-resize"); // 向主进程通信 调整尺寸
     }
     const windowClose = ()=>{
-      ipcRenderer.send("window-close"); // 向主进程通信
+      ipcRenderer.send("window-close"); // 向主进程通信 关闭
     }
-
-    onUnmounted(()=>{
-      
-    })
     return {
       windowMin,
+      windowResize,
       windowClose
     }
   }
@@ -56,7 +54,6 @@ export default{
 <style lang="scss" scoped>
 .main-top {
   width: 100%;
-  min-width: 1200px;
   background-color: $color-theme;
   -webkit-app-region: drag; //事件处可以禁用拖拽区域
   color: white;
@@ -72,6 +69,7 @@ export default{
   .right {
     float: right;
     .window-min,
+    .window-resize,
     .window-close {
       font-size: 14px;
       width: 50px;
@@ -81,7 +79,12 @@ export default{
       text-align: center;
       -webkit-app-region: no-drag; //事件处可以禁用拖拽区域
     }
-    .window-min:hover {
+    .window-resize{
+      transform: scale(-1,-1);
+      font-size: 13px;
+    }
+    .window-min:hover,
+    .window-resize:hover {
       background-color: rgb(119, 124, 207);
     }
     .window-close:hover {

@@ -1,26 +1,35 @@
 <template>
   <el-config-provider :locale="locale">
     <div class="log_container">
-      <LogTitleBar></LogTitleBar>
       <h1>日志记载</h1>
     </div>
   </el-config-provider>
 </template>
 
 <script>
-import LogTitleBar from '../components/TitleBar/logTitleBar.vue';
+
 import { ElConfigProvider } from 'element-plus';
 import zhCn from 'element-plus/lib/locale/lang/zh-cn';
-export default{
-  name:'log',
-  components:{
-    LogTitleBar,
+export default {
+  name: 'log',
+  components: {
     ElConfigProvider
   },
-  setup(){ 
-    return{
+  setup() {
+    return {
       locale: zhCn
     }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+html{
+  border: 1px solid black;
+}
+.log_container{
+  height: 300px;
+  background-color: black;
+}
+
+</style>

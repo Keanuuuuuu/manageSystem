@@ -8,8 +8,8 @@
 <template>
   <div class="bar">
     <div class="tab-bar">
-      <!-- 只显示初始标签页 -->
-      <div v-for="route in navigatorRoutes" :key="route" @click="switchTab(route)" class="tab">
+      <div v-for="route in navigatorRoutes" :key="route" @click="switchTab(route)"
+        :class="{ 'tab': true, 'active': currentRoute === route }">
         {{ route }}
         <span @click.stop="closeTab(route)">✖</span>
       </div>
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from "vue-router";
 import { useCustomStore } from '@/store';
 import systemEventBus from '@/utils/systemEventBus';
@@ -34,13 +34,15 @@ import { useIpcRenderer } from "@vueuse/electron";
 
 export default {
   name: 'Navigator',
-  setup(props) {
+  setup() {
     const ipcRenderer = useIpcRenderer();
     const router = useRouter();
     const store = useCustomStore()
     const Store = require('electron-store');
     const Estore = new Store();
     const navigatorRoutes = store.navigatorRoutes
+    const currentRoute = ref(router.currentRoute.value.name)
+
 
     onMounted(() => {
       systemEventBus.$on('openDialog', (res) => {
@@ -51,39 +53,47 @@ export default {
       systemEventBus.$on('GoRoutes', (route) => {
         console.log(route);
         store.addNavigatorRoutes(route)
-        router.push({name:route})
+        router.push({ name: route })
       })
-    })
+
+    });
+
+    // 在路由变化前更新当前路由
+    router.beforeEach((to,from, next) => {
+      currentRoute.value = to.name;
+      next();
+    });
+  
+
+  function logout() {
+  // 清空logindata和token
+  Estore.set('logindata', {
+    username: null,
+    password: null,
+  })
+  Estore.set('token', null)
+  Estore.set('recordPassword', false)
+  ipcRenderer.send("login-deny")
+}
+
+function switchTab(route) {
+  // 切换到对应路由
+  router.push({ name: route });
+}
+
+function closeTab(route) {
+  store.deleteNavigatorRoutes(route)
+  router.push({ name: '页面总览' }) //关闭页面后默认跳转到页面总览
+}
 
 
-    function logout() {
-      // 清空logindata和token
-      Estore.set('logindata', {
-        username: null,
-        password: null,
-      })
-      Estore.set('token', null)
-      Estore.set('recordPassword', false)
-      ipcRenderer.send("login-deny")
-    }
-
-    function switchTab(route) {
-      // 切换到对应路由
-      router.push({ name: route });
-    }
-
-    function closeTab(route) {
-      store.deleteNavigatorRoutes(route)
-      router.push({name:'页面总览'}) //关闭页面后默认跳转到页面总览
-    }
-
-
-    return {
-      navigatorRoutes,
-      logout,
-      switchTab,
-      closeTab
-    }
+return {
+  navigatorRoutes,
+  currentRoute,
+  logout,
+  switchTab,
+  closeTab
+}
   }
 }
 </script>
@@ -109,8 +119,12 @@ export default {
       cursor: pointer;
       background-color: #ccc;
 
-      .active {
+      &:hover {
         background-color: #ddd;
+      }
+
+      &.active {
+        background-color: gray;
       }
 
       span {

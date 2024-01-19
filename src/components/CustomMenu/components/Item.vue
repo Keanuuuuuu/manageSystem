@@ -1,5 +1,5 @@
 <!-- 
-* @description: 菜单中的每一项具体内容
+* @description: 菜单中的每一项具体内容 处理点击事件
 * @fileName: Item.vue
 * @author:刘世博 文洋
 * @date: 2024-01-11
@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { onMounted, getCurrentInstance, inject } from 'vue'
+import { getCurrentInstance, inject } from 'vue'
 import systemEventBus from '@/utils/systemEventBus'
 
 export default {

@@ -3,9 +3,8 @@
 const path = require('path')
 
 exports.mainWindowConfig = {
-  width: 2000,
-  height: 1000,
-  minHeight: 600,
+  minWidth:1000,
+  minHeight: 710,
   frame: false, // 用于自定义menu，设置为false可以将默认的菜单栏隐藏，包括叉、最小化、拖动与放大缩小
   autoHideMenuBar: true, // 在显示默认菜单的同时，隐藏那些Flie等菜单
   webPreferences: {
@@ -32,10 +31,8 @@ exports.loginWindowConfig = {
 }
 
 exports.findPWDWindowConfig = {
-  width: 2000,
-  height: 1000,
-  minHeight: 600,
-  minWidth: 1000,
+  minWidth:1000,
+  minHeight: 710,
   frame: false, 
   autoHideMenuBar: true, 
   webPreferences: {

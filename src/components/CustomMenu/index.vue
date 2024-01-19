@@ -1,5 +1,5 @@
 <!-- 
-* @description: 客制化菜单栏 系统/视图/工具/帮助 每一栏的填充内容
+* @description: 客制化菜单栏 系统/视图/工具/帮助 完成菜单的组装
 * @fileName: index.vue
 * @author:刘世博 文洋
 * @date: 2024-01-09
