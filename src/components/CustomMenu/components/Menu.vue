@@ -34,7 +34,7 @@ import { tokenFun } from '@/utils/token'
 
 export default {
   props: ['menu'],
-  setup(props) {
+  setup() {
     // 获取菜单
     const menu_button = ref([]);
     // 获取下拉框

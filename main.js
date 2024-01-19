@@ -30,6 +30,14 @@ ipcMain.on('window-min', () => {
     windows.mainWindow.minimize()
 })
 
+ipcMain.on('window-resize', () => {
+    if (windows.mainWindow.isMaximized()) {
+        windows.mainWindow.unmaximize()
+    } else {
+        windows.mainWindow.maximize()
+    }
+})
+
 ipcMain.on('window-close', () => {
     if (windows.dialog !== null) {
         windows.dialog.close()
