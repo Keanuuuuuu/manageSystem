@@ -51,7 +51,7 @@ export default {
       })
 
       systemEventBus.$on('GoRoutes', (route) => {
-        console.log(route);
+        // console.log(route)
         store.addNavigatorRoutes(route)
         router.push({ name: route })
       })

@@ -103,9 +103,9 @@ export default {
       systemEventBus.$on('chooseItem', (res, type, token) => {
         if (token === page.token) {
           selectValue.value = res
-          console.log(type);
+          // console.log(type);
           if (type === "routes") {
-            console.log('路由类型');
+            // console.log('路由类型');
             systemEventBus.$emit('GoRoutes', res)
           }
           if (type === "dialog") {
