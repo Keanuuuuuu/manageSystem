@@ -9,6 +9,7 @@
   <div class="main-top">
     <div>
       <div class="left">
+        <img src="@/assets/logo.png">
         <span>中央空调集中管理平台</span>
       </div>
       <div class="right">
@@ -65,6 +66,13 @@ export default{
     line-height: 35px;
     padding-left: 15px;
     font-size: 13.5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img{
+      margin-right: 15px;
+      width: 24px;
+    }
   }
   .right {
     float: right;

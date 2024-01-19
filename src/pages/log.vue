@@ -24,12 +24,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-html{
-  border: 1px solid black;
-}
-.log_container{
-  height: 300px;
-  background-color: black;
-}
+
 
 </style>
