@@ -16,7 +16,7 @@
     <div class="body">
       <TitleBar></TitleBar>
       <CustomMenu></CustomMenu>
-      <Navigator :routes="routes"></Navigator>
+      <Navigator></Navigator>
       <router-view></router-view>
     </div>
   </template>
@@ -41,11 +41,6 @@ export default {
     TitleBar,
     LoginTitleBar,
     CustomMenu
-  },
-  computed: {
-    routes() {
-      return this.$router.options.routes;
-    }
   },
   setup() {
     let route = useRouter();

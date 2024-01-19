@@ -18,7 +18,7 @@
     <Menu :menu="menu2">
       <template #selectDropDown>
         <Item :value="value2_1" :type="routes">内机监控</Item>
-        <Item :value="value2_2" :type="routes">系统总览</Item>
+        <Item :value="value2_2" :type="routes">页面总览</Item>
       </template>
     </Menu>
     <Menu :menu="menu3">
@@ -57,11 +57,11 @@ export default {
       value1_2: "修改信息",
       value1_3: "退出系统",
       value1_4: "未读信息",
-      value2_1: "/routes/monitoring",
-      value2_2: "/routes/overview",
+      value2_1: "内机监控",
+      value2_2: "页面总览",
       value3_1: "智能控制",
       value3_2: "日志记载",
-      value3_3: "/routes/acount",
+      value3_3: "账号管理",
       value3_4: "报警设置",
       value4_1: "帮助"
     }

@@ -9,9 +9,9 @@
   <div class="bar">
     <div class="tab-bar">
       <!-- 只显示初始标签页 -->
-      <div v-for="route in navigatorRoutes" :key="route.name" @click="switchTab(route)" class="tab">
-        {{ route.name }}
-        <span @click="closeTab(route)">✖</span>
+      <div v-for="route in navigatorRoutes" :key="route" @click="switchTab(route)" class="tab">
+        {{ route }}
+        <span @click.stop="closeTab(route)">✖</span>
       </div>
     </div>
 
@@ -26,33 +26,32 @@
 </template>
 
 <script>
-import { onMounted, ref, onBeforeMount, computed } from 'vue';
+import { onMounted } from 'vue';
 import { useRouter } from "vue-router";
+import { useCustomStore } from '@/store';
 import systemEventBus from '@/utils/systemEventBus';
 import { useIpcRenderer } from "@vueuse/electron";
 
 export default {
   name: 'Navigator',
-  props: {
-    routes: Array, // 路由数组
-  },
   setup(props) {
     const ipcRenderer = useIpcRenderer();
     const router = useRouter();
+    const store = useCustomStore()
     const Store = require('electron-store');
     const Estore = new Store();
-    const navigatorRoutes = ref(props.routes[1].children)
+    const navigatorRoutes = store.navigatorRoutes
 
     onMounted(() => {
-      console.log(props.routes[1].children);
       systemEventBus.$on('openDialog', (res) => {
         console.log(res);
         ipcRenderer.send('openDialog')
       })
 
-      systemEventBus.$on('GoRoutes', (path) => {
-        console.log(path);
-        router.push(path)
+      systemEventBus.$on('GoRoutes', (route) => {
+        console.log(route);
+        store.addNavigatorRoutes(route)
+        router.push({name:route})
       })
     })
 
@@ -70,25 +69,12 @@ export default {
 
     function switchTab(route) {
       // 切换到对应路由
-      router.push({ name: route.name });
+      router.push({ name: route });
     }
 
     function closeTab(route) {
-      const routesArray = navigatorRoutes.value;
-
-      // 要删除的路径
-      let pathToDelete = route.path
-
-      // 查找要删除元素的索引
-      let indexToDelete = routesArray.findIndex(route => route.path === pathToDelete);
-
-      // 确保索引存在且不是第一位元素
-      if (indexToDelete !== -1 && indexToDelete !== 0) {
-        // 使用 splice 方法删除指定索引的元素
-        routesArray.splice(indexToDelete, 1);
-      }
-
-      console.log(route);
+      store.deleteNavigatorRoutes(route)
+      router.push({name:'页面总览'}) //关闭页面后默认跳转到页面总览
     }
 
 
