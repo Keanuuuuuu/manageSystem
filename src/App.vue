@@ -27,14 +27,13 @@
 <script>
 import { useRouter } from "vue-router";
 
+import CustomMenu from "@/components/common/CustomMenu/index.vue"
+import Navigator from "@/components/common/Navigator.vue";
 
-import Navigator from "@/components/Navigator.vue";
-import LoginTitleBar from '@/components/TitleBar/loginTitleBar.vue'
-import TitleBar from "@/components/TitleBar/mainTitleBar.vue";
-import LogTitleBar from '@/components/TitleBar/logTitleBar.vue';
-import findPWDTitleBar from "@/components/TitleBar/PWDTitleBar.vue";
-
-import CustomMenu from "@/components/CustomMenu/index.vue"
+import LoginTitleBar from '@/components/common/TitleBar/loginTitleBar.vue'
+import TitleBar from "@/components/common/TitleBar/mainTitleBar.vue";
+import LogTitleBar from '@/components/common/TitleBar/logTitleBar.vue';
+import findPWDTitleBar from "@/components/common/TitleBar/PWDTitleBar.vue";
 
 
 export default {

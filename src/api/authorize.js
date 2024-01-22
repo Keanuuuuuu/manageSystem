@@ -29,9 +29,9 @@ export async function authorizeGet() {
     const apiUrlTemplate = 'http://lab.zhongyaohui.club/login/{token}';
     const apiUrl = apiUrlTemplate.replace('{token}', token);
     await authGet(apiUrl).then((res) => {
-      // console.log(res);
+      // console.log(res.data.code);
       // token失效则清空token凭据并跳转至登录页
-      if (res.code === 21401) {
+      if (res.data.code === 21401) {
         Estore.set("token", null);
         ElMessage({
           showClose: true,
