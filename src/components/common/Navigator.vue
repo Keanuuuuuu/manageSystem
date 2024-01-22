@@ -25,76 +25,56 @@
   </div>
 </template>
 
-<script>
-import { onMounted, ref } from 'vue';
-import { useRouter } from "vue-router";
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { useCustomStore } from '@/store';
 import systemEventBus from '@/utils/systemEventBus';
-import { useIpcRenderer } from "@vueuse/electron";
+import { useIpcRenderer } from '@vueuse/electron';
 
-export default {
-  name: 'Navigator',
-  setup() {
-    const ipcRenderer = useIpcRenderer();
-    const router = useRouter();
-    const store = useCustomStore()
-    const Store = require('electron-store');
-    const Estore = new Store();
-    const navigatorRoutes = store.navigatorRoutes
-    const currentRoute = ref(router.currentRoute.value.name)
+const ipcRenderer = useIpcRenderer();
+const router = useRouter();
+const store = useCustomStore();
+const Store = require('electron-store');
+const Estore = new Store();
 
+const navigatorRoutes = store.navigatorRoutes;
+const currentRoute = ref(router.currentRoute.value.name);
 
-    onMounted(() => {
-      systemEventBus.$on('openDialog', (res) => {
-        console.log(res);
-        ipcRenderer.send('openDialog')
-      })
+onMounted(() => {
+  systemEventBus.$on('openDialog', (res) => {
+    console.log(res);
+    ipcRenderer.send('openDialog');
+  });
 
-      systemEventBus.$on('GoRoutes', (route) => {
-        // console.log(route)
-        store.addNavigatorRoutes(route)
-        router.push({ name: route })
-      })
+  systemEventBus.$on('GoRoutes', (route) => {
+    store.addNavigatorRoutes(route);
+    router.push({ name: route });
+  });
 
-    });
+  router.beforeEach((to, from, next) => {
+    currentRoute.value = to.name;
+    next();
+  });
+});
 
-    // 在路由变化前更新当前路由
-    router.beforeEach((to,from, next) => {
-      currentRoute.value = to.name;
-      next();
-    });
-  
-
-  function logout() {
-  // 清空logindata和token
+function logout() {
   Estore.set('logindata', {
     username: null,
     password: null,
-  })
-  Estore.set('token', null)
-  Estore.set('recordPassword', false)
-  ipcRenderer.send("login-deny")
+  });
+  Estore.set('token', null);
+  Estore.set('recordPassword', false);
+  ipcRenderer.send('login-deny');
 }
 
 function switchTab(route) {
-  // 切换到对应路由
   router.push({ name: route });
 }
 
 function closeTab(route) {
-  store.deleteNavigatorRoutes(route)
-  router.push({ name: '页面总览' }) //关闭页面后默认跳转到页面总览
-}
-
-
-return {
-  navigatorRoutes,
-  currentRoute,
-  logout,
-  switchTab,
-  closeTab
-}
-  }
+  store.deleteNavigatorRoutes(route);
+  router.push({ name: '页面总览' });
 }
 </script>
 

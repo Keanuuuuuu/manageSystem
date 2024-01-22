@@ -12,14 +12,13 @@
     <!-- 左侧节点树 -->
     <div class="tree">
       <el-scrollbar>
-        <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" :default-expand-all="true"
-          :expand-on-click-node="false">
+        <el-tree :data="treeData" @node-click="handleNodeClick" :default-expand-all="true" :expand-on-click-node="false">
           <template #default="{ node, data }">
             <span class="custom-tree-node" v-mouse-menu="{ params: data, ...options_tree }">
               <span>{{ data.label }}</span>
               <div v-show="!data.children">
                 <span>
-                  <span> --color </span>
+                  <span> ---color </span>
                   <!-- 现在只是一个固定的1来表示状态，要换成插值表达式，根据请求返回的故障码我来做一个判断 -->
                   <!-- <a style="margin-left: 8px" @click="remove(node, data)"> Delete </a> -->
                 </span>
@@ -30,6 +29,9 @@
       </el-scrollbar>
     </div>
 
+    <left-tree></left-tree>
+
+
     <div class="Monitor">
       <monitor-display-head :titleChange="titleChange"></monitor-display-head>
       <!-- 以上为内机监控界面的总览显示 -->
@@ -37,10 +39,8 @@
       <monitor-display-control :dialogVisible="dialogVisible" :control_dialogValue="control_dialogValue"
         :intelligent_controlValue="intelligent_controlValue" :loading="loading"
         @updateDialogVisible="dialogVisible = $event" @updateControl_dialogValue="control_dialogValue = $event"
-        @updateIntelligent_controlValue="intelligent_controlValue = $event" @reload="
-          loading = $event,
-          getAirconditionPost(),
-          getTreeArr()
+        @updateIntelligent_controlValue="intelligent_controlValue = $event" @reload="loading = $event,
+          getAirconditionPost(), getTreeArr()
           ">
       </monitor-display-control>
       <!-- 以上为内机监控界面的控制显示 -->
@@ -48,8 +48,7 @@
       <div class="Monitor_the_display_data_list">
         <el-table ref="multipleTableRef"
           :data="tableData ? tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize) : []"
-          v-loading="loading" style="width: 100%" @selection-change="handleSelectionChange" stripe max-height="550"
-          :header-cell-style="headerRowStyle">
+          v-loading="loading" @selection-change="handleSelectionChange" stripe :header-cell-style="headerRowStyle">
           <!-- 
             1、ele对于列表中每一项数据的展示可以使用property属性，也可以使用template模板 
             2、sortable为设置是否启用排序功能
@@ -57,26 +56,23 @@
             4、tableData.slice为分页相关
             5、selection-change当选择项发生变化时会触发该事件
           -->
-          <el-table-column type="selection" width="55" />
-          <el-table-column property='name' label="名称" width="110" sortable />
-          <!-- <template #default="scope">{{ scope.row[name] }}</template> -->
-          <!-- </el-table-column> -->
-          <el-table-column property='status' label="状态" width="110" sortable />
-          <el-table-column property='mode' label="模式" width="110" sortable />
-          <el-table-column property='temperature' label="温度" width="110" sortable />
-          <el-table-column property='windSpeed' label="风速" width="110" sortable />
-          <el-table-column property='roomTemperature' label="室温" width="110" sortable />
-          <el-table-column label="详情" width="120">
+          <el-table-column type="selection"/>
+          <el-table-column property='name' label="名称" sortable />
+          <el-table-column property='status' label="状态" sortable />
+          <el-table-column property='mode' label="模式" sortable />
+          <el-table-column property='temperature' label="温度" sortable />
+          <el-table-column property='windSpeed' label="风速" sortable />
+          <el-table-column property='roomTemperature' label="室温" sortable />
+          <el-table-column label="详情">
             <template #default>
               <el-button href="">详情…</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="智能控制" width="120">
+          <el-table-column label="智能控制" width="140">
             <template #default>
               <el-switch size="small" />
             </template>
           </el-table-column>
-          <el-table-column label="备注" show-overflow-tooltip />
         </el-table>
         <!-- 以上是使用ele列表内容 -->
 
@@ -91,15 +87,19 @@
 
   <el-dialog :modelValue="dialogVisible" :title="titleName" @closed="close" width="600px" align-center>
 
+    <!-- 实时控制 -->
     <control-dialog v-show="control_dialogValue" :value_one="value_one" :value_two="value_two" :value_three="value_three"
       :num="num" :selected="[...selected]" @updateDialogValue="value_one = $event" @updateDialogMode="value_two = $event"
       @updateDialogWind="value_three = $event" @updateDialogNum="num = $event">
     </control-dialog>
 
+    <!-- 智能控制 -->
     <intelligent-control v-show="intelligent_controlValue"></intelligent-control>
 
+    <!-- 新增节点 -->
     <add-dialog v-show="add_dialogValue" :addType="addType" @addDialogSubmit="addDialogfn"></add-dialog>
 
+    <!-- 删除节点 -->
     <delete-dialog v-show="delete_dialogValue" :deleteType="deleteType"
       @deleteDialogSubmit="deleteDialogfn"></delete-dialog>
 
@@ -109,6 +109,7 @@
 </template>
   
 <script>
+import leftTree from '../components/monitoring/leftTree.vue'
 
 import { reactive, toRaw, ref, onMounted, computed } from 'vue'
 import { post, del, put } from '@/api/http.js'
@@ -122,25 +123,24 @@ import { MouseMenuDirective } from '@howdyjs/mouse-menu'
 
 import { useCustomStore } from '@/store'; // 引入pinia
 
+import controlDialog from '@/components/monitoring/Dialog/controlDialog.vue'
+import intelligentControl from '@/components/monitoring/Dialog/intelligentControlDialog.vue'
+import addDialog from '@/components/monitoring/Dialog/addDialog.vue'
+import deleteDialog from '@/components/monitoring/Dialog/deleteDialog.vue'
 
-
-import controlDialog from '@/components/Dialog/controlDialog.vue'
-import intelligentControl from '@/components/Dialog/intelligentControlDialog.vue'
-import addDialog from '@/components/Dialog/addDialog.vue'
-import deleteDialog from '@/components/Dialog/deleteDialog.vue'
-
-import MonitorDisplayHead from '@/components/ControlComponents/Monitor_display_head.vue'
-import MonitorDisplayControl from '@/components/ControlComponents/Monitor_display_control.vue'
+import MonitorDisplayHead from '@/components/monitoring/ControlComponents/Monitor_display_head.vue'
+import MonitorDisplayControl from '@/components/monitoring/ControlComponents/Monitor_display_control.vue'
 
 
 export default {
   components: {
-    controlDialog,
+    leftTree,
     MonitorDisplayHead,
     MonitorDisplayControl,
+    controlDialog,
+    intelligentControl,
     addDialog,
     deleteDialog,
-    intelligentControl
   },
   name: 'monitoring',
   directives: {
@@ -152,9 +152,22 @@ export default {
 
     // 页面挂载时刷新请求
     onMounted(() => {
-      getAirconditionPost()
+      console.log(tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize));
       getTreeArr()
+      getAirconditionPost()
     })
+
+
+    // 树形组件所需变量
+    let treeData = ref([])
+
+    async function getTreeArr() {
+      const res = await post('/leftbar', null, {
+        baseURL: 'http://lab.zhongyaohui.club/'
+      })
+      console.log('左侧树节点===================》',res);
+      treeData.value = res.data
+    }
 
     const array = ref([])
     const tableData = reactive([])
@@ -242,14 +255,20 @@ export default {
 
 
     let dialogVisible = ref(false)
+    
     let control_dialogValue = ref(false)
+    let intelligent_controlValue = ref(false)
+
     let add_dialogValue = ref(false)
     let delete_dialogValue = ref(false)
-    let intelligent_controlValue = ref(false)
+
+    
     let titleName = ref('')
+
     let total = ref(100)
     let currentPage = ref(1)
     let pageSize = ref(10)
+
     let value_one = ref()
     let value_two = ref()
     let value_three = ref()
@@ -257,6 +276,7 @@ export default {
     let selected = ref(new Set())
     let loading = ref(true)
     let titleChange = ref(null)
+
     let addType = reactive({
       value: null,
       __buildingId: '若无值请刷新',
@@ -267,18 +287,6 @@ export default {
       __buildingId: '若无值请刷新',
       _machineId: '若无值请刷新'
     })
-    let data = ref([
-      {
-        id: '内机监控',
-        label: '内机监控',
-        name: '',
-        children: []
-      },
-    ])
-    const defaultProps = reactive({
-      children: 'children',
-      label: 'label',
-    })
 
     // 获取原始列表
     async function getAirconditionPost() {
@@ -287,18 +295,10 @@ export default {
       }, {
         baseURL: 'http://lab.zhongyaohui.club/'
       })
-      // console.log('中心看板内机状态=========================》',res);
+      console.log('中心看板内机状态=========================》',res);
       array.value = res.data
       handleNodeClick(obj, array.value)
       loading.value = false
-    }
-
-    async function getTreeArr() {
-      const res = await post('/leftbar', null, {
-        baseURL: 'http://lab.zhongyaohui.club/'
-      })
-      // console.log('左侧树节点===================》',res);
-      data.value = res.data
     }
 
     // 获取所有的IP
@@ -473,19 +473,11 @@ export default {
       }
 
       modifyNodePost([...selected.value], res)
-      // for(let selectedobj of [...selected.value]){
-      //   modifyNodePost(selectedobj, res)
-      // }
-
-      // getAirconditionPost();
     }
 
     function cancel() {
       // 触发cancel dialog不关闭，数据清空
       selected.value.clear()
-      // store.commit('Switch_control', '')
-      // num.value = ''
-      // console.log(num.value)
     }
 
     function close() {
@@ -497,12 +489,6 @@ export default {
       intelligent_controlValue.value = false
     }
 
-    // 分页相关操作
-    const paginatedArray = computed(() => {
-      const start = (currentPage.value - 1) * pageSize.value
-      const end = currentPage.value * pageSize.value
-      return array.value.slice(start, end)
-    })
 
     function handleSizeChange(val) {
       pageSize.value = val
@@ -511,12 +497,6 @@ export default {
     function handleCurrentChange(val) {
       currentPage.value = val
     }
-
-    // 菜单相关操作
-    const Tree = {
-      label: String,
-      children: Array
-    };
 
     const handleNodeClick = (data) => {
       obj.id = data.id;
@@ -528,6 +508,7 @@ export default {
       res.forEach(e => {
         tableData.push(e);
       });
+      console.log(tableData);
     }
 
     const handleSelectionChange = (ev) => { // 当选择项发生变化时会触发该事件
@@ -599,8 +580,7 @@ export default {
       total,
       currentPage,
       pageSize,
-      data,
-      defaultProps,
+      treeData,
       getAllIP,
       getNumberOfMachine,
       value_one,
@@ -652,7 +632,6 @@ export default {
   border-right: 1px solid black;
   box-sizing: border-box;
   width: 20%;
-  // overflow-y: scroll;
 }
 
 .modify {
