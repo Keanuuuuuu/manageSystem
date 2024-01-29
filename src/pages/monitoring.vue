@@ -33,22 +33,21 @@
 
 
     <div class="Monitor">
-      <monitor-display-head :titleChange="titleChange"></monitor-display-head>
-      <!-- 以上为内机监控界面的总览显示 -->
+      <monitor-display-head :airconditionNodeData="airconditionNodeData"></monitor-display-head>
 
+      <!-- 按钮控制组 -->
       <monitor-display-control :dialogVisible="dialogVisible" :control_dialogValue="control_dialogValue"
         :intelligent_controlValue="intelligent_controlValue" :loading="loading"
         @updateDialogVisible="dialogVisible = $event" @updateControl_dialogValue="control_dialogValue = $event"
-        @updateIntelligent_controlValue="intelligent_controlValue = $event" @reload="loading = $event,
-          getAirconditionPost(), getTreeArr()
-          ">
+        @updateIntelligent_controlValue="intelligent_controlValue = $event"
+        @reload="loading = $event, getAirconditionPost(), getTreeArr()">
       </monitor-display-control>
-      <!-- 以上为内机监控界面的控制显示 -->
+
 
       <div class="Monitor_the_display_data_list">
         <el-table ref="multipleTableRef"
-          :data="tableData ? tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize) : []"
-          v-loading="loading" @selection-change="handleSelectionChange" stripe :header-cell-style="headerRowStyle">
+          :data="store.monitorTableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)" v-loading="loading"
+          @selection-change="handleSelectionChange" stripe :header-cell-style="headerRowStyle">
           <!-- 
             1、ele对于列表中每一项数据的展示可以使用property属性，也可以使用template模板 
             2、sortable为设置是否启用排序功能
@@ -56,7 +55,7 @@
             4、tableData.slice为分页相关
             5、selection-change当选择项发生变化时会触发该事件
           -->
-          <el-table-column type="selection"/>
+          <el-table-column type="selection" />
           <el-table-column property='name' label="名称" sortable />
           <el-table-column property='status' label="状态" sortable />
           <el-table-column property='mode' label="模式" sortable />
@@ -65,7 +64,7 @@
           <el-table-column property='roomTemperature' label="室温" sortable />
           <el-table-column label="详情">
             <template #default>
-              <el-button href="">详情…</el-button>
+              <el-button href="">详情...</el-button>
             </template>
           </el-table-column>
           <el-table-column label="智能控制" width="140">
@@ -77,8 +76,8 @@
         <!-- 以上是使用ele列表内容 -->
 
         <el-pagination :current-page="currentPage" :page-size="pageSize" :page-sizes="[5, 10, 20, 30, 40]" background
-          layout="total, sizes, prev, pager, next, jumper" :total="tableData.length" @size-change="handleSizeChange"
-          @current-change="handleCurrentChange" />
+          layout="total, sizes, prev, pager, next, jumper" :total="store.monitorTableData.length"
+          @size-change="handleSizeChange" @current-change="handleCurrentChange" />
         <!-- 以上是分页器内容 -->
       </div>
     </div>
@@ -117,7 +116,7 @@ import { ElMessage } from "element-plus"
 
 import { switchString } from '@/utils/digitalTransformation.js'
 import ConcurrencyRequest from '@/utils/ConcurrencyRequest.js'
-import { Test } from '@/utils/treeArr.js'
+import { findNodeById } from '@/utils/treeArr.js'
 
 import { MouseMenuDirective } from '@howdyjs/mouse-menu'
 
@@ -152,7 +151,6 @@ export default {
 
     // 页面挂载时刷新请求
     onMounted(() => {
-      console.log(tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize));
       getTreeArr()
       getAirconditionPost()
     })
@@ -165,16 +163,54 @@ export default {
       const res = await post('/leftbar', null, {
         baseURL: 'http://lab.zhongyaohui.club/'
       })
-      console.log('左侧树节点===================》',res);
-      treeData.value = res.data
+      // console.log('左侧树节点===================》',res.data[0].children);
+      treeData.value = res.data[0].children
     }
 
-    const array = ref([])
-    const tableData = reactive([])
-    const obj = reactive({
-      id: '16',
-      name: '16栋'
-    })
+
+    const airconditionNode = reactive({ id: '16', label: '16栋教学楼' })
+    const airconditionNodeArray = ref([])
+    // const tableData = reactive([])
+    // const tableData = ref(store.monitorTableData)
+    const tableData = store.monitorTableData
+
+
+    // 获取原始列表
+    async function getAirconditionPost() {
+      const res = await post('/machinestate', {
+        id: "16"
+      }, {
+        baseURL: 'http://lab.zhongyaohui.club/'
+      })
+      // console.log('中心看板内机状态=========================》',res);
+      airconditionNodeArray.value = res.data
+      handleNodeClick(airconditionNode, airconditionNodeArray.value)
+      loading.value = false
+    }
+
+
+    const handleNodeClick = (data) => {
+      airconditionNode.id = data.id;
+      airconditionNode.name = data.label;
+      // 想在下次点击事件触发前把数组删除干净，不过当table数组过长应该性能不好
+      let findNodeByIdResult = findNodeById(data.id, airconditionNodeArray.value) //将有层级的节点数组扁平化
+      tableData.splice(0, tableData.length);
+      findNodeByIdResult.forEach(e => {
+        // console.log(e);
+        tableData.push(e);
+      });
+      airconditionNodeData.value = { label: data.label, length: findNodeByIdResult.length } //将数据传递给control_head
+    }
+
+    const handleSelectionChange = (ev) => { // 当选择项发生变化时会触发该事件
+      for (let evobj of ev) {
+        selected.value.add(evobj.id)
+      }
+    }
+
+
+
+
     const options_tree = reactive({
       useLongPressInMobile: true,
       menuWrapperCss: {
@@ -255,14 +291,14 @@ export default {
 
 
     let dialogVisible = ref(false)
-    
+
     let control_dialogValue = ref(false)
     let intelligent_controlValue = ref(false)
 
     let add_dialogValue = ref(false)
     let delete_dialogValue = ref(false)
 
-    
+
     let titleName = ref('')
 
     let total = ref(100)
@@ -275,7 +311,7 @@ export default {
     let num = ref()
     let selected = ref(new Set())
     let loading = ref(true)
-    let titleChange = ref(null)
+    let airconditionNodeData = ref(null)
 
     let addType = reactive({
       value: null,
@@ -288,18 +324,7 @@ export default {
       _machineId: '若无值请刷新'
     })
 
-    // 获取原始列表
-    async function getAirconditionPost() {
-      const res = await post('/machinestate', {
-        id: "16"
-      }, {
-        baseURL: 'http://lab.zhongyaohui.club/'
-      })
-      console.log('中心看板内机状态=========================》',res);
-      array.value = res.data
-      handleNodeClick(obj, array.value)
-      loading.value = false
-    }
+
 
     // 获取所有的IP
     async function getAllIP() {
@@ -420,7 +445,7 @@ export default {
     }
 
     // 获取原始数组列表后，根据故障码渲染内机故障颜色
-    function calculateColor(array) {
+    function calculateColor(airconditionNodeArray) {
 
     }
 
@@ -498,24 +523,6 @@ export default {
       currentPage.value = val
     }
 
-    const handleNodeClick = (data) => {
-      obj.id = data.id;
-      obj.name = data.name;
-      // 想在下次点击事件触发前把数组删除干净，不过当table数组过长应该性能不好
-      let res = Test(data.id, array.value)
-      titleChange.value = data.name
-      tableData.splice(0, tableData.length);
-      res.forEach(e => {
-        tableData.push(e);
-      });
-      console.log(tableData);
-    }
-
-    const handleSelectionChange = (ev) => { // 当选择项发生变化时会触发该事件
-      for (let evobj of ev) {
-        selected.value.add(evobj.id)
-      }
-    }
 
     const headerRowStyle = ({ row, rowIndex }) => { // 修改表头的回调函数
       return {
@@ -548,6 +555,7 @@ export default {
     }
 
     return {
+      store,
       getAirconditionPost,
       modifyNode,
       handleSizeChange,
@@ -556,9 +564,9 @@ export default {
       cancel,
       close,
       loading,
-      titleChange,
+      airconditionNodeData,
       handleNodeClick,
-      array,
+      airconditionNodeArray,
       options_tree, // 菜单栏右击配置项
       editVisible,
       editItemData,

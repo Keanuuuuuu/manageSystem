@@ -34,8 +34,8 @@ import { useIpcRenderer } from '@vueuse/electron';
 
 const ipcRenderer = useIpcRenderer();
 const router = useRouter();
-const store = useCustomStore();
-const Store = require('electron-store');
+const store = useCustomStore(); //小写的是pinia的store
+const Store = require('electron-store'); 
 const Estore = new Store();
 
 const navigatorRoutes = store.navigatorRoutes;

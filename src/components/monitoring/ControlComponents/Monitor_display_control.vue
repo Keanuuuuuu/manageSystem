@@ -1,5 +1,5 @@
 <!-- 
-* @description: 内机监控操作部分（按钮）
+* @description: 内机监控操作部分（按钮） 【改变弹窗显隐，触发对应事件并在monitoring中响应】
 * @fileName: Monitor_display_control.vue
 * @author:刘世博 文洋
 * @date: 2024-01-09

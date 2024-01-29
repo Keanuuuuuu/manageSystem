@@ -40,11 +40,12 @@ import { ref, reactive, onMounted } from 'vue'
 import { post } from '@/api/http.js'
 import { MouseMenuDirective as vMouseMenu } from '@howdyjs/mouse-menu'
 import { ElMessage } from "element-plus"
+import { useCustomStore } from '@/store';
 
 import addDialog from '@/components/monitoring/Dialog/addDialog.vue'
 import deleteDialog from '@/components/monitoring/Dialog/deleteDialog.vue'
 
-import { Test } from '@/utils/treeArr.js'
+import { findNodeById } from '@/utils/treeArr.js'
 
 
 // 页面挂载时刷新请求
@@ -53,15 +54,48 @@ onMounted(() => {
     getAirconditionPost()
 })
 
-let titleChange = ref(null)
+const store = useCustomStore();
 
+let airconditionNodeData = ref(null)
 let loading = ref(true) //表明初始数据是否加载完毕
 
-const array = ref([])
-const tableData = reactive([])
 
 let treeData = ref([])
 
+async function getTreeArr() {
+    const res = await post('/leftbar', null, {
+        baseURL: 'http://lab.zhongyaohui.club/'
+    })
+    // console.log('左侧树节点===================》', res);
+    treeData.value = res.data[0].children
+}
+
+const airconditionNode = reactive({ id: '16', name: '16栋' })
+const airconditionNodeArray = ref([])
+
+
+const handleNodeClick = (data) => {
+    airconditionNode.id = data.id;
+    airconditionNode.name = data.label;
+    let findNodeByIdResult = findNodeById(data.id, airconditionNodeArray.value) //将有层级的节点数组扁平化
+    store.setMonitorTableData(findNodeByIdResult)
+    store.setMonitorHead({ label: data.label, length: findNodeByIdResult.length })
+    airconditionNodeData.value = { label: data.label, length: findNodeByIdResult.length } //将数据传递给control_head
+}
+
+
+
+// 获取原始列表
+async function getAirconditionPost() {
+    const res = await post('/machinestate', {
+        id: "16"
+    }, {
+        baseURL: 'http://lab.zhongyaohui.club/'
+    })
+    // console.log('中心看板内机状态=========================》', res);
+    airconditionNodeArray.value = res.data
+    handleNodeClick(airconditionNode, airconditionNodeArray.value)
+}
 let addType = reactive({
     value: null,
     __buildingId: '若无值请刷新',
@@ -73,50 +107,22 @@ let deleteType = reactive({
     _machineId: '若无值请刷新'
 })
 
-let control_dialogValue = ref(false)
 
 let dialogVisible = ref(false)
+
 let add_dialogValue = ref(false)
 let delete_dialogValue = ref(false)
 
-const obj = reactive({
-    id: '16',
-    name: '16栋'
-})
-
-const handleNodeClick = (data) => {
-    obj.id = data.id;
-    obj.name = data.name;
-    // 想在下次点击事件触发前把数组删除干净，不过当table数组过长应该性能不好
-    let res = Test(data.id, array.value)
-    titleChange.value = data.name
-    tableData.splice(0, tableData.length);
-    res.forEach(e => {
-        tableData.push(e);
-    });
+function close() {
+    dialogVisible.value = false
+    delete_dialogValue.value = false
+    add_dialogValue.value = false
 }
 
-// 获取原始列表
-async function getAirconditionPost() {
-    const res = await post('/machinestate', {
-        id: "16"
-    }, {
-        baseURL: 'http://lab.zhongyaohui.club/'
-    })
-    console.log('中心看板内机状态=========================》', res);
-    array.value = res.data
-    handleNodeClick(obj, array.value)
-    loading.value = false
-}
 
-async function getTreeArr() {
-    const res = await post('/leftbar', null, {
-        baseURL: 'http://lab.zhongyaohui.club/'
-    })
-    console.log('左侧树节点===================》', res);
-    treeData.value = res.data
+function handleSearch(params, currentEl, bindingEl, e) {
+    console.log('open', params, currentEl, bindingEl, e)
 }
-
 
 // 添加房间
 const addRoom = async (value) => {
@@ -161,6 +167,41 @@ const addDevice = async (value) => {
     console.log(res);
 }
 
+const addDialogfn = (value) => {
+    console.log('addDialogSubmit', value);
+    if (value.nodeProperties === "房间") {
+        addRoom(value)
+        dialogVisible.value = false
+    } else if (value.nodeProperties === "设备") {
+        addDevice(value)
+        dialogVisible.value = false
+    }
+}
+
+function handleAdd(params) {
+    addType.__buildingId = params.id.slice(0, 2);
+    addType.__roomId = params.id.slice(0, 6);
+    if (params.id.length === 2 || params.id.length === 4) {
+        addType.value = "房间"
+    } else if (params.id.length === 6) {
+        addType.value = "设备"
+        addType.__buildingId = params.id.slice(0, 2)
+        addType.__roomId = params.id.slice(0, 6)
+    } else if (params.id.length === 8) {
+        ElMessage({
+            showClose: true,
+            message: "设备不支持添加节点",
+            type: "warning",
+        });
+        return;
+    }
+    dialogVisible.value = true
+    add_dialogValue.value = true
+    // 展示对应的内部dialog时，要把别的设置为false
+    delete_dialogValue.value = false
+    // 增加节点后刷新
+}
+
 // 删除房间
 const deleteRoom = async (value) => {
     const res = await del('/room', {
@@ -197,17 +238,6 @@ const deleteMachine = async (value) => {
     console.log("删除内机:", res);
 }
 
-const addDialogfn = (value) => {
-    console.log('addDialogSubmit', value);
-    if (value.nodeProperties === "房间") {
-        addRoom(value)
-        dialogVisible.value = false
-    } else if (value.nodeProperties === "设备") {
-        addDevice(value)
-        dialogVisible.value = false
-    }
-}
-
 const deleteDialogfn = (value) => {
     console.log('deleteDialogSubmit', value);
     if (value.nodeProperties === "房间") {
@@ -219,16 +249,6 @@ const deleteDialogfn = (value) => {
         deleteMachine(value);
         dialogVisible.value = false
     }
-}
-
-function close() {
-    dialogVisible.value = false
-    delete_dialogValue.value = false
-    add_dialogValue.value = false
-}
-
-function handleSearch(params, currentEl, bindingEl, e) {
-    console.log('open', params, currentEl, bindingEl, e)
 }
 
 function handleDelete(params) {
@@ -254,33 +274,7 @@ function handleDelete(params) {
     dialogVisible.value = true
     delete_dialogValue.value = true
     // 展示对应的内部dialog时，要把别的设置为false
-    control_dialogValue.value = false
     add_dialogValue.value = false
-    // 增加节点后刷新
-}
-
-function handleAdd(params) {
-    addType.__buildingId = params.id.slice(0, 2);
-    addType.__roomId = params.id.slice(0, 6);
-    if (params.id.length === 2 || params.id.length === 4) {
-        addType.value = "房间"
-    } else if (params.id.length === 6) {
-        addType.value = "设备"
-        addType.__buildingId = params.id.slice(0, 2)
-        addType.__roomId = params.id.slice(0, 6)
-    } else if (params.id.length === 8) {
-        ElMessage({
-            showClose: true,
-            message: "设备不支持添加节点",
-            type: "warning",
-        });
-        return;
-    }
-    dialogVisible.value = true
-    add_dialogValue.value = true
-    // 展示对应的内部dialog时，要把别的设置为false
-    control_dialogValue.value = false
-    delete_dialogValue.value = false
     // 增加节点后刷新
 }
 
