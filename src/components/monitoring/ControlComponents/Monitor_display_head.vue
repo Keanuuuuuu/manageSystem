@@ -1,5 +1,5 @@
 <!-- 
-* @description: 内机监控头部
+* @description: 内机监控头部  【备注】：因为初始传来的数据格式不统一 所以有||"16栋教学楼"
 * @fileName: Monitor_display_head.vue
 * @author:刘世博 文洋
 * @date: 2024-01-09
@@ -8,28 +8,17 @@
 <template>
   <div class="Monitor_display_head">
     <div class="title">
-      内机监控{{ titleChange }}
+      目前展示：{{store.airconditionNodeData.label ||"16栋教学楼"}}  
     </div>
     <div class="member">
-      6台内机,其中
+      {{store.airconditionNodeData.length}}台内机,其中
     </div>
   </div>
 </template>
 
-<script>
-import { watch } from 'vue'
-export default {
-  name: 'Monitor_display_head',
-  props:{
-    titleChange:{
-      type: String,
-      default :'界面'
-    }
-  },
-  setup(props) {
-
-  }
-}
+<script setup>
+import { useCustomStore } from '@/store';
+const store = useCustomStore();
 </script>
 
 <style lang="scss" scoped>
