@@ -1,5 +1,5 @@
 <!-- 
-* @description: 内机监控 左侧节点树 【数据查询/增/删节点】
+* @description: 内机监控 左侧节点树 【数据查询/增/删节点】 【备注】：左侧树节点的数据与中心看板的数据并不相同，看板扁平数据由树节点数据id查询得来（初始固定查询id=16）
 * @fileName: leftTree.vue
 * @author: 文洋 刘世博
 * @date: 2024-01-22
@@ -46,18 +46,20 @@ import addDialog from '@/components/monitoring/Dialog/addDialog.vue'
 import deleteDialog from '@/components/monitoring/Dialog/deleteDialog.vue'
 
 import { findNodeById } from '@/utils/treeArr.js'
-
+import systemEventBus from '@/utils/systemEventBus';
 
 // 页面挂载时刷新请求
 onMounted(() => {
     getTreeArr()
     getAirconditionPost()
+    systemEventBus.$on('updateAirconditionPost', () => {
+        getAirconditionPost()
+    })
 })
+
 
 const store = useCustomStore();
 
-let airconditionNodeData = ref(null)
-let loading = ref(true) //表明初始数据是否加载完毕
 
 
 let treeData = ref([])
@@ -78,11 +80,9 @@ const handleNodeClick = (data) => {
     airconditionNode.id = data.id;
     airconditionNode.name = data.label;
     let findNodeByIdResult = findNodeById(data.id, airconditionNodeArray.value) //将有层级的节点数组扁平化
-    store.setMonitorTableData(findNodeByIdResult)
+    store.setMonitorTableData(findNodeByIdResult)   //将结果交由pinia 在table中展示
     store.setMonitorHead({ label: data.label, length: findNodeByIdResult.length })
-    airconditionNodeData.value = { label: data.label, length: findNodeByIdResult.length } //将数据传递给control_head
 }
-
 
 
 // 获取原始列表
@@ -96,6 +96,8 @@ async function getAirconditionPost() {
     airconditionNodeArray.value = res.data
     handleNodeClick(airconditionNode, airconditionNodeArray.value)
 }
+
+
 let addType = reactive({
     value: null,
     __buildingId: '若无值请刷新',

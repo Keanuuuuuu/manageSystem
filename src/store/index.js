@@ -3,8 +3,6 @@ import { defineStore } from 'pinia';
 export const useCustomStore = defineStore({
   id: 'customStore',
   state: () => ({
-    currentControl: '', // 标记当前正在控制内机的 id
-    number: '',
     Switch: '开',
     Mode: '制冷',
     Wind: '自动',
@@ -35,12 +33,6 @@ export const useCustomStore = defineStore({
     },
     setMonitorHead(airconditionNodeData){
       this.airconditionNodeData = airconditionNodeData
-    },
-    setCurrentControl(currentControl) {
-      this.currentControl = currentControl;
-    },
-    setNumber(number) {
-      this.number = number;
     },
     setSwitch(Switch) {
       this.Switch = Switch;

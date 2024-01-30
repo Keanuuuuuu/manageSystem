@@ -33,9 +33,6 @@ export default {
     },
     intelligent_controlValue: {
       type: Boolean
-    },
-    loading: {
-      type: Boolean
     }
   },
   setup(props, { emit }) {
@@ -44,7 +41,7 @@ export default {
     const DialogVisible = ref(props.dialogVisible)
     const Control_dialogValue = ref(props.control_dialogValue)
     const intelligent_controlValue = ref(props.intelligent_controlValue)
-    const loading = ref(props.loading)
+
 
     function changeDialogVisible() {
       DialogVisible.value = true
@@ -60,10 +57,6 @@ export default {
       emit('updateIntelligent_controlValue', intelligent_controlValue.value)
     }
 
-    function reload() {
-      loading.value = true
-      emit('reload', loading.value)
-    }
 
     return {
       input,
@@ -72,7 +65,6 @@ export default {
       Search,
       changeDialogVisible,
       intelligentControlDialogVisible,
-      reload
     }
   }
 }

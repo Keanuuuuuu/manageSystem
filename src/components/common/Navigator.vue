@@ -97,14 +97,17 @@ function closeTab(route) {
       margin-right: 4px;
       border-radius: 4px;
       cursor: pointer;
-      background-color: #ccc;
+      border: 2px solid #ccc;
+      background-color:  whitesmoke;
 
       &:hover {
-        background-color: #ddd;
+        background-color:rgb(231,238,243);
+        border: 2px solid $color-theme;
       }
 
       &.active {
-        background-color: gray;
+        background-color: rgb(231, 238, 243);
+        border: 2px solid $color-theme;
       }
 
       span {
