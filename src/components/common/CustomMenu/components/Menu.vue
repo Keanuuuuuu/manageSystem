@@ -139,6 +139,7 @@ export default {
   border: #E6E8EC 2px solid;
   box-sizing: border-box;
   transition: border .2s;
+  margin-left: 10px;
 
   .menu-button {
     height: 20px;

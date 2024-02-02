@@ -4,7 +4,7 @@
 // @date: 2024-01-23
 // @version: 
 
-export function findNodeById(id, realTree) {
+export function dataFlattenById(id, realTree) {
   // 示例的树形结构数据
   let treeArr = {
     "16": [
@@ -162,4 +162,4 @@ export function findNodeById(id, realTree) {
   return result
 }
 
-// console.log(findNodeById()); 
+// console.log(dataFlattenById()); 

@@ -120,4 +120,5 @@ export default {
 
 .submenu-item:hover {
   background-color: white;
-}</style>
+}
+</style>
