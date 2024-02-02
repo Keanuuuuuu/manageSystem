@@ -30,8 +30,7 @@
         <add-dialog v-show="add_dialogValue" :addType="addType" @addDialogSubmit="addDialogfn"></add-dialog>
 
         <!-- 删除节点 -->
-        <delete-dialog v-show="delete_dialogValue" :deleteType="deleteType"
-            @deleteDialogSubmit="deleteDialogfn"></delete-dialog>
+        <delete-dialog v-show="delete_dialogValue" :deleteType="deleteType" @deleteDialogSubmit="deleteDialogfn"></delete-dialog>
     </el-dialog>
 </template>
 
@@ -45,8 +44,11 @@ import { useCustomStore } from '@/store';
 import addDialog from '@/components/monitoring/Dialog/addDialog.vue'
 import deleteDialog from '@/components/monitoring/Dialog/deleteDialog.vue'
 
-import { findNodeById } from '@/utils/treeArr.js'
+import { dataFlattenById } from '@/utils/treeArr.js'
 import systemEventBus from '@/utils/systemEventBus';
+
+const store = useCustomStore();
+
 
 // 页面挂载时刷新请求
 onMounted(() => {
@@ -58,9 +60,6 @@ onMounted(() => {
 })
 
 
-const store = useCustomStore();
-
-
 
 let treeData = ref([])
 
@@ -68,20 +67,20 @@ async function getTreeArr() {
     const res = await post('/leftbar', null, {
         baseURL: 'http://lab.zhongyaohui.club/'
     })
-    // console.log('左侧树节点===================》', res);
+    // console.log('左侧树节点===================》', res.data[0].children);
     treeData.value = res.data[0].children
 }
 
-const airconditionNode = reactive({ id: '16', name: '16栋' })
-const airconditionNodeArray = ref([])
 
+const airconditionNode = reactive({ id: '16' }) //默认初始时获取16栋的数据
+const airconditionNodeArray = ref([])
 
 const handleNodeClick = (data) => {
     airconditionNode.id = data.id;
     airconditionNode.name = data.label;
-    let findNodeByIdResult = findNodeById(data.id, airconditionNodeArray.value) //将有层级的节点数组扁平化
-    store.setMonitorTableData(findNodeByIdResult)   //将结果交由pinia 在table中展示
-    store.setMonitorHead({ label: data.label, length: findNodeByIdResult.length })
+    let dataFlattenByIdResult = dataFlattenById(data.id, airconditionNodeArray.value) //将有层级的节点数组扁平化
+    store.setMonitorTableData(dataFlattenByIdResult)   //将结果交由pinia 在table中展示
+    store.setMonitorHead({ label: data.label, length: dataFlattenByIdResult.length })
 }
 
 
@@ -316,7 +315,7 @@ const options_tree = reactive({
 .tree {
     border-right: 1px solid black;
     box-sizing: border-box;
-    width: 20%;
+    width: 210px;
 }
 
 .custom-tree-node {

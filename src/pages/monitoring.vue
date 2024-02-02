@@ -148,29 +148,6 @@ async function modifyNodePost(selectedobj, res) {
   })
 }
 
-
-function modifyNode(item) {
-  const rawItem = toRaw(item)
-  modifyNodePost(rawItem)
-}
-
-const editVisible = ref(true)
-let editItemData = ref(null)
-const handleEdit = (row) => {
-  editVisible.value = true
-  editItemData.value = row
-}
-const handleAdd = () => {
-  editVisible.value = true
-  editItemData.value = null
-}
-const editSubmit = async (row) => {
-  // 发送api等..
-  ElMessage.success('操作成功')
-  editVisible.value = false
-}
-
-
 // pinia
 const switchValue = computed(() => store.Switch);
 const modeValue = computed(() => store.Mode);
@@ -240,11 +217,11 @@ const headerRowStyle = ({ row, rowIndex }) => { // 修改表头的回调函数
 }
 
 .Monitor {
-  width: 80%;
+  width: 90%;
 }
 
 .Monitor_the_display_data_list {
-  height: 80%;
+  height: 82%;
   // 在内机控制界面的右侧 列表的高度 + 头部高度 + 控制区域高度 = 100%
   display: flex;
   flex-direction: column;

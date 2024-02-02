@@ -88,13 +88,14 @@ function closeTab(route) {
   border-bottom: 2px solid rgb(217, 219, 223);
 
   .tab-bar {
+    margin-left: 5px;
     display: flex;
     padding: 8px;
     height: 40px;
 
     .tab {
       padding: 8px 12px;
-      margin-right: 4px;
+      margin-right: 8px;
       border-radius: 4px;
       cursor: pointer;
       border: 2px solid #ccc;
