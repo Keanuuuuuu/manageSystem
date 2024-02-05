@@ -136,6 +136,7 @@ onMounted(() => {
     if (savedUsername && savedPassword) {
       username.value = savedUsername;
       password.value = savedPassword;
+      // tryLogin()
     }
   }
 });
