@@ -62,7 +62,7 @@
 </template>
 
 <script setup>
-import { post } from "../api/http.js";
+import { post } from "@/api/http.js";
 import { ref, onMounted, onUnmounted } from 'vue'
 
 import { useCustomStore } from '@/store'; // 引入pinia
@@ -72,6 +72,8 @@ import { dataFlattenById } from '@/utils/treeArr.js'
 import { ElMessage } from "element-plus";
 
 const store = useCustomStore()
+
+
 
 // 页面挂载时刷新请求
 onMounted(() => {

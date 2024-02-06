@@ -8,10 +8,10 @@
 <template>
   <div class="Monitor_display_head">
     <div class="title">
-      目前展示：{{store.airconditionNodeData.label ||"16栋教学楼"}}  
+      目前展示：{{ store.airconditionNodeData.label || "16栋教学楼" }}
     </div>
     <div class="member">
-      {{store.airconditionNodeData.length}}台内机,其中
+      {{ store.airconditionNodeData.length }}台内机,其中
     </div>
   </div>
 </template>
@@ -22,18 +22,21 @@ const store = useCustomStore();
 </script>
 
 <style lang="scss" scoped>
-.Monitor_display_head{
+.Monitor_display_head {
   background-color: #E7EEF3;
   height: 10%;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  .title{
+
+  .title {
     margin-left: 20px;
   }
-  .member{
+
+  .member {
+    position: absolute;
+    right: 0;
     margin-right: 20px;
   }
-}
-</style>
+}</style>

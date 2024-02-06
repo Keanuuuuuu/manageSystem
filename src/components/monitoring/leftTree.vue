@@ -15,9 +15,8 @@
                         <span>{{ data.label }}</span>
                         <div v-show="!data.children">
                             <span>
-                                <span> ---color </span>
+                                <span> --- <img src="@/assets/work.png"> </span>
                                 <!-- 现在只是一个固定的1来表示状态，要换成插值表达式，根据请求返回的故障码我来做一个判断 -->
-                                <!-- <a style="margin-left: 8px" @click="remove(node, data)"> Delete </a> -->
                             </span>
                         </div>
                     </span>
