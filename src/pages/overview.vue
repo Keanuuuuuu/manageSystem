@@ -19,14 +19,18 @@
       <el-col :span="5">
         <div class="short panel" id="hourse">
           <h2>房间</h2>
-          <h2>{{ roomLength }}间</h2>
+          <h4>房间总数{{ roomLength }}间</h4>
+          <h4>开启空调房间{{ roomLength }}间</h4>
           <el-icon class="icon">
             <House />
           </el-icon>
         </div>
         <div class="short panel" id="number">
           <h2>空调内机</h2>
-          <h2>{{ store.airconditionNodeData.length }}台</h2>
+          <h4>内机总数{{ store.airconditionNodeData.length }}台</h4>
+          <h4>在线内机{{ store.airconditionNodeData.length }}台</h4>
+          <h4>运行内机{{ store.airconditionNodeData.length }}台</h4>
+          <h4>故障内机0台</h4>
           <el-icon class="icon">
             <CreditCard />
           </el-icon>
@@ -212,6 +216,10 @@ const fetchData = async () => {
       right: 25px;
       opacity: 0.2;
     }
+  }
+
+  h4{
+    margin-left: 15px;
   }
 
   .panel h2:nth-child(2) {

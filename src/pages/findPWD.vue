@@ -19,11 +19,8 @@
                         <el-input id="captchabtn" v-model="captcha" clearable />
                     </div>
                 </div>
-
                 <el-button color="#2f349a" id="Btn" @click="tryNext">下一步</el-button>
-
             </div>
-
             <div id="other" @mousemove="handleMove" @mouseleave="leave">
                 <div id="wrapper" :style="{ left: `${moveValue}%` }">
                     <div id="pic"><img src="../assets/airCondition.png" alt=""></div>
@@ -39,12 +36,65 @@
 <script setup>
 import { ref } from "vue";
 import { throttle } from "../utils/Throttling";
+import { get } from "@/api/http.js";
+
+
+let mail = ref(null)
+let captcha = ref(null)
+
+const tryNext = () => {
+    // 发送获取验证码的请求
+    // 这里假设发送请求成功，并处理响应
+    fetch(`/password?email=${mail.value}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.code === 200) {
+                // 验证码发送成功，进入下一步
+                // 可以根据需要执行其他逻辑，如显示倒计时等
+                console.log(data.msg);
+            } else {
+                // 处理其他错误情况，如重复请求、用户不存在等
+                console.error(data.msg);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+};
+
+const changePassword = () => {
+    // 发送修改密码的请求
+    const requestData = {
+        userCode: captcha.value,
+        newPassword: '1234567' // 这里假设新密码为固定值，你可以根据实际情况获取用户输入的新密码
+    };
+    
+    fetch('/password', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.code === 21200) {
+            // 密码修改成功
+            console.log(data.msg);
+        } else {
+            // 处理其他错误情况，如验证码过期、验证码错误等
+            console.error(data.msg);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+};
+
 
 
 let moveValue = ref(50)
 let previousX = 50
-let mail = ref(null)
-let captcha = ref(null)
 
 const throttleMove = throttle(move, 10)
 function move(event) {
@@ -67,10 +117,8 @@ function leave() {
     moveValue.value = 50
 }
 
-
-
-
 </script>
+
 <style lang="scss" scoped>
 * {
     margin: 0;

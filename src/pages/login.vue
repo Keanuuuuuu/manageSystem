@@ -35,7 +35,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useCustomStore } from '@/store'; // 引入pinia
-import { post } from "../api/http.js";
+import { post } from "@/api/http.js";
 import { ElMessage } from "element-plus";
 import { JSEncrypt } from "jsencrypt";
 import { useIpcRenderer } from "@vueuse/electron";
