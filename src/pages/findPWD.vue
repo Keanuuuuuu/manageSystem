@@ -36,46 +36,40 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { ref } from "vue";
 import { throttle } from "../utils/Throttling";
 
-export default {
-    setup() {
-        let moveValue = ref(50)
-        let previousX = 50
-        let mail = ref(null)
-        let captcha = ref(null)
 
-        const throttleMove = throttle(move, 10)
-        function move(event) {
-            let currentX = event.clientX
-            if (currentX > previousX) {
-                // 鼠标向右移动
-                moveValue.value = 55
-            } else if (currentX < previousX) {
-                // 鼠标向左移动
-                moveValue.value = 45
-            } else {
-                moveValue.value = 50
-            }
-            previousX = currentX;
-        }
-        function handleMove(e) {
-            throttleMove(e)
-        }
-        function leave() {
-            moveValue.value = 50
-        }
+let moveValue = ref(50)
+let previousX = 50
+let mail = ref(null)
+let captcha = ref(null)
 
-        return {
-            moveValue,
-            move,
-            handleMove,
-            leave
-        }
+const throttleMove = throttle(move, 10)
+function move(event) {
+    let currentX = event.clientX
+    if (currentX > previousX) {
+        // 鼠标向右移动
+        moveValue.value = 55
+    } else if (currentX < previousX) {
+        // 鼠标向左移动
+        moveValue.value = 45
+    } else {
+        moveValue.value = 50
     }
+    previousX = currentX;
 }
+function handleMove(e) {
+    throttleMove(e)
+}
+function leave() {
+    moveValue.value = 50
+}
+
+
+
+
 </script>
 <style lang="scss" scoped>
 * {
@@ -90,7 +84,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    // background-color: rgb(249, 251, 255);
+
 }
 
 #main {
@@ -137,8 +131,8 @@ export default {
 
     #pic {
         img {
-            width: 120px;
-            height: 110px;
+            width: 90px;
+            height: 80px;
         }
     }
 

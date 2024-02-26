@@ -14,42 +14,44 @@
       </div>
       <div class="right">
         <span class="window-min" @click="windowMin">
-          <el-icon><SemiSelect /></el-icon>
+          <el-icon>
+            <SemiSelect />
+          </el-icon>
         </span>
         <span class="window-resize" @click="windowResize">
-          <el-icon><CopyDocument /></el-icon>
+          <el-icon v-if="isFullScreen">
+            <CopyDocument />
+          </el-icon>
+          <el-icon v-else><full-screen /></el-icon>
         </span>
         <span class="window-close" @click="windowClose">
-          <el-icon><CloseBold /></el-icon>
+          <el-icon>
+            <CloseBold />
+          </el-icon>
         </span>
       </div>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
 import { useIpcRenderer } from "@vueuse/electron"
+import { ref } from "vue"
 
+const isFullScreen = ref(false);
+const ipcRenderer = useIpcRenderer();
 
-export default{
-  setup(){
-    const ipcRenderer = useIpcRenderer();
-    const windowMin = ()=>{
-      ipcRenderer.send("window-min"); // 向主进程通信 最小化
-    }
-    const windowResize = ()=>{
-      ipcRenderer.send("window-resize"); // 向主进程通信 调整尺寸
-    }
-    const windowClose = ()=>{
-      ipcRenderer.send("window-close"); // 向主进程通信 关闭
-    }
-    return {
-      windowMin,
-      windowResize,
-      windowClose
-    }
-  }
+const windowMin = () => {
+  ipcRenderer.send("window-min"); // 向主进程通信 最小化
 }
+const windowResize = () => {
+  isFullScreen.value = !isFullScreen.value;
+  ipcRenderer.send("window-resize"); // 向主进程通信 调整尺寸
+}
+const windowClose = () => {
+  ipcRenderer.send("window-close"); // 向主进程通信 关闭
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -60,6 +62,7 @@ export default{
   color: white;
   display: flex;
   flex-direction: column;
+
   .left {
     float: left;
     height: 35px;
@@ -69,13 +72,16 @@ export default{
     display: flex;
     justify-content: center;
     align-items: center;
-    img{
+
+    img {
       margin-right: 15px;
       width: 24px;
     }
   }
+
   .right {
     float: right;
+
     .window-min,
     .window-resize,
     .window-close {
@@ -87,17 +93,19 @@ export default{
       text-align: center;
       -webkit-app-region: no-drag; //事件处可以禁用拖拽区域
     }
-    .window-resize{
-      transform: scale(-1,-1);
+
+    .window-resize {
+      transform: scale(-1, -1);
       font-size: 13px;
     }
+
     .window-min:hover,
     .window-resize:hover {
       background-color: rgb(119, 124, 207);
     }
+
     .window-close:hover {
       background-color: red;
     }
   }
-}
-</style>
+}</style>
