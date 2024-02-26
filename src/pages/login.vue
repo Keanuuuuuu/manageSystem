@@ -63,6 +63,7 @@ function tryLogin() {
     username: username.value.trim(),
     password: encryptPWD(password.value.trim()),
   };
+  console.log(postData.password);
   if (postData.username === "" || postData.password === "") {
     ElMessage({
       showClose: true,

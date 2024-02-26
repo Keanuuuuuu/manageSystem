@@ -8,17 +8,62 @@
 <template>
   <div class="Monitor_display_head">
     <div class="title">
-      目前展示：{{ store.airconditionNodeData.label || "16栋教学楼" }}
+      {{ findParentLabel(store.airconditionNodeData.label) + store.airconditionNodeData.label || "16栋教学楼"}}
     </div>
     <div class="member">
-      {{ store.airconditionNodeData.length }}台内机,其中
+      共{{ store.airconditionNodeData.length }}台 正在运行{{ countOpenDevices }}台
     </div>
   </div>
 </template>
 
 <script setup>
+import { onMounted, computed } from 'vue';
 import { useCustomStore } from '@/store';
+
 const store = useCustomStore();
+
+const findParentLabel = (label) => {
+  const findParent = (node, parentLabel = '') => {
+    if (!node) {
+      return null; // 没有找到匹配的标签
+    }
+
+    if (node.label === label) {
+      return parentLabel; // 找到匹配的标签，返回父级标签
+    }
+
+    if (node.children && node.children.length > 0) {
+      for (const child of node.children) {
+        const result = findParent(child, parentLabel ? `${parentLabel}${node.label}-` : node.label+'-');
+        if (result !== null) {
+          return result;
+        }
+      }
+    }
+
+    return null; // 没有找到匹配的标签
+  };
+
+  for (const node of store.leftTreeData) {
+    const parentLabel = findParent(node);
+    if (parentLabel !== null) {
+      return parentLabel;
+    }
+  }
+
+  return null; // 没有找到匹配的标签
+}
+
+
+const countOpenDevices = computed(() => {
+  let count = 0
+  for (const device of store.monitorTableData) {
+    if (device.status === '开') {
+      count++
+    }
+  }
+  return count
+})
 </script>
 
 <style lang="scss" scoped>
@@ -39,4 +84,5 @@ const store = useCustomStore();
     right: 0;
     margin-right: 20px;
   }
-}</style>
+}
+</style>

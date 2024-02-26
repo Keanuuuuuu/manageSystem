@@ -42,10 +42,10 @@
           <el-table-column property='roomTemperature' label="室温" sortable />
           <el-table-column label="详情">
             <template #default>
-              <el-button>详情...</el-button>
+              <el-button>展开</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="智能控制" width="140">
+          <el-table-column label="智能控制">
             <template #default>
               <el-switch size="small" />
             </template>

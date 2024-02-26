@@ -10,7 +10,6 @@
     <el-button class="btn" @click="fetchData">状态刷新</el-button>
     <el-button class="btn" @click="changeDialogVisible">实时控制</el-button>
     <el-button class="btn" @click="intelligentControlDialogVisible">智能控制</el-button>
-    <el-button class="btn">数据统计</el-button>
     <el-input :modelValue="input" placeholder="Please input" class="input-with-select">
       <template #prepend>
         <el-button :icon="Search" />
@@ -98,15 +97,14 @@ function intelligentControlDialogVisible() {
   height: 10%;
   display: flex;
   flex-direction: row;
+  align-items: center;
 
   .input-with-select {
-    height: 50%;
-    width: 20%;
-    margin: auto 10px;
+    width: 200px;
+    margin-left: 20px;
   }
 
   .btn {
-    height: 50%;
     margin: auto 10px;
   }
 }

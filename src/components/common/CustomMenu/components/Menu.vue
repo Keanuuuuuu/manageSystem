@@ -106,7 +106,7 @@ export default {
           // console.log(type);
           if (type === "routes") {
             // console.log('路由类型');
-            systemEventBus.$emit('GoRoutes', res)
+            systemEventBus.$emit('GoRoutes', res) //res为对应的route.name Navigator组件可根据name进行跳转
           }
           if (type === "dialog") {
             console.log('弹窗类型');

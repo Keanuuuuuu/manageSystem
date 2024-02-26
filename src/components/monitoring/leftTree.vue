@@ -8,12 +8,13 @@
 <template>
     <div class="tree">
         <el-scrollbar>
-            <el-tree :data="treeData" @node-click="handleNodeClick" :default-expand-all="true"
+            <el-tree :data="store.leftTreeData" @node-click="handleNodeClick" :default-expand-all="true"
                 :expand-on-click-node="false">
                 <template #default="{ node, data }">
                     <span class="custom-tree-node" v-mouse-menu="{ params: data, ...options_tree }">
                         <span>{{ data.label }}</span>
-                        <div v-show="!data.children">
+                        <span class="node-number" v-if="data.children">(2/{{ data.children.length }})</span>
+                        <div v-if="!data.children">
                             <span>
                                 <span> --- <img src="@/assets/work.png"> </span>
                                 <!-- 现在只是一个固定的1来表示状态，要换成插值表达式，根据请求返回的故障码我来做一个判断 -->
@@ -29,13 +30,14 @@
         <add-dialog v-show="add_dialogValue" :addType="addType" @addDialogSubmit="addDialogfn"></add-dialog>
 
         <!-- 删除节点 -->
-        <delete-dialog v-show="delete_dialogValue" :deleteType="deleteType" @deleteDialogSubmit="deleteDialogfn"></delete-dialog>
+        <delete-dialog v-show="delete_dialogValue" :deleteType="deleteType"
+            @deleteDialogSubmit="deleteDialogfn"></delete-dialog>
     </el-dialog>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-import { post } from '@/api/http.js'
+import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
+import { post, del } from '@/api/http.js'
 import { MouseMenuDirective as vMouseMenu } from '@howdyjs/mouse-menu'
 import { ElMessage } from "element-plus"
 import { useCustomStore } from '@/store';
@@ -58,16 +60,20 @@ onMounted(() => {
     })
 })
 
-
-
-let treeData = ref([])
+onBeforeUnmount(() => {
+    store.setMonitorHead({
+        label: "16栋教学楼",
+        length: '34',
+    })
+})
 
 async function getTreeArr() {
     const res = await post('/leftbar', null, {
         baseURL: 'http://lab.zhongyaohui.club/'
     })
     // console.log('左侧树节点===================》', res.data[0].children);
-    treeData.value = res.data[0].children
+    store.setLeftTreeData(res.data[0].children)
+    console.log(store.leftTreeData);
 }
 
 
@@ -78,6 +84,7 @@ const handleNodeClick = (data) => {
     airconditionNode.id = data.id;
     airconditionNode.name = data.label;
     let dataFlattenByIdResult = dataFlattenById(data.id, airconditionNodeArray.value) //将有层级的节点数组扁平化
+    // console.log(dataFlattenByIdResult);
     store.setMonitorTableData(dataFlattenByIdResult)   //将结果交由pinia 在table中展示
     store.setMonitorHead({ label: data.label, length: dataFlattenByIdResult.length })
 }
@@ -323,6 +330,11 @@ const options_tree = reactive({
     align-items: center;
     font-size: 14px;
     padding-right: 8px;
+
+    .node-number {
+        margin-left: 10px;
+        color: black;
+    }
 }
 </style>
 

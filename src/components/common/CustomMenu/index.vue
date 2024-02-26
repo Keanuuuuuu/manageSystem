@@ -9,29 +9,30 @@
   <div class="custom-menu-container">
     <Menu :menu="menu1">
       <template #selectDropDown>
-        <Item :value="value1_1" :type="dialog">修改密码</Item>
-        <Item :value="value1_2" :type="dialog">修改信息</Item>
-        <Item :value="value1_3" :type="dialog">退出系统</Item>
-        <Item :value="value1_4" :type="dialog">未读信息</Item>
+        <Item :value="value1_1" :type="dialog">{{value1_1}}</Item>
+        <Item :value="value1_2" :type="dialog">{{value1_2}}</Item>
+        <Item :value="value1_3" :type="dialog">{{value1_3}}</Item>
+        <Item :value="value1_4" :type="dialog">{{value1_4}}</Item>
       </template>
     </Menu>
     <Menu :menu="menu2">
       <template #selectDropDown>
-        <Item :value="value2_1" :type="routes">内机监控</Item>
-        <Item :value="value2_2" :type="routes">页面总览</Item>
+        <Item :value="value2_1" :type="routes">{{value2_1}}</Item>
+        <Item :value="value2_2" :type="routes">{{value2_2}}</Item>
+        <Item :value="value2_2" :type="routes">{{value2_3}}</Item>
       </template>
     </Menu>
     <Menu :menu="menu3">
       <template #selectDropDown>
-        <Item :value="value3_1" :type="dialog">智能控制</Item>
-        <Item :value="value3_2" :type="dialog">日志记载</Item>
-        <Item :value="value3_3" :type="routes">账号管理</Item>
-        <Item :value="value3_4" :type="dialog">报警设置</Item>
+        <Item :value="value3_1" :type="dialog">{{value3_1}}</Item>
+        <Item :value="value3_2" :type="dialog">{{value3_2}}</Item>
+        <Item :value="value3_3" :type="routes">{{value3_3}}</Item>
+        <Item :value="value3_4" :type="dialog">{{value3_4}}</Item>
       </template>
     </Menu>
     <Menu :menu="menu4">
       <template #selectDropDown>
-        <Item :value="value4_1" :type="dialog">帮助</Item>
+        <Item :value="value4_1" :type="dialog">{{value4_1}}</Item>
       </template>
     </Menu>
   </div>
@@ -59,11 +60,12 @@ export default {
       value1_4: "未读信息",
       value2_1: "内机监控",
       value2_2: "页面总览",
+      value2_3: "数据统计",
       value3_1: "智能控制",
       value3_2: "日志记载",
       value3_3: "账号管理",
       value3_4: "报警设置",
-      value4_1: "帮助"
+      value4_1: "帮助",
     }
   },
 };
@@ -91,7 +93,7 @@ export default {
 }
 
 .menu-item {
-  margin-left: 10px;
+  margin-left: 0px;
   display: flex;
   justify-content: flex-start;
   cursor: pointer;

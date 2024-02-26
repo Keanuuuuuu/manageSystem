@@ -10,7 +10,7 @@
     ref="ruleFormRoomRef"
     :model="ruleFormRoom"
     :rules="rules"
-    label-width="100px"
+    label-width="150px"
     class="demo-ruleForm"
     :size="formSize"
     status-icon
@@ -197,6 +197,6 @@ const resetForm = (formEl) => {
 <style lang="scss" scoped>
 .demo-ruleForm{
   margin: 0 auto;
-  width: 350px;
+  width: 400px;
 }
 </style>
