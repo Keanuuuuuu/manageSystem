@@ -11,10 +11,11 @@ https://leon-kfd.github.io/howdyjs/#/mouse-menu/readme
 
 ```
 manageSystem                                    //
-├─ .npmrc                                       //
 ├─ electron.config.json                         //
 ├─ index.html                                   //
 ├─ main.js                                      //
+├─ package-lock.json                            //
+├─ package.json                                 //
 ├─ README.md                                    //
 ├─ src                                          //
 │  ├─ api                                       //
@@ -23,8 +24,11 @@ manageSystem                                    //
 │  ├─ App.vue                                   //
 │  ├─ assets                                    //
 │  │  ├─ airCondition.png                       //
+│  │  ├─ error.png                              //
 │  │  ├─ logo.ico                               //
-│  │  └─ logo.png                               //
+│  │  ├─ logo.png                               //
+│  │  ├─ off.png                                //
+│  │  └─ work.png                               //
 │  ├─ components                                //
 │  │  ├─ common                                 //
 │  │  │  ├─ CustomMenu                          //
@@ -51,12 +55,15 @@ manageSystem                                    //
 │  ├─ globalStyle.scss                          //
 │  ├─ main.js                                   //
 │  ├─ pages                                     //
-│  │  ├─ acount.vue                             //
-│  │  ├─ findPWD.vue                            //
-│  │  ├─ log.vue                                //
-│  │  ├─ login.vue                              //
-│  │  ├─ monitoring.vue                         //
-│  │  └─ overview.vue                           //
+│  │  ├─ dialog                                 //
+│  │  │  ├─ log.vue                             //
+│  │  │  ├─ login.vue                           //
+│  │  │  └─ PWD.vue                             //
+│  │  └─ routes                                 //
+│  │     ├─ acount.vue                          //
+│  │     ├─ dataStatistics.vue                  //
+│  │     ├─ monitoring.vue                      //
+│  │     └─ overview.vue                        //
 │  ├─ router                                    //
 │  │  └─ index.js                               //
 │  ├─ store                                     //
