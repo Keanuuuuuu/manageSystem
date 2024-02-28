@@ -9,17 +9,35 @@
     <div>
         <div id="container">
             <div id="main">
-                <div class="mainBox" id="step1">
-                    <div class="inputBox">
-                        <p>请输入邮箱地址</p>
-                        <el-input class="mailbtn" v-model="mail" clearable />
-                    </div>
-                    <div class="inputBox">
-                        <p>请输入验证码</p>
-                        <el-input id="captchabtn" v-model="captcha" clearable />
+                <div v-if="firstStep" class="mainBox" id="step1">
+                    <div id="captcha">
+                        <div id="captchainput">
+                            <p>请输入邮箱地址</p>
+                            <el-input v-model="mail" clearable />
+                        </div>
+                        <div id="captchabtn">
+                            <el-button color="#2f349a" @click="getCaptcha" :disabled="disableBtn">获取验证码</el-button>
+                        </div>
                     </div>
                 </div>
-                <el-button color="#2f349a" id="Btn" @click="tryNext">下一步</el-button>
+
+                <div v-if="!firstStep" class="mainBox" id="step2">
+                    <div id="back" @click="handleBack">
+                        <el-icon>
+                            <Back />
+                        </el-icon>
+                    </div>
+                    <p>请输入验证码</p>
+                    <el-input v-model="captcha" clearable />
+                    <p>请输入新密码</p>
+                    <el-input v-model="newPassword" clearable />
+                    <p>再次输入新密码</p>
+                    <el-input v-model="checkPassword" clearable />
+                    <!-- 第二步的内容 -->
+                </div>
+
+                <el-button color="#2f349a" id="Btn" @click="tryNext">{{ btnContent }}</el-button>
+
             </div>
             <div id="other" @mousemove="handleMove" @mouseleave="leave">
                 <div id="wrapper" :style="{ left: `${moveValue}%` }">
@@ -36,62 +54,118 @@
 <script setup>
 import { ref } from "vue";
 import { throttle } from "../utils/Throttling";
-import { get } from "@/api/http.js";
+import { get,put } from "@/api/http.js";
+import { ElMessage } from "element-plus";
 
 
-let mail = ref(null)
-let captcha = ref(null)
+let firstStep = ref(true)
+let btnContent = ref("下一步")
+
+const handleBack = () => {
+    firstStep.value = true
+    btnContent.value = "下一步"
+}
 
 const tryNext = () => {
-    // 发送获取验证码的请求
-    // 这里假设发送请求成功，并处理响应
-    fetch(`/password?email=${mail.value}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.code === 200) {
-                // 验证码发送成功，进入下一步
-                // 可以根据需要执行其他逻辑，如显示倒计时等
-                console.log(data.msg);
-            } else {
-                // 处理其他错误情况，如重复请求、用户不存在等
-                console.error(data.msg);
-            }
+    // 在这里处理点击“下一步”按钮的逻辑
+    // 可以根据当前步骤来决定下一个步骤是什么
+    if (firstStep.value == true) {
+        firstStep.value = false;
+        btnContent.value = "完成"
+    } else {
+        handelChange()
+    }
+}
+
+let mail = ref("")
+let disableBtn = ref(false) //获取验证码控制按钮是否禁用的变量
+
+const getCaptcha = async () => {
+    if (mail.value.trim() === "") {
+        ElMessage({
+            showClose: true,
+            message: "输入的内容不能为空！",
+            type: "error",
+            offset: 50
         })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-};
-
-const changePassword = () => {
-    // 发送修改密码的请求
-    const requestData = {
-        userCode: captcha.value,
-        newPassword: '1234567' // 这里假设新密码为固定值，你可以根据实际情况获取用户输入的新密码
-    };
-    
-    fetch('/password', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.code === 21200) {
-            // 密码修改成功
-            console.log(data.msg);
+    } else {
+        // 禁用按钮
+        disableBtn.value = true;
+        const response = await get('/password', { email: mail.value });
+        console.log(response);
+        if (response.code === 200) {
+            setTimeout(() => {
+                disableBtn.value = false;
+            }, 60000);
+            // 成功获取验证码的逻辑
+            ElMessage({
+                showClose: true,
+                message: `"${response.msg}"`,
+                type: "success",
+                offset: 50
+            })
         } else {
-            // 处理其他错误情况，如验证码过期、验证码错误等
-            console.error(data.msg);
+            disableBtn.value = false;
+            ElMessage({
+                showClose: true,
+                message: `"${response.msg}"`,
+                type: "error",
+                offset: 50
+            })
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+    }
 };
 
+let captcha = ref("")
+let newPassword = ref("")
+let checkPassword = ref("")
 
+const handelChange = async () => {
+    if (captcha.value.trim() === "" || newPassword.value.trim() === "" || checkPassword.value.trim() === "") {
+        ElMessage({
+            showClose: true,
+            message: "输入的内容不能为空！",
+            type: "error",
+            offset: 50
+        })
+    } else {
+        if (newPassword.value !== checkPassword.value) {
+            ElMessage({
+                showClose: true,
+                message: "请确认密码一致！",
+                type: "error",
+                offset: 50
+            })
+        } else {
+            const response = await put('/password', { email:mail.value ,userCode: captcha.value, newPassword: newPassword.value })
+            console.log(response);
+            if (response.code === 21200) {
+                ElMessage({
+                    showClose: true,
+                    message: "已成功修改密码！",
+                    type: "success",
+                    offset: 50
+                })
+            } else if (response.code === 201) {
+                ElMessage({
+                    showClose: true,
+                    message: "验证码过期,请重新获取！",
+                    type: "error",
+                    offset: 50
+                })
+            } else {
+                ElMessage({
+                    showClose: true,
+                    message: "验证码错误！",
+                    type: "error",
+                    offset: 50
+                })
+            }
+
+        }
+    }
+
+}
 
 let moveValue = ref(50)
 let previousX = 50
@@ -137,8 +211,8 @@ function leave() {
 
 #main {
     margin-top: 10vh;
-    width: 500px;
-    height: 340px;
+    width: 450px;
+    height: 320px;
     border-radius: $border-radius;
     box-shadow: 0px 0px 40px 15px rgb(233, 239, 248);
     background-color: #fff;
@@ -147,24 +221,67 @@ function leave() {
     justify-content: center;
 
     .mainBox {
-        margin-top: 25px;
-        width: 450px;
-        height: 250px;
-        border: 1px solid black;
+        margin-top: 10px;
+        width: 320px;
     }
 
-    #Btn {
-        position: absolute;
-        left: 50%;
-        bottom: 10px;
-        transform: translateX(-50%);
-        margin: 15px auto;
-        width: 100px;
-        height: 40px;
-        font-size: 17px;
-        font-weight: 600;
-        letter-spacing: 3px;
+    #step1 {
+        p {
+            color: gray;
+            margin-bottom: 5px;
+        }
+
+        #captcha {
+            position: relative;
+            margin-top: 80px;
+
+            #captchainput {
+                width: 210px;
+            }
+
+            #captchabtn {
+                position: absolute;
+                top: 25px;
+                right: 0px;
+            }
+        }
+
     }
+
+    #step2 {
+        width: 250px;
+
+        #back {
+            cursor: pointer;
+            position: absolute;
+            left: 15px;
+        }
+
+        p {
+            color: gray;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        p:nth-child(2) {
+            margin-top: 25px;
+        }
+    }
+
+
+}
+
+#Btn {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    transform: translateX(-50%);
+    margin: 15px auto;
+    width: 100px;
+    height: 40px;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 3px;
 }
 
 #other {
@@ -199,17 +316,5 @@ function leave() {
         transition: all .7s;
         transform: translateX(-50%);
     }
-}
-
-.inputBox {
-    p {
-        float: left;
-    }
-}
-
-.mailbtn {
-    display: block;
-    width: 100px;
-
 }
 </style>
