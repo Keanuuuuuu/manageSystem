@@ -9,7 +9,7 @@
 <template>
   <div id="loginBox">
     <div id="logo">
-      <img src="../assets/airCondition.png" draggable="false" />
+      <img src="@/assets/airCondition.png" draggable="false" />
       <p>中央空调集中管理平台</p>
     </div>
     <div id="main">
@@ -23,7 +23,7 @@
       </div>
       <div id="checkBox">
         <el-checkbox v-model="recordPassword" label="记住密码" size="large" />
-        <el-link @click="findPWD">忘记密码？</el-link>
+        <el-link @click="PWD">忘记密码？</el-link>
       </div>
       <div id="loginBtn">
         <el-button color="#2f349a" id="loginBtn" @click="tryLogin">登录</el-button>
@@ -121,8 +121,8 @@ function handleLoginResponse(res) {
 }
 
 // 跳转至找回密码
-function findPWD() {
-  ipcRenderer.send("findPWD-open")
+function PWD() {
+  ipcRenderer.send("PWD-open")
 }
 
 // 记住密码  在组件挂载时从本地存储加载保存的凭据并自动登录

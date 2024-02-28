@@ -1,7 +1,7 @@
 // 定义窗口对象的操作 最小化/还原/关闭
 
 const { BrowserWindow } = require('electron');
-const { mainWindowConfig, loginWindowConfig, findPWDWindowConfig, dialogConfig } = require('./windowConfig');
+const { mainWindowConfig, loginWindowConfig, PWDWindowConfig, dialogConfig } = require('./windowConfig');
 const path = require('path')
 const NODE_ENV = process.env.NODE_ENV
 
@@ -51,14 +51,14 @@ function createLoginWindow() {
 }
 
 function createPWDWindow() {
-  windows.PWDWindow = new BrowserWindow(findPWDWindowConfig);
+  windows.PWDWindow = new BrowserWindow(PWDWindowConfig);
   // 创建忘记密码窗口的逻辑...
   if (NODE_ENV === 'development') {
-    windows.PWDWindow.loadURL('http://localhost:5173/#/dialog/findPWD')
+    windows.PWDWindow.loadURL('http://localhost:5173/#/dialog/PWD')
   } else {
     windows.PWDWindow.loadFile(NODE_ENV === 'development' ? 'http://localhost:5173/' : path.join(__dirname, 'dist/index.html'),
     {
-      hash: '#/dialog/findPWD'
+      hash: '#/dialog/PWD'
     })
   }
 

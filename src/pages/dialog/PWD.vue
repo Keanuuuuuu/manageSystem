@@ -1,6 +1,6 @@
 <!-- 
 * @description:找回密码的页面 
-* @fileName: findPWD.vue
+* @fileName: PWD.vue
 * @author: 文洋
 * @date: 2023-11-09
 * @version:1.0 
@@ -41,7 +41,7 @@
             </div>
             <div id="other" @mousemove="handleMove" @mouseleave="leave">
                 <div id="wrapper" :style="{ left: `${moveValue}%` }">
-                    <div id="pic"><img src="../assets/airCondition.png" alt=""></div>
+                    <div id="pic"><img src="@/assets/airCondition.png" alt=""></div>
                     <div id="title">
                         <p>中央空调<br>集中管理平台</p>
                     </div>
@@ -53,7 +53,7 @@
 
 <script setup>
 import { ref } from "vue";
-import { throttle } from "../utils/Throttling";
+import { throttle } from "@/utils/Throttling";
 import { get,put } from "@/api/http.js";
 import { ElMessage } from "element-plus";
 

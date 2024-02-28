@@ -67,17 +67,17 @@ ipcMain.on('login-access', () => {
 
 
 // 找回密码窗口操作
-ipcMain.on('findPWD-open', () => {
+ipcMain.on('PWD-open', () => {
     windows.loginWindow.close()
     windows.loginWindow = null
     createPWDWindow()
 })
 
-ipcMain.on('findPWD-min', () => {
+ipcMain.on('PWD-min', () => {
     windows.PWDWindow.minimize()
 })
 
-ipcMain.on('findPWD-close', () => {
+ipcMain.on('PWD-close', () => {
     windows.PWDWindow.close()
     windows.PWDWindow = null
     createLoginWindow()

@@ -16,7 +16,7 @@
                         <span class="node-number" v-if="data.children">(2/{{ data.children.length }})</span>
                         <div v-if="!data.children">
                             <span>
-                                <span> --- <img src="@/assets/work.png"> </span>
+                                <span> --- <img src="@/assets/work.png" title="运行"> </span>
                                 <!-- 现在只是一个固定的1来表示状态，要换成插值表达式，根据请求返回的故障码我来做一个判断 -->
                             </span>
                         </div>

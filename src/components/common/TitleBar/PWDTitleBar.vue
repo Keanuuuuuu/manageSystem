@@ -35,10 +35,10 @@ export default {
     const ipcRenderer = useIpcRenderer();
     const windowMin = () => {
       console.log(ipcRenderer);
-      ipcRenderer.send("findPWD-min"); // 向主进程通信
+      ipcRenderer.send("PWD-min"); // 向主进程通信
     }
     const windowClose = () => {
-      ipcRenderer.send("findPWD-close"); // 向主进程通信
+      ipcRenderer.send("PWD-close"); // 向主进程通信
     }
 
     return {

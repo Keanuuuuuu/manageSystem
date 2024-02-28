@@ -83,9 +83,9 @@ const windowClose = () => {
     .window-min,
     .window-resize,
     .window-close {
-      font-size: 14px;
+      font-size: 15px;
       width: 50px;
-      height: 35px;
+      height: 38px;
       line-height: 40px;
       display: inline-block;
       text-align: center;
@@ -93,7 +93,6 @@ const windowClose = () => {
     }
 
     .window-resize {
-      padding-bottom: 3px;
       transform: scale(-1, -1);
       font-size: 15px;
     }
