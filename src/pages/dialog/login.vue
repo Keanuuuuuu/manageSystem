@@ -34,7 +34,6 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useCustomStore } from '@/store'; // 引入pinia
 import { post } from "@/api/http.js";
 import { ElMessage } from "element-plus";
 import { JSEncrypt } from "jsencrypt";
@@ -45,7 +44,6 @@ const password = ref("");
 let recordPassword = ref(false);
 const electronStore = require('electron-store');
 const Estore = new electronStore();
-const store = useCustomStore();
 const ipcRenderer = useIpcRenderer();
 
 // 加密函数
@@ -84,7 +82,7 @@ function tryLogin() {
 function handleLoginResponse(res) {
   if (res.code === 21200) {
     const userData = res.data;
-
+    console.log(userData);
     // 如果“记住密码”被选中，保存凭据到本地存储
     if (recordPassword.value) {
       Estore.set("logindata", {
@@ -97,9 +95,9 @@ function handleLoginResponse(res) {
       Estore.delete("logindata");
       Estore.set("recordPassword", recordPassword.value);
     }
-
-    store.setUserdata(userData)
-
+    
+    Estore.set("userData", userData);
+    
     // 只在第一次登录/token过期后/切换账号时 存入token
     if (!Estore.get('token')) {
       console.log('只在第一次登录/token过期后/切换账号时 存入token');

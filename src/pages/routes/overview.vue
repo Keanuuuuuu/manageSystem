@@ -112,6 +112,7 @@ async function InitalAirconditionState() {
   airconditionNodeArray.value = res.data
   let dataFlattenByIdResult = dataFlattenById("16", airconditionNodeArray.value) //将有层级的节点数组扁平化
   store.setMonitorTableData(dataFlattenByIdResult)   //将结果交由pinia 在table中展示
+  store.setOriginalMonitorTableData(dataFlattenByIdResult) //保存初始数据 筛选用
 }
 
 let options = [{

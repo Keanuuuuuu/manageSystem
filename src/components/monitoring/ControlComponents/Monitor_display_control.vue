@@ -10,9 +10,9 @@
     <el-button class="btn" @click="fetchData">状态刷新</el-button>
     <el-button class="btn" @click="changeDialogVisible">实时控制</el-button>
     <el-button class="btn" @click="intelligentControlDialogVisible">智能控制</el-button>
-    <el-input :modelValue="input" placeholder="Please input" class="input-with-select">
-      <template #prepend>
-        <el-button :icon="Search" />
+    <el-input v-model="search" placeholder="Please input" class="input-with-select" @keydown.enter="handleSearch">
+      <template #append>
+        <el-button :icon="Search" @click="handleSearch" />
       </template>
     </el-input>
   </div>
@@ -30,14 +30,24 @@ const store = useCustomStore()
 const props = defineProps(['dialogVisible', 'control_dialogValue', 'intelligent_controlValue'])
 const emit = defineEmits()
 
-
-const input = ref('')
-const select = ref('')
 const fullscreenLoading = ref(false)
 
-const DialogVisible = ref(props.dialogVisible)
-const Control_dialogValue = ref(props.control_dialogValue)
-const intelligent_controlValue = ref(props.intelligent_controlValue)
+const search = ref('')
+
+function handleSearch() {
+  if (search.value === "") {
+    ElMessage({
+      showClose: true,
+      message: "输入的内容不能为空！",
+      type: "error",
+      offset: 100
+    })
+  } else {
+    store.filterMonitorTableData(search.value.trim())
+  }
+}
+
+
 
 const airconditionNodeArray = ref([])
 
@@ -73,6 +83,10 @@ const fetchData = async () => {
     });
   }
 };
+
+const DialogVisible = ref(props.dialogVisible)
+const Control_dialogValue = ref(props.control_dialogValue)
+const intelligent_controlValue = ref(props.intelligent_controlValue)
 
 function changeDialogVisible() {
   DialogVisible.value = true
