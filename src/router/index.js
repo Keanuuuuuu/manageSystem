@@ -1,11 +1,14 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
-import Overview from '../pages/overview.vue'
-import Monitoring from '../pages/monitoring.vue'
-import Log from '../pages/log.vue'
-import Acount from '../pages/acount.vue'
-import Login from '../pages/login.vue'
-import PWD from '../pages/findPWD.vue'
+import Overview from '../pages/routes/overview.vue'
+import Monitoring from '../pages/routes/monitoring.vue'
+import Acount from '../pages/routes/acount.vue'
+import DataStatistics from '../pages/routes/dataStatistics.vue'
+
+import Log from '../pages/dialog/log.vue'
+import PWD from '../pages/dialog/PWD.vue'
+import Login from '../pages/dialog/login.vue'
+
 
 const routes = [
   {
@@ -31,6 +34,11 @@ const routes = [
         name: '账号管理',
         component: Acount
       },
+      {
+        path: 'dataStatistics',
+        name: '数据统计',
+        component: DataStatistics
+      },
     ]
   },
   {
@@ -47,7 +55,7 @@ const routes = [
         component: Login
       },
       {
-        path: 'findPWD',
+        path: 'PWD',
         name: '找回密码',
         component: PWD
       },

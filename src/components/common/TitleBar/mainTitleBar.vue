@@ -22,7 +22,7 @@
           <el-icon v-if="isFullScreen">
             <CopyDocument />
           </el-icon>
-          <el-icon v-else><full-screen /></el-icon>
+          <el-icon v-else><i class="square"></i></el-icon>
         </span>
         <span class="window-close" @click="windowClose">
           <el-icon>
@@ -60,8 +60,6 @@ const windowClose = () => {
   background-color: $color-theme;
   -webkit-app-region: drag; //事件处可以禁用拖拽区域
   color: white;
-  display: flex;
-  flex-direction: column;
 
   .left {
     float: left;
@@ -85,9 +83,9 @@ const windowClose = () => {
     .window-min,
     .window-resize,
     .window-close {
-      font-size: 14px;
+      font-size: 15px;
       width: 50px;
-      height: 35px;
+      height: 38px;
       line-height: 40px;
       display: inline-block;
       text-align: center;
@@ -96,7 +94,7 @@ const windowClose = () => {
 
     .window-resize {
       transform: scale(-1, -1);
-      font-size: 13px;
+      font-size: 15px;
     }
 
     .window-min:hover,
@@ -107,5 +105,12 @@ const windowClose = () => {
     .window-close:hover {
       background-color: red;
     }
+  }
+
+  .square {
+    width: 10px;
+    height: 10px;
+    border: 1px solid white;
+    background-color: transparent;
   }
 }</style>

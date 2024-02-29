@@ -19,7 +19,7 @@
       <template #selectDropDown>
         <Item :value="value2_1" :type="routes">{{value2_1}}</Item>
         <Item :value="value2_2" :type="routes">{{value2_2}}</Item>
-        <Item :value="value2_2" :type="routes">{{value2_3}}</Item>
+        <Item :value="value2_3" :type="routes">{{value2_3}}</Item>
       </template>
     </Menu>
     <Menu :menu="menu3">

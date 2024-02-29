@@ -30,7 +30,7 @@ exports.loginWindowConfig = {
   title: '登录',
 }
 
-exports.findPWDWindowConfig = {
+exports.PWDWindowConfig = {
   minWidth:1000,
   minHeight: 710,
   frame: false, 

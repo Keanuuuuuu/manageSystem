@@ -9,8 +9,8 @@
     <router-view />
   </template>
 
-  <template v-else-if="$route.path == '/dialog/findPWD'">
-    <findPWDTitleBar></findPWDTitleBar>
+  <template v-else-if="$route.path == '/dialog/PWD'">
+    <PWDTitleBar></PWDTitleBar>
     <router-view />
   </template>
 
@@ -33,7 +33,7 @@ import Navigator from "@/components/common/Navigator.vue";
 import LoginTitleBar from '@/components/common/TitleBar/loginTitleBar.vue'
 import TitleBar from "@/components/common/TitleBar/mainTitleBar.vue";
 import LogTitleBar from '@/components/common/TitleBar/logTitleBar.vue';
-import findPWDTitleBar from "@/components/common/TitleBar/PWDTitleBar.vue";
+import PWDTitleBar from "@/components/common/TitleBar/PWDTitleBar.vue";
 
 
 export default {
@@ -43,7 +43,7 @@ export default {
     TitleBar,
     LoginTitleBar,
     LogTitleBar,
-    findPWDTitleBar,
+    PWDTitleBar,
     CustomMenu
   },
   setup() {
@@ -66,13 +66,14 @@ export default {
 
 .mainApp {
   width: 100%;
+  height: 100%;
   position: absolute;
   top: 50%;
   left: 50%;
-  height: 100%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50.05%);
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  border: none;
 }
 </style>

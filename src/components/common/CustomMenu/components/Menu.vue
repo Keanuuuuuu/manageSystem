@@ -105,7 +105,7 @@ export default {
           selectValue.value = res
           // console.log(type);
           if (type === "routes") {
-            // console.log('路由类型');
+            // console.log('路由类型',res);
             systemEventBus.$emit('GoRoutes', res) //res为对应的route.name Navigator组件可根据name进行跳转
           }
           if (type === "dialog") {
