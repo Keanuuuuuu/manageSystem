@@ -10,16 +10,16 @@ https://leon-kfd.github.io/howdyjs/#/mouse-menu/readme
 
 
 ```
-manageSystem                                    //
-├─ electron.config.json                         //
+manageSystem                                    // 
+├─ electron.config.json                         //有关electron打包的配置
 ├─ index.html                                   //
-├─ main.js                                      //
+├─ main.js                                      //electron的main.js 监听并执行窗口最大化、最小化等操作
 ├─ package-lock.json                            //
 ├─ package.json                                 //
 ├─ README.md                                    //
 ├─ src                                          //
-│  ├─ api                                       //
-│  │  ├─ authorize.js                           //
+│  ├─ api                                       //对axios的封装
+│  │  ├─ authorize.js                           //鉴权专用请求
 │  │  └─ http.js                                //
 │  ├─ App.vue                                   //
 │  ├─ assets                                    //
@@ -31,35 +31,35 @@ manageSystem                                    //
 │  │  └─ work.png                               //
 │  ├─ components                                //
 │  │  ├─ common                                 //
-│  │  │  ├─ CustomMenu                          //
+│  │  │  ├─ CustomMenu                          //定制化菜单栏
 │  │  │  │  ├─ components                       //
 │  │  │  │  │  ├─ Item.vue                      //
 │  │  │  │  │  └─ Menu.vue                      //
 │  │  │  │  └─ index.vue                        //
-│  │  │  ├─ Navigator.vue                       //
+│  │  │  ├─ Navigator.vue                       //导航栏
 │  │  │  └─ TitleBar                            //
 │  │  │     ├─ loginTitleBar.vue                //
 │  │  │     ├─ logTitleBar.vue                  //
 │  │  │     ├─ mainTitleBar.vue                 //
 │  │  │     └─ PWDTitleBar.vue                  //
 │  │  └─ monitoring                             //
-│  │     ├─ ControlComponents                   //
-│  │     │  ├─ Monitor_display_control.vue      //
-│  │     │  └─ Monitor_display_head.vue         //
+│  │     ├─ ControlComponents                   //内机监控看板上方数据组件
+│  │     │  ├─ Monitor_display_control.vue      //按钮操控组件 状态刷新、实时控制、智能控制
+│  │     │  └─ Monitor_display_head.vue         //数据展示组件
 │  │     ├─ Dialog                              //
-│  │     │  ├─ addDialog.vue                    //
-│  │     │  ├─ controlDialog.vue                //
-│  │     │  ├─ deleteDialog.vue                 //
-│  │     │  └─ intelligentControlDialog.vue     //
-│  │     └─ leftTree.vue                        //
-│  ├─ globalStyle.scss                          //
-│  ├─ main.js                                   //
+│  │     │  ├─ addDialog.vue                    //新增节点
+│  │     │  ├─ controlDialog.vue                //实时控制
+│  │     │  ├─ deleteDialog.vue                 //删除节点
+│  │     │  └─ intelligentControlDialog.vue     //智能控制
+│  │     └─ leftTree.vue                        //内机监控中左侧树形组件
+│  ├─ globalStyle.scss                          //全局变量样式
+│  ├─ main.js                                   //vue的main.js
 │  ├─ pages                                     //
-│  │  ├─ dialog                                 //
+│  │  ├─ dialog                                 //弹窗类型
 │  │  │  ├─ log.vue                             //
 │  │  │  ├─ login.vue                           //
 │  │  │  └─ PWD.vue                             //
-│  │  └─ routes                                 //
+│  │  └─ routes                                 //路由类型
 │  │     ├─ acount.vue                          //
 │  │     ├─ dataStatistics.vue                  //
 │  │     ├─ monitoring.vue                      //
@@ -76,7 +76,7 @@ manageSystem                                    //
 │     ├─ token.js                               //
 │     └─ treeArr.js                             //
 ├─ vite.config.js                               //
-├─ windowConfig.js                              //
-└─ windowManager.js                             //
+├─ windowConfig.js                              //配置窗口信息 宽高等
+└─ windowManager.js                             //定义窗口对象的操作 最小化/还原/关闭
 
 ```
