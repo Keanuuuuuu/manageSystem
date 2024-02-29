@@ -35,6 +35,13 @@ export const useCustomStore = defineStore({
     setMonitorTableData(monitorTableData){
       this.monitorTableData = monitorTableData
     },
+    filterMonitorTableData(id) {
+      console.log(id);
+      // 使用 filter 方法筛选出符合条件的数据
+      const filteredData = this.monitorTableData.filter(item => item.id.includes(id));
+      // 将筛选后的数据保存回 state 中
+      this.setMonitorTableData(filteredData);
+    },
     setMonitorHead(airconditionNodeData){
       this.airconditionNodeData = airconditionNodeData
     },

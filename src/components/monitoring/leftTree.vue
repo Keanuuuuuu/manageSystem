@@ -16,7 +16,7 @@
                         <span class="node-number" v-if="data.children">(2/{{ data.children.length }})</span>
                         <div v-if="!data.children">
                             <span>
-                                <span> --- <img src="@/assets/work.png" title="运行"> </span>
+                                <span> --- <img src="@/assets/work.png" title="在线"> </span>
                                 <!-- 现在只是一个固定的1来表示状态，要换成插值表达式，根据请求返回的故障码我来做一个判断 -->
                             </span>
                         </div>
@@ -73,7 +73,7 @@ async function getTreeArr() {
     })
     // console.log('左侧树节点===================》', res.data[0].children);
     store.setLeftTreeData(res.data[0].children)
-    console.log(store.leftTreeData);
+    // console.log(store.leftTreeData);
 }
 
 
@@ -87,6 +87,7 @@ const handleNodeClick = (data) => {
     // console.log(dataFlattenByIdResult);
     store.setMonitorTableData(dataFlattenByIdResult)   //将结果交由pinia 在table中展示
     store.setMonitorHead({ label: data.label, length: dataFlattenByIdResult.length })
+    // console.log(store.monitorTableData);
 }
 
 

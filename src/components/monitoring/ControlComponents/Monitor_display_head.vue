@@ -11,7 +11,7 @@
       {{ findParentLabel(store.airconditionNodeData.label) + store.airconditionNodeData.label || "16栋教学楼"}}
     </div>
     <div class="member">
-      共{{ store.airconditionNodeData.length }}台 正在运行{{ countOpenDevices }}台
+      共{{ store.airconditionNodeData.length }}台 正在运行{{ countOpenDevices }}台 
     </div>
   </div>
 </template>
