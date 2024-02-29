@@ -8,41 +8,44 @@ export const useCustomStore = defineStore({
     Wind: '自动',
     Temperature: 25,
     userdata: null, // 存储用户身份信息包括权限 权限 0为超级管理员，1为管理员，2为普通用户
-    navigatorRoutes:['页面总览'],
-    monitorTableData:[],
-    airconditionNodeData:{
-      label:"16栋教学楼",
-      length:'34',
+    navigatorRoutes: ['页面总览'],
+    monitorTableData: [],
+    originalMonitorTableData: [], // 保存初始数据 这样多次筛选都能基于全集
+    airconditionNodeData: {
+      label: "16栋教学楼",
+      length: '34',
     },
-    leftTreeData:[]
+    leftTreeData: []
   }),
   actions: {
-    addNavigatorRoutes(route){        //添加导航路由数组
-      if(!this.navigatorRoutes.includes(route)){
+    addNavigatorRoutes(route) {        //添加导航路由数组
+      if (!this.navigatorRoutes.includes(route)) {
         this.navigatorRoutes.push(route)
       }
     },
-    deleteNavigatorRoutes(route){     //删除导航路由数组
+    deleteNavigatorRoutes(route) {     //删除导航路由数组
       let indexToDelete = this.navigatorRoutes.indexOf(route)
 
-      if(indexToDelete !==-1 && indexToDelete !==0){ //第一个元素不能被删除，即页面总览
-        this.navigatorRoutes.splice(indexToDelete,1)
+      if (indexToDelete !== -1 && indexToDelete !== 0) { //第一个元素不能被删除，即页面总览
+        this.navigatorRoutes.splice(indexToDelete, 1)
       }
     },
-    setLeftTreeData(leftTreeData){
+    setLeftTreeData(leftTreeData) {
       this.leftTreeData = leftTreeData
     },
-    setMonitorTableData(monitorTableData){
+    setMonitorTableData(monitorTableData) {
       this.monitorTableData = monitorTableData
     },
+    setOriginalMonitorTableData(data) {
+      this.originalMonitorTableData = data;
+    },
     filterMonitorTableData(id) {
-      console.log(id);
       // 使用 filter 方法筛选出符合条件的数据
-      const filteredData = this.monitorTableData.filter(item => item.id.includes(id));
+      const filteredData = this.originalMonitorTableData.filter(item => item.id.includes(id));
       // 将筛选后的数据保存回 state 中
       this.setMonitorTableData(filteredData);
     },
-    setMonitorHead(airconditionNodeData){
+    setMonitorHead(airconditionNodeData) {
       this.airconditionNodeData = airconditionNodeData
     },
     setSwitch(Switch) {
