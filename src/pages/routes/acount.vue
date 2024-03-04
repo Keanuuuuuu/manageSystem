@@ -35,45 +35,57 @@
         @current-change="handleCurrentChange"></el-pagination>
     </div>
 
+
     <el-dialog title="新增账号" :modelValue="addDialogVisible" @closed="close" width="500px">
-      <el-form :model="addForm" label-width="100px">
-        <el-form-item label="账号" required>
-          <el-input v-model="addForm.account"></el-input>
-        </el-form-item>
-        <el-form-item label="角色" required>
-          <el-input v-model="addForm.role"></el-input>
-        </el-form-item>
-        <el-form-item label="姓名" required>
-          <el-input v-model="addForm.name"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" required>
-          <el-input type="password" v-model="addForm.password"></el-input>
-        </el-form-item>
-        <el-form-item label="联系电话" required>
-          <el-input v-model="addForm.phone"></el-input>
-        </el-form-item>
-        <el-form-item label="管理权限">
-          <el-checkbox-group v-model="addForm.permissions">
-            <el-checkbox label="权限1"></el-checkbox>
-            <el-checkbox label="权限2"></el-checkbox>
-            <el-checkbox label="权限3"></el-checkbox>
-            <!-- 添加更多权限项 -->
-          </el-checkbox-group>
-        </el-form-item>
-        <el-form-item label="备注">
-          <el-input type="textarea" v-model="addForm.remark"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="addDialogVisible = false">取消</el-button>
-        <el-button @click="handleAddConfirm">确定</el-button>
-      </div>
+      <el-scrollbar height="400px">
+        <el-form :model="addForm" label-width="100px">
+          <el-form-item label="账号" required>
+            <el-input v-model="addForm.account" maxlength="2"></el-input>
+          </el-form-item>
+          <el-form-item label="角色" required>
+            <el-select v-model="authValue" placeholder="选择角色" style="width: 360px">
+              <el-option v-for="item in authOption" :key="item.value" :label="item.label" :value="item.value"/>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="姓名" required>
+            <el-input v-model="addForm.name"></el-input>
+          </el-form-item>
+          <el-form-item label="密码" required>
+            <el-input type="password" v-model="addForm.password"></el-input>
+          </el-form-item>
+          <el-form-item label="联系电话" required>
+            <el-input v-model="addForm.phone"></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱地址" required>
+            <el-input v-model="addForm.email"></el-input>
+          </el-form-item>
+          <el-form-item label="管理权限">
+            <el-tree :data="store.leftTreeData"  :default-expand-all="true"
+                :expand-on-click-node="false" show-checkbox>
+                <template #default="{ node, data }">
+                        <span>{{ data.label }}</span>
+                </template>
+            </el-tree>
+          </el-form-item>
+          <el-form-item label="备注">
+            <el-input v-model="addForm.remark"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="addDialogVisible = false">取消</el-button>
+          <el-button @click="handleAddConfirm">确定</el-button>
+        </div>
+      </el-scrollbar>
     </el-dialog>
+
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import { useCustomStore } from '@/store';
+
+const store = useCustomStore();
 
 // 模拟的表格数据
 const tableData = ref([
@@ -96,48 +108,25 @@ const tableData = ref([
     permissions: '全部',
     createdAt: '2024-02-26',
     remark: '备注信息'
-  },
-  {
-    index: 3,
-    account: 'user1',
-    role: 'admin',
-    name: '张三',
-    phone: '123456789',
-    permissions: '全部',
-    createdAt: '2024-02-26',
-    remark: '备注信息'
-  }, {
-    index: 4,
-    account: 'user1',
-    role: 'admin',
-    name: '张三',
-    phone: '123456789',
-    permissions: '全部',
-    createdAt: '2024-02-26',
-    remark: '备注信息'
-  },
-  {
-    index: 5,
-    account: 'user1',
-    role: 'admin',
-    name: '张三',
-    phone: '123456789',
-    permissions: '全部',
-    createdAt: '2024-02-26',
-    remark: '备注信息'
-  },
-  {
-    index: 6,
-    account: 'user1',
-    role: 'admin',
-    name: '张三',
-    phone: '123456789',
-    permissions: '全部',
-    createdAt: '2024-02-26',
-    remark: '备注信息'
-  },
-  // 其他账号数据...
+  }
 ]);
+
+
+const authValue = ref('')
+const authOption = [
+  {
+    value:'超级管理员',
+    label:'超级管理员'
+  },
+  {
+    value:'管理员',
+    label:'管理员'
+  },
+  {
+    value:'普通用户',
+    label:'普通用户'
+  },
+]
 
 // 新增账号对话框可见性
 const addDialogVisible = ref(false);
@@ -156,10 +145,10 @@ const handleAddConfirm = () => {
   // 清空表单数据
   addForm.value = {
     account: '',
-    role: '',
     name: '',
     password: '',
     phone: '',
+    email: '',
     permissions: [],
     remark: ''
   };
@@ -168,10 +157,10 @@ const handleAddConfirm = () => {
 // 新增账号表单数据
 const addForm = ref({
   account: '',
-  role: '',
   name: '',
   password: '',
   phone: '',
+  email: '',
   permissions: [],
   remark: ''
 });
@@ -214,7 +203,7 @@ const headerRowStyle = () => { // 修改表头的回调函数
 </script>
 
 <style lang="scss" scoped>
-.dialog-footer{
+.dialog-footer {
   display: flex;
   justify-content: center;
 }

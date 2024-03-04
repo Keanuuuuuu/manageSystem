@@ -31,6 +31,8 @@ function createMainWindow() {
     // 取消引用 window 对象，如果你的应用支持多窗口的话，通常会把多个 window 对象存放在一个数组里面，与此同时，你应该删除相应的元素。
     windows.mainWindow = null
   })
+
+  windows.mainWindow.webContents.openDevTools()
 }
 
 function createLoginWindow() {
@@ -40,14 +42,16 @@ function createLoginWindow() {
     windows.loginWindow.loadURL('http://localhost:5173/#/dialog/login')
   } else {
     windows.loginWindow.loadFile(NODE_ENV === 'development' ? 'http://localhost:5173/' : path.join(__dirname, 'dist/index.html'),
-    {
-      hash: '#/dialog/login'
-    })
+      {
+        hash: '#/dialog/login'
+      })
   }
 
   windows.loginWindow.on('closed', () => {
     windows.loginWindow = null
   })
+
+  windows.loginWindow.webContents.openDevTools()
 }
 
 function createPWDWindow() {
@@ -57,14 +61,16 @@ function createPWDWindow() {
     windows.PWDWindow.loadURL('http://localhost:5173/#/dialog/PWD')
   } else {
     windows.PWDWindow.loadFile(NODE_ENV === 'development' ? 'http://localhost:5173/' : path.join(__dirname, 'dist/index.html'),
-    {
-      hash: '#/dialog/PWD'
-    })
+      {
+        hash: '#/dialog/PWD'
+      })
   }
 
   windows.PWDWindow.on('closed', () => {
     windows.PWDWindow = null
   })
+
+  windows.PWDWindow.webContents.openDevTools()
 }
 
 function createDialog() {
@@ -74,14 +80,16 @@ function createDialog() {
     windows.dialog.loadURL('http://localhost:5173/#/dialog/log')
   } else {
     windows.dialog.loadFile(NODE_ENV === 'development' ? 'http://localhost:5173/' : path.join(__dirname, 'dist/index.html'),
-    {
-      hash: '#/dialog/log'
-    })
+      {
+        hash: '#/dialog/log'
+      })
   }
 
   windows.dialog.on('closed', () => {
     windows.dialog = null
   })
+
+  windows.dialog.webContents.openDevTools()
 }
 
 // 其他窗口的创建逻辑...
