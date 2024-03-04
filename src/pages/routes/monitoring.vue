@@ -23,7 +23,7 @@
 
 
       <div class="Monitor_the_display_data_list">
-        <el-table ref="multipleTableRef" fit="false" style="width: 99%"
+        <el-table ref="multipleTableRef"
           :data="store.monitorTableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)"
           @selection-change="handleSelectionChange" stripe :header-cell-style="headerRowStyle">
           <!-- 
@@ -42,10 +42,10 @@
           <el-table-column property='roomTemperature' label="室温" sortable />
           <el-table-column label="详情">
             <template #default>
-              <el-button>展开</el-button>
+              <el-button>详情...</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="智能控制">
+          <el-table-column label="智能控制" width="140">
             <template #default>
               <el-switch size="small" />
             </template>
@@ -62,7 +62,7 @@
   </div>
 
 
-  <el-dialog :modelValue="dialogVisible" :title="titleName" @closed="close" width="600px">
+  <el-dialog :modelValue="dialogVisible" :title="titleName" @closed="close" width="600px" align-center>
 
     <!-- 实时控制 -->
     <control-dialog v-show="control_dialogValue" :value_one="value_one" :value_two="value_two" :value_three="value_three"
@@ -71,12 +71,10 @@
     </control-dialog>
 
     <!-- 智能控制 -->
-    <intelligent-control v-show="intelligent_controlValue"></intelligent-control>
+    <intelligent-control v-if="intelligent_controlValue" :selected="[...selected]"></intelligent-control>
 
-    <div class="buttonContainer">
-      <el-button v-show="control_dialogValue || intelligent_controlValue" @click="cancel">取消</el-button>
-      <el-button v-show="control_dialogValue || intelligent_controlValue" @click="confirm">确定</el-button>
-    </div>
+    <el-button v-show="control_dialogValue || intelligent_controlValue" @click="cancel">取消</el-button>
+    <el-button v-show="control_dialogValue || intelligent_controlValue" @click="confirm(control_dialogValue, intelligent_controlValue)">确定</el-button>
   </el-dialog>
 </template>
   
@@ -157,24 +155,28 @@ const windValue = computed(() => store.Wind);
 const temperatureValue = computed(() => store.Temperature);
 
 
-function confirm() {
-  // console.log(switchValue.value, modeValue.value, windValue.value, temperatureValue.value)
-  // 拿到数据后发送请求，后期需完善数据是否输入及格式检测
-  let res = switchString(switchValue.value, modeValue.value, windValue.value, temperatureValue.value)
+function confirm(clShow, itShow) {
+  if(clShow) {
+    // console.log(switchValue.value, modeValue.value, windValue.value, temperatureValue.value)
+    // 拿到数据后发送请求，后期需完善数据是否输入及格式检测
+    let res = switchString(switchValue.value, modeValue.value, windValue.value, temperatureValue.value)
 
-  // 发送请求后关闭窗口
-  dialogVisible.value = false
+    // 发送请求后关闭窗口
+    dialogVisible.value = false
 
-  if ([...selected.value].length === 0) {
-    ElMessage({
-      showClose: true,
-      message: "控制的空调数目为空或控制项不完整",
-      type: "warning",
-    });
-    return
+    if ([...selected.value].length === 0) {
+      ElMessage({
+        showClose: true,
+        message: "控制的空调数目为空或控制项不完整",
+        type: "warning",
+      });
+      return
+    }
+
+    modifyNodePost([...selected.value], res)
+  }else {
+
   }
-
-  modifyNodePost([...selected.value], res)
 }
 
 function cancel() {
@@ -210,10 +212,6 @@ const headerRowStyle = ({ row, rowIndex }) => { // 修改表头的回调函数
 </script>
 
 <style lang="scss" scoped>
-.buttonContainer{
-  width: 135px;
-  margin: 20px auto;
-}
 .content {
   display: flex;
   flex-direction: row;
@@ -227,7 +225,6 @@ const headerRowStyle = ({ row, rowIndex }) => { // 修改表头的回调函数
 }
 
 .Monitor_the_display_data_list {
-  margin-left: 10px;
   height: 82%;
   // 在内机控制界面的右侧 列表的高度 + 头部高度 + 控制区域高度 = 100%
   display: flex;

@@ -1,6 +1,8 @@
 import axios from 'axios'
 import { ElMessage } from "element-plus";
 import { authorizeGet } from './authorize'
+const Store = require('electron-store');
+const Estore = new Store();
 
 const instance = axios.create({
   // 配置请求根路径
@@ -18,6 +20,8 @@ const instance = axios.create({
 instance.interceptors.request.use((config) => {
   //鉴权函数 token失效后跳转至login
   authorizeGet()
+  const token = Estore.get('token')
+  config.headers.token = token
   return config
 },
   error => {
