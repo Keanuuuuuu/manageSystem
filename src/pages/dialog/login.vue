@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onBeforeMount } from "vue";
 import { post } from "@/api/http.js";
 import { ElMessage } from "element-plus";
 import { JSEncrypt } from "jsencrypt";
@@ -124,7 +124,8 @@ function PWD() {
 }
 
 // 记住密码  在组件挂载时从本地存储加载保存的凭据并自动登录
-onMounted(() => {
+onBeforeMount(() => {
+  console.log(Estore.get('token'),Estore.get(recordPassword));
   recordPassword.value = Estore.get('recordPassword')
   // 判断是否记住密码
   if (Estore.get('recordPassword')) {
@@ -135,8 +136,9 @@ onMounted(() => {
     if (savedUsername && savedPassword) {
       username.value = savedUsername;
       password.value = savedPassword;
-      // tryLogin()
     }
+  }else{
+    Estore.delete("token")  //若未记住密码，登录前清楚上次token，登录后存下新token
   }
 });
 

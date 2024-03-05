@@ -1,15 +1,21 @@
 // electron的main.js
 
 const { app, ipcMain } = require('electron');
-const { windows, createMainWindow, createLoginWindow, createPWDWindow, createDialog, createChangePSW } = require('./windowManager');
-const Store = require('electron-store');
+const { windows, createMainWindow, createLoginWindow, createPWDWindow, createDialog, createChangeInfoDialog, createChangePSW } = require('./windowManager');
 
-Store.initRenderer()
+const electronStore = require('electron-store');
+const Estore = new electronStore();
 
 // 监听 app 的各种事件...
 // app相当于整个应用程序，拥有不同的生命周期 Electron会在初始化后并准备创建浏览器窗口时，调用这个函数。 部分 API 在 ready 事件触发后才能使用。
 
-app.on('ready', createLoginWindow);
+app.on('ready', () => {
+    if (Estore.get('recordPassword')) {
+        createMainWindow()
+    } else {
+        createLoginWindow()  //若未记住密码打开登录窗口
+    }
+});
 app.on('window-all-closed', () => {
     // 在 macOS 上，除非用户用 Cmd + Q 确定地退出，否则绝大部分应用及其菜单栏会保持激活。
     if (process.platform !== 'darwin') {
@@ -19,8 +25,10 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
     // 在macOS上，当单击dock图标并且没有其他窗口打开时，
     // 通常在应用程序中重新创建一个窗口。
-    if (loginWindow === null) {
-        createLoginWindow()
+    if (Estore.get('recordPassword')) {
+        createMainWindow()
+    } else {
+        createLoginWindow()  //若未记住密码打开登录窗口
     }
 })
 
@@ -125,5 +133,28 @@ ipcMain.on('log-window-close', () => {
     if (windows.dialog !== null) {
         windows.dialog.close()
         windows.dialog = null
+    }
+})
+
+
+// 修改信息弹窗操作
+ipcMain.on('openChangeInfoDialog', () => {
+    if (windows.infoDialog !== null) {
+        windows.infoDialog.focus() // 存在 则聚焦
+        return
+    }
+    createChangeInfoDialog()
+})
+
+ipcMain.on('changeInfoDialog-window-min', () => {
+    if (windows.infoDialog !== null) {
+        windows.infoDialog.minimize()
+    }
+})
+
+ipcMain.on('changeInfoDialog-window-close', () => {
+    if (windows.infoDialog !== null) {
+        windows.infoDialog.close()
+        windows.infoDialog = null
     }
 })

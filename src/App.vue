@@ -19,6 +19,11 @@
     <router-view />
   </template>
 
+  <template v-else-if="$route.path == '/dialog/changeInfo'">
+    <changeInfoTitleBar></changeInfoTitleBar>
+    <router-view />
+  </template>
+
   <template v-else>
     <div class="mainApp">
       <TitleBar></TitleBar>
@@ -40,6 +45,7 @@ import TitleBar from "@/components/common/TitleBar/mainTitleBar.vue";
 import LogTitleBar from '@/components/common/TitleBar/logTitleBar.vue';
 import changePSWTitleBar from '@/components/common/TitleBar/changePSWTitleBar.vue';
 import PWDTitleBar from "@/components/common/TitleBar/PWDTitleBar.vue";
+import changeInfoTitleBar from "@/components/common/TitleBar/changeInfoTitleBar.vue";
 
 
 export default {
@@ -50,6 +56,7 @@ export default {
     LoginTitleBar,
     LogTitleBar,
     PWDTitleBar,
+    changeInfoTitleBar,
     changePSWTitleBar,
     CustomMenu
   },

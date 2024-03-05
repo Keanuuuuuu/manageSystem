@@ -10,7 +10,7 @@
     <Menu :menu="menu1">
       <template #selectDropDown>
         <Item :value="value1_1" :type="changePSW">{{value1_1}}</Item>
-        <Item :value="value1_2" :type="dialog">{{value1_2}}</Item>
+        <Item :value="value1_2" :type="changeInfoDialog">{{value1_2}}</Item>
         <Item :value="value1_3" :type="dialog">{{value1_3}}</Item>
         <Item :value="value1_4" :type="dialog">{{value1_4}}</Item>
       </template>
@@ -50,6 +50,7 @@ export default {
     return {
       routes:"routes",
       dialog:"dialog",
+      changeInfoDialog:"changeInfoDialog",
       changePSW:"changePSW",
       menu1: "系统",
       menu2: "视图",

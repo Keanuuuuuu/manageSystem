@@ -79,7 +79,9 @@ const tryNext = () => {
 
 let mail = ref("")
 let disableBtn = ref(false) //获取验证码控制按钮是否禁用的变量
+let infoCode = ref('')  //用以表示身份
 
+//获取验证码
 const getCaptcha = async () => {
     if (mail.value.trim() === "") {
         ElMessage({
@@ -94,6 +96,7 @@ const getCaptcha = async () => {
         const response = await get('/password', { email: mail.value });
         console.log(response);
         if (response.code === 200) {
+            infoCode.value = response.data.code
             setTimeout(() => {
                 disableBtn.value = false;
             }, 60000);
@@ -120,6 +123,7 @@ let captcha = ref("")
 let newPassword = ref("")
 let checkPassword = ref("")
 
+//处理忘记密码
 const handelChange = async () => {
     if (captcha.value.trim() === "" || newPassword.value.trim() === "" || checkPassword.value.trim() === "") {
         ElMessage({
@@ -137,7 +141,7 @@ const handelChange = async () => {
                 offset: 50
             })
         } else {
-            const response = await put('/password', { email:mail.value ,userCode: captcha.value, newPassword: newPassword.value })
+            const response = await put('/password', { code:infoCode.value ,userCode: captcha.value, newPassword: newPassword.value })
             console.log(response);
             if (response.code === 21200) {
                 ElMessage({
