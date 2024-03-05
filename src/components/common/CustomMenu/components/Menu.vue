@@ -1,5 +1,5 @@
 <!-- 
-* @description: 定制化菜单 系统/视图/工具/帮助
+* @description: 定制化菜单 系统/视图/工具/帮助    判断并发送路由或弹窗类型
 * @fileName: Menu.vue
 * @author: 刘世博 文洋
 * @date: 2024-01-09
@@ -100,6 +100,7 @@ export default {
 
     onMounted(() => {
       calculatePosition()
+      //判断并发送路由或弹窗类型
       systemEventBus.$on('chooseItem', (res, type, token) => {
         if (token === page.token) {
           selectValue.value = res
@@ -111,6 +112,10 @@ export default {
           if (type === "dialog") {
             console.log('弹窗类型');
             systemEventBus.$emit('openDialog', res)
+          }
+          if(type === "changeInfoDialog"){
+            console.log(111);
+            systemEventBus.$emit('openChangeInfoDialog', res)
           }
           if (type === "changePSW"){
             systemEventBus.$emit('openChangePSW', res)

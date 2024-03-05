@@ -1,7 +1,7 @@
 // 定义窗口对象的操作 最小化/还原/关闭
 
 const { BrowserWindow } = require('electron');
-const { mainWindowConfig, loginWindowConfig, PWDWindowConfig, dialogConfig, changePSWConfig } = require('./windowConfig');
+const { mainWindowConfig, loginWindowConfig, PWDWindowConfig, dialogConfig,changeInfoDialogConfig, changePSWConfig } = require('./windowConfig');
 const path = require('path')
 const NODE_ENV = process.env.NODE_ENV
 
@@ -10,7 +10,8 @@ let windows = {
   mainWindow: null,
   loginWindow: null,
   PWDWindow: null,
-  dialog: null
+  dialog: null,
+  infoDialog:null
 }
 
 
@@ -92,6 +93,25 @@ function createDialog() {
   windows.dialog.webContents.openDevTools()
 }
 
+function createChangeInfoDialog() {
+  windows.infoDialog = new BrowserWindow(changeInfoDialogConfig)
+  // 修改信息弹窗逻辑...
+  if (NODE_ENV === 'development') {
+    windows.infoDialog.loadURL('http://localhost:5173/#/dialog/changeInfo')
+  } else {
+    windows.infoDialog.loadFile(NODE_ENV === 'development' ? 'http://localhost:5173/' : path.join(__dirname, 'dist/index.html'),
+      {
+        hash: '#/dialog/changeInfo'
+      })
+  }
+
+  windows.infoDialog.on('closed', () => {
+    windows.infoDialog = null
+  })
+
+  windows.infoDialog.webContents.openDevTools()
+}
+
 function createChangePSW() {
   windows.dialog = new BrowserWindow(changePSWConfig)
   // 创建日志弹窗逻辑...
@@ -118,6 +138,7 @@ module.exports = {
   createLoginWindow,
   createPWDWindow,
   createDialog,
+  createChangeInfoDialog,
   createChangePSW,
   windows
 };

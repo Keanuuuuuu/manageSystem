@@ -47,6 +47,11 @@ onMounted(() => {
     ipcRenderer.send('openDialog');
   });
 
+  systemEventBus.$on('openChangeInfoDialog', (res) => {
+    console.log(res);
+    ipcRenderer.send('openChangeInfoDialog');
+  });
+
   systemEventBus.$on('openChangePSW', (res) => {
     console.log(res);
     ipcRenderer.send('openChangePSW');
