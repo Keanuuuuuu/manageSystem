@@ -1,7 +1,7 @@
 // electron的main.js
 
 const { app, ipcMain } = require('electron');
-const { windows, createMainWindow, createLoginWindow, createPWDWindow, createDialog } = require('./windowManager');
+const { windows, createMainWindow, createLoginWindow, createPWDWindow, createDialog, createChangePSW } = require('./windowManager');
 const Store = require('electron-store');
 
 Store.initRenderer()
@@ -91,6 +91,28 @@ ipcMain.on('openDialog', () => {
         return
     }
     createDialog()
+})
+
+ipcMain.on('log-window-min', () => {
+    if (windows.dialog !== null) {
+        windows.dialog.minimize()
+    }
+})
+
+ipcMain.on('log-window-close', () => {
+    if (windows.dialog !== null) {
+        windows.dialog.close()
+        windows.dialog = null
+    }
+})
+
+// 修改密码弹窗操作
+ipcMain.on('openChangePSW', () => {
+    if (windows.dialog !== null) {
+        windows.dialog.focus() // 存在 则聚焦
+        return
+    }
+    createChangePSW()
 })
 
 ipcMain.on('log-window-min', () => {

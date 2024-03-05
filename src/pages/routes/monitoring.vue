@@ -62,10 +62,10 @@
   </div>
 
 
-  <el-dialog :modelValue="dialogVisible" :title="titleName" @closed="close" width="600px" align-center>
+  <el-dialog :modelValue="dialogVisible" :title="titleName" @closed="close" width="600" center>
 
     <!-- 实时控制 -->
-    <control-dialog v-show="control_dialogValue" :value_one="value_one" :value_two="value_two" :value_three="value_three"
+    <control-dialog v-if="control_dialogValue" :value_one="value_one" :value_two="value_two" :value_three="value_three"
       :num="num" :selected="[...selected]" @updateDialogValue="value_one = $event" @updateDialogMode="value_two = $event"
       @updateDialogWind="value_three = $event" @updateDialogNum="num = $event">
     </control-dialog>
@@ -73,8 +73,10 @@
     <!-- 智能控制 -->
     <intelligent-control v-if="intelligent_controlValue" :selected="[...selected]"></intelligent-control>
 
-    <el-button v-show="control_dialogValue || intelligent_controlValue" @click="cancel">取消</el-button>
-    <el-button v-show="control_dialogValue || intelligent_controlValue" @click="confirm(control_dialogValue, intelligent_controlValue)">确定</el-button>
+    <template #footer>
+      <el-button v-show="control_dialogValue || intelligent_controlValue" @click="cancel">取消</el-button>
+      <el-button v-show="control_dialogValue || intelligent_controlValue" @click="confirm(control_dialogValue, intelligent_controlValue)">确定</el-button>
+    </template>
   </el-dialog>
 </template>
   

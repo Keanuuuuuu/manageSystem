@@ -63,3 +63,18 @@ exports.dialogConfig = {
   icon: path.join(__dirname,'./src/assets/airCondition.png'),
   title: '日志记载', // 自定义当前应用的标题
 }
+
+exports.changePSWConfig = {
+  width: 400,
+  height: 400,
+  center:true,
+  frame: false,
+  autoHideMenuBar: true, 
+  webPreferences: {
+    nodeIntegration: true,
+    contextIsolation: false,
+    devTools: true   
+  },
+  icon: path.join(__dirname,'./src/assets/airCondition.png'),
+  title: '修改密码', // 自定义当前应用的标题
+}

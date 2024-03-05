@@ -112,6 +112,9 @@ export default {
             console.log('弹窗类型');
             systemEventBus.$emit('openDialog', res)
           }
+          if (type === "changePSW"){
+            systemEventBus.$emit('openChangePSW', res)
+          }
           selectOpen.value = false
         }
       })

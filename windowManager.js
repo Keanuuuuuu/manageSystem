@@ -1,7 +1,7 @@
 // 定义窗口对象的操作 最小化/还原/关闭
 
 const { BrowserWindow } = require('electron');
-const { mainWindowConfig, loginWindowConfig, PWDWindowConfig, dialogConfig } = require('./windowConfig');
+const { mainWindowConfig, loginWindowConfig, PWDWindowConfig, dialogConfig, changePSWConfig } = require('./windowConfig');
 const path = require('path')
 const NODE_ENV = process.env.NODE_ENV
 
@@ -92,6 +92,25 @@ function createDialog() {
   windows.dialog.webContents.openDevTools()
 }
 
+function createChangePSW() {
+  windows.dialog = new BrowserWindow(changePSWConfig)
+  // 创建日志弹窗逻辑...
+  if (NODE_ENV === 'development') {
+    windows.dialog.loadURL('http://localhost:5173/#/dialog/changePSW')
+  } else {
+    windows.dialog.loadFile(NODE_ENV === 'development' ? 'http://localhost:5173/' : path.join(__dirname, 'dist/index.html'),
+      {
+        hash: '#/dialog/changePSW'
+      })
+  }
+
+  windows.dialog.on('closed', () => {
+    windows.dialog = null
+  })
+
+  // windows.changePSW.webContents.openDevTools()
+}
+
 // 其他窗口的创建逻辑...
 
 module.exports = {
@@ -99,5 +118,6 @@ module.exports = {
   createLoginWindow,
   createPWDWindow,
   createDialog,
+  createChangePSW,
   windows
 };

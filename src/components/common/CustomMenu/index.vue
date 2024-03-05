@@ -9,7 +9,7 @@
   <div class="custom-menu-container">
     <Menu :menu="menu1">
       <template #selectDropDown>
-        <Item :value="value1_1" :type="dialog">{{value1_1}}</Item>
+        <Item :value="value1_1" :type="changePSW">{{value1_1}}</Item>
         <Item :value="value1_2" :type="dialog">{{value1_2}}</Item>
         <Item :value="value1_3" :type="dialog">{{value1_3}}</Item>
         <Item :value="value1_4" :type="dialog">{{value1_4}}</Item>
@@ -50,6 +50,7 @@ export default {
     return {
       routes:"routes",
       dialog:"dialog",
+      changePSW:"changePSW",
       menu1: "系统",
       menu2: "视图",
       menu3: "工具",

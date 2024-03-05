@@ -9,6 +9,11 @@
     <router-view />
   </template>
 
+  <template v-else-if="$route.path == '/dialog/changePSW'">
+    <changePSWTitleBar></changePSWTitleBar>
+    <router-view />
+  </template>
+
   <template v-else-if="$route.path == '/dialog/PWD'">
     <PWDTitleBar></PWDTitleBar>
     <router-view />
@@ -33,6 +38,7 @@ import Navigator from "@/components/common/Navigator.vue";
 import LoginTitleBar from '@/components/common/TitleBar/loginTitleBar.vue'
 import TitleBar from "@/components/common/TitleBar/mainTitleBar.vue";
 import LogTitleBar from '@/components/common/TitleBar/logTitleBar.vue';
+import changePSWTitleBar from '@/components/common/TitleBar/changePSWTitleBar.vue';
 import PWDTitleBar from "@/components/common/TitleBar/PWDTitleBar.vue";
 
 
@@ -44,6 +50,7 @@ export default {
     LoginTitleBar,
     LogTitleBar,
     PWDTitleBar,
+    changePSWTitleBar,
     CustomMenu
   },
   setup() {

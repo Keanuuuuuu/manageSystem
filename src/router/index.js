@@ -8,6 +8,7 @@ import DataStatistics from '../pages/routes/dataStatistics.vue'
 import Log from '../pages/dialog/log.vue'
 import PWD from '../pages/dialog/PWD.vue'
 import Login from '../pages/dialog/login.vue'
+import ChangePSW from '../pages/dialog/changePSW.vue'
 
 
 const routes = [
@@ -58,6 +59,11 @@ const routes = [
         path: 'PWD',
         name: '找回密码',
         component: PWD
+      },
+      {
+        path: 'changePSW',
+        name: '修改密码',
+        component: ChangePSW
       },
     ]
   }

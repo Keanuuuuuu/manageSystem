@@ -47,6 +47,12 @@ onMounted(() => {
     ipcRenderer.send('openDialog');
   });
 
+  systemEventBus.$on('openChangePSW', (res) => {
+    console.log(res);
+    ipcRenderer.send('openChangePSW');
+  });
+
+
   systemEventBus.$on('GoRoutes', (route) => {
     store.addNavigatorRoutes(route);
     router.push({ name: route });
