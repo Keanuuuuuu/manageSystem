@@ -8,6 +8,7 @@ exports.mainWindowConfig = {
   center:true,
   frame: false, // 用于自定义menu，设置为false可以将默认的菜单栏隐藏，包括叉、最小化、拖动与放大缩小
   autoHideMenuBar: true, // 在显示默认菜单的同时，隐藏那些Flie等菜单
+  transparent: true,
   webPreferences: {
     nodeIntegration: true,        //是否可以使用node.js的API
     contextIsolation: false,       //隔离取消掉，把主进程和渲染进程打通

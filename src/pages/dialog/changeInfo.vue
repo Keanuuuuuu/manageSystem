@@ -52,6 +52,8 @@ import { post } from '@/api/http.js'
 let afterIdentify = ref(false)
 let password = ref('')
 
+const Store = require('electron-store'); 
+const Estore = new Store();
 const ipcRenderer = useIpcRenderer();
 
 const handleVerify = async () => {
@@ -97,8 +99,7 @@ const rules = {
         { required: true, message: '请输入姓名', trigger: 'blur' }
     ],
     tel: [
-        { required: true, message: '请输入电话号码', trigger: 'blur' },
-        { pattern: /^1[0-9]{10}$/, message: '请输入正确的电话号码', trigger: 'blur' }
+        { required: true, message: '请输入电话号码', trigger: 'blur' }
     ],
     email: [
         { required: true, message: '请输入邮箱', trigger: 'blur' },
@@ -126,22 +127,21 @@ const logout = function () {
 
 const handleSubmit = async () => {
     const api = {
-        name: '/user/name',
-        tel: '/user/tel',
-        email: '/user/email'
+        name: 'name',
+        tel: 'tel',
+        email: 'email'
     };
 
-    const requestData = {};
+    let requestData = undefined;
     if (activeIndex.value === 'name') {
-        requestData.name = form.value.name;
+        requestData = form.value.name;
     } else if (activeIndex.value === 'tel') {
-        requestData.tel = form.value.tel;
+        requestData = form.value.tel;
     } else if (activeIndex.value === 'email') {
-        requestData.email = form.value.email;
+        requestData = form.value.email;
     }
 
-
-    const response = await post(api[activeIndex.value], { requestData });
+    const response = await post('/user/'+api[activeIndex.value], `{ "${api[activeIndex.value]}":"${requestData }"}`);
 
     console.log(response);
 

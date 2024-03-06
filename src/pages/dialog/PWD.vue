@@ -56,7 +56,11 @@ import { ref } from "vue";
 import { throttle } from "@/utils/Throttling";
 import { get,put } from "@/api/http.js";
 import { ElMessage } from "element-plus";
-
+import { useIpcRenderer } from "@vueuse/electron"
+const ipcRenderer = useIpcRenderer();
+const windowClose = () => {
+      ipcRenderer.send("PWD-close"); // 向主进程通信
+    }
 
 let firstStep = ref(true)
 let btnContent = ref("下一步")
@@ -150,6 +154,9 @@ const handelChange = async () => {
                     type: "success",
                     offset: 50
                 })
+                setTimeout(() => {
+                    windowClose()
+                }, 1000);
             } else if (response.code === 201) {
                 ElMessage({
                     showClose: true,
