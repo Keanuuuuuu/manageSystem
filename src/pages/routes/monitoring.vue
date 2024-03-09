@@ -46,6 +46,7 @@
             </template>
           </el-table-column>
           <el-table-column label="智能控制" width="140">
+
             <template #default>
               <el-switch size="small" />
             </template>
@@ -63,23 +64,26 @@
 
 
   <el-dialog :modelValue="dialogVisible" :title="titleName" @closed="close" width="600" center>
+    <el-scrollbar height="400px">
+      <!-- 实时控制 -->
+      <control-dialog v-if="control_dialogValue" :value_one="value_one" :value_two="value_two"
+        :value_three="value_three" :num="num" :selected="[...selected]" @updateDialogValue="value_one = $event"
+        @updateDialogMode="value_two = $event" @updateDialogWind="value_three = $event" @updateDialogNum="num = $event">
+      </control-dialog>
 
-    <!-- 实时控制 -->
-    <control-dialog v-if="control_dialogValue" :value_one="value_one" :value_two="value_two" :value_three="value_three"
-      :num="num" :selected="[...selected]" @updateDialogValue="value_one = $event" @updateDialogMode="value_two = $event"
-      @updateDialogWind="value_three = $event" @updateDialogNum="num = $event">
-    </control-dialog>
+      <!-- 智能控制 -->
+      <intelligent-control v-if="intelligent_controlValue" :selected="[...selected]"></intelligent-control>
 
-    <!-- 智能控制 -->
-    <intelligent-control v-if="intelligent_controlValue" :selected="[...selected]"></intelligent-control>
 
+    </el-scrollbar>
     <template #footer>
-      <el-button v-show="control_dialogValue || intelligent_controlValue" @click="cancel">取消</el-button>
-      <el-button v-show="control_dialogValue || intelligent_controlValue" @click="confirm(control_dialogValue, intelligent_controlValue)">确定</el-button>
-    </template>
+        <el-button v-show="control_dialogValue || intelligent_controlValue" @click="cancel">取消</el-button>
+        <el-button v-show="control_dialogValue || intelligent_controlValue"
+          @click="confirm(control_dialogValue, intelligent_controlValue)">确定</el-button>
+      </template>
   </el-dialog>
 </template>
-  
+
 <script setup>
 import { toRaw, ref, computed } from 'vue'
 import { post } from '@/api/http.js'
@@ -158,7 +162,7 @@ const temperatureValue = computed(() => store.Temperature);
 
 
 function confirm(clShow, itShow) {
-  if(clShow) {
+  if (clShow) {
     // console.log(switchValue.value, modeValue.value, windValue.value, temperatureValue.value)
     // 拿到数据后发送请求，后期需完善数据是否输入及格式检测
     let res = switchString(switchValue.value, modeValue.value, windValue.value, temperatureValue.value)
@@ -176,7 +180,7 @@ function confirm(clShow, itShow) {
     }
 
     modifyNodePost([...selected.value], res)
-  }else {
+  } else {
 
   }
 }

@@ -97,6 +97,7 @@ async function getRoomLength() {
   const res = await post('/leftbar', null, {
     baseURL: 'http://lab.zhongyaohui.club/'
   })
+  console.log(res);
   roomLength.value = res.data[0].children[0].children.length
 }
 

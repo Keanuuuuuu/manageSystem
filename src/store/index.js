@@ -7,7 +7,6 @@ export const useCustomStore = defineStore({
     Mode: '制冷',
     Wind: '自动',
     Temperature: 25,
-    userdata: null, // 存储用户身份信息包括权限 权限 0为超级管理员，1为管理员，2为普通用户
     navigatorRoutes: ['页面总览'],
     monitorTableData: [],
     originalMonitorTableData: [], // 保存初始数据 这样多次筛选都能基于全集
@@ -15,7 +14,9 @@ export const useCustomStore = defineStore({
       label: "16栋教学楼",
       length: '34',
     },
-    leftTreeData: []
+    leftTreeData: [],
+    accountTableData: [],
+    authTree: [],
   }),
   actions: {
     addNavigatorRoutes(route) {        //添加导航路由数组
@@ -36,7 +37,7 @@ export const useCustomStore = defineStore({
     setMonitorTableData(monitorTableData) {
       this.monitorTableData = monitorTableData
     },
-    setOriginalMonitorTableData(data) {
+    setOriginalMonitorTableData(data) {   //内机监控搜索用
       this.originalMonitorTableData = data;
     },
     filterMonitorTableData(id) {
@@ -60,8 +61,11 @@ export const useCustomStore = defineStore({
     setTemperature(Temperature) {
       this.Temperature = Temperature;
     },
-    setUserdata(userdata) {
-      this.userdata = userdata;
+    setAccountTableData(accountTableData) {
+      this.accountTableData = accountTableData
     },
+    setAuthTree(authTree) {
+      this.authTree = authTree
+    }
   },
 });
