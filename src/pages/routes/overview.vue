@@ -15,22 +15,22 @@
       </el-select>
       <el-button @click="fetchData">手动刷新数据</el-button>
     </div>
-    <el-row :gutter="30" id="data">
+    <el-row v-if="store.overviewData" :gutter="30" id="data">
       <el-col :span="5">
         <div class="short panel" id="hourse">
           <h2>房间</h2>
-          <h4>房间总数{{ roomLength }}间</h4>
-          <h4>开启空调房间{{ roomLength }}间</h4>
+          <h4>房间总数{{ store.overviewData.room.sum }}间</h4>
+          <h4>开启空调房间{{ store.overviewData.room.running }}间</h4>
           <el-icon class="icon">
             <House />
           </el-icon>
         </div>
         <div class="short panel" id="number">
           <h2>空调内机</h2>
-          <h4>内机总数{{ store.airconditionNodeData.length }}台</h4>
-          <h4>在线内机{{ store.airconditionNodeData.length }}台</h4>
-          <h4>运行内机{{ store.airconditionNodeData.length }}台</h4>
-          <h4>故障内机0台</h4>
+          <h4>内机总数{{ store.overviewData.machine.sum }}台</h4>
+          <h4>在线内机{{ store.overviewData.machine.online }}台</h4>
+          <h4>运行内机{{ store.overviewData.machine.running }}台</h4>
+          <h4>故障内机{{ store.overviewData.machine.error }}台</h4>
           <el-icon class="icon">
             <CreditCard />
           </el-icon>
@@ -55,13 +55,18 @@
       <el-col :span="6">
         <div class="long panel" id="warn">
           <h2>报警信息</h2>
-          <h2>暂无报警信息</h2>
+          <h2 v-if="store.overviewData.warning !== []">暂无报警信息</h2>
+          <div v-else>
+            <h4>故障内机{{ store.overviewData.warning.machineID }}</h4>
+            <h4>故障码{{ store.overviewData.warning.errorCode }}</h4>
+          </div>
           <el-icon class="icon">
             <WarnTriangleFilled />
           </el-icon>
         </div>
       </el-col>
     </el-row>
+    <div v-else>暂无数据</div>
   </div>
 </template>
 
@@ -81,7 +86,7 @@ const store = useCustomStore()
 
 // 页面挂载时刷新请求
 onMounted(() => {
-  getRoomLength()
+  getOverviewData()
   InitalAirconditionState()
   handleRefreshRateChange()
 })
@@ -91,14 +96,14 @@ onUnmounted(() => {
   clearInterval(timerId);
 });
 
-let roomLength = ref('')
+let OverviewData = ref('')
 
-async function getRoomLength() {
-  const res = await post('/leftbar', null, {
+async function getOverviewData() {
+  const res = await post('/overview', null, {
     baseURL: 'http://lab.zhongyaohui.club/'
   })
-  console.log(res);
-  roomLength.value = res.data[0].children[0].children.length
+  console.log(res.data);
+  store.setOverviewData(res.data)
 }
 
 const airconditionNodeArray = ref([])
@@ -117,24 +122,24 @@ async function InitalAirconditionState() {
 }
 
 let options = [{
-    value: null,
-    label: '无'
-  }, {
-    value: '30',
-    label: '30秒'
-  }, {
-    value: '60',
-    label: '1分钟'
-  }, {
-    value: '300',
-    label: '5分钟'
-  }, {
-    value: '900',
-    label: '15分钟'
-  }, {
-    value: '1800',
-    label: '30分钟'
-  }]
+  value: null,
+  label: '无'
+}, {
+  value: '30',
+  label: '30秒'
+}, {
+  value: '60',
+  label: '1分钟'
+}, {
+  value: '300',
+  label: '5分钟'
+}, {
+  value: '900',
+  label: '15分钟'
+}, {
+  value: '1800',
+  label: '30分钟'
+}]
 
 let selectedRateValue = ref('')
 
@@ -220,7 +225,7 @@ const fetchData = async () => {
     }
   }
 
-  h4{
+  h4 {
     margin-left: 15px;
   }
 
