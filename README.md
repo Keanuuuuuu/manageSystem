@@ -10,7 +10,8 @@ https://leon-kfd.github.io/howdyjs/#/mouse-menu/readme
 
 
 ```
-manageSystem                                    // 
+manageSystem                                    //
+├─ .npmrc                                       //
 ├─ electron.config.json                         //有关electron打包的配置
 ├─ index.html                                   //
 ├─ main.js                                      //electron的main.js 监听并执行窗口最大化、最小化等操作
@@ -18,7 +19,7 @@ manageSystem                                    //
 ├─ package.json                                 //
 ├─ README.md                                    //
 ├─ src                                          //
-│  ├─ api                                       //对axios的封装
+│  ├─ api                                       //
 │  │  ├─ authorize.js                           //鉴权专用请求
 │  │  └─ http.js                                //
 │  ├─ App.vue                                   //
@@ -30,6 +31,10 @@ manageSystem                                    //
 │  │  ├─ off.png                                //
 │  │  └─ work.png                               //
 │  ├─ components                                //
+│  │  ├─ account                                //
+│  │  │  ├─ addDialog.vue                       //
+│  │  │  ├─ delDialog.vue                       //
+│  │  │  └─ editDialog.vue                      //
 │  │  ├─ common                                 //
 │  │  │  ├─ CustomMenu                          //定制化菜单栏
 │  │  │  │  ├─ components                       //
@@ -38,6 +43,8 @@ manageSystem                                    //
 │  │  │  │  └─ index.vue                        //
 │  │  │  ├─ Navigator.vue                       //导航栏
 │  │  │  └─ TitleBar                            //
+│  │  │     ├─ changeInfoTitleBar.vue           //
+│  │  │     ├─ changePSWTitleBar.vue            //
 │  │  │     ├─ loginTitleBar.vue                //
 │  │  │     ├─ logTitleBar.vue                  //
 │  │  │     ├─ mainTitleBar.vue                 //
@@ -56,11 +63,13 @@ manageSystem                                    //
 │  ├─ main.js                                   //vue的main.js
 │  ├─ pages                                     //
 │  │  ├─ dialog                                 //弹窗类型
+│  │  │  ├─ changeInfo.vue                      //
+│  │  │  ├─ changePSW.vue                       //
 │  │  │  ├─ log.vue                             //
 │  │  │  ├─ login.vue                           //
 │  │  │  └─ PWD.vue                             //
 │  │  └─ routes                                 //路由类型
-│  │     ├─ acount.vue                          //
+│  │     ├─ account.vue                         //
 │  │     ├─ dataStatistics.vue                  //
 │  │     ├─ monitoring.vue                      //
 │  │     └─ overview.vue                        //

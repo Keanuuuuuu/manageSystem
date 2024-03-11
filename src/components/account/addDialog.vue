@@ -1,6 +1,6 @@
 <!-- 
 * @description: 
-* @fileName: addAcountDialog.vue
+* @fileName: addAccountDialog.vue
 * @author: 文洋
 * @date: 2024-03-09
 * @version: 

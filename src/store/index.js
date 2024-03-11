@@ -17,6 +17,7 @@ export const useCustomStore = defineStore({
     leftTreeData: [],
     accountTableData: [],
     authTree: [],
+    overviewData:''
   }),
   actions: {
     addNavigatorRoutes(route) {        //添加导航路由数组
@@ -30,6 +31,9 @@ export const useCustomStore = defineStore({
       if (indexToDelete !== -1 && indexToDelete !== 0) { //第一个元素不能被删除，即页面总览
         this.navigatorRoutes.splice(indexToDelete, 1)
       }
+    },
+    setOverviewData(overviewData) {
+      this.overviewData = overviewData
     },
     setLeftTreeData(leftTreeData) {
       this.leftTreeData = leftTreeData

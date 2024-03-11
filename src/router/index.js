@@ -2,7 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 
 import Overview from '../pages/routes/overview.vue'
 import Monitoring from '../pages/routes/monitoring.vue'
-import Acount from '../pages/routes/acount.vue'
+import Account from '../pages/routes/account.vue'
 import DataStatistics from '../pages/routes/dataStatistics.vue'
 
 import Log from '../pages/dialog/log.vue'
@@ -32,9 +32,9 @@ const routes = [
         component: Monitoring
       },
       {
-        path: 'acount',
+        path: 'account',
         name: '账号管理',
-        component: Acount
+        component: Account
       },
       {
         path: 'dataStatistics',
