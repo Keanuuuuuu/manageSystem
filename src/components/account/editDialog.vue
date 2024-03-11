@@ -1,6 +1,6 @@
 <!-- 
 * @description: 
-* @fileName: editAcountDialog.vue
+* @fileName: editAccountDialog.vue
 * @author: 文洋
 * @date: 2024-03-09
 * @version: 

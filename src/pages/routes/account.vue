@@ -1,6 +1,6 @@
 <!-- 
 * @description: 账号管理页面
-* @fileName: acount.vue
+* @fileName: account.vue
 * @author: 文洋
 * @date: 2024-01-10
 * @version: 
