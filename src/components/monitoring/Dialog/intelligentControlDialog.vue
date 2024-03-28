@@ -13,131 +13,113 @@
     {{ item }}
   </div>
   <br>
-  <el-table :data="data" @selection-change="handleSelectionChange">
-    <el-table-column type="selection" width="30"/>
-    <el-table-column label="定时" width="100">
+  <el-table :data="timeData" @selection-change="handleSelectionChange($event, 'time')">
+    <el-table-column type="selection" />
+    <el-table-column label="定时" >
       <template #default="scope">  
         <el-time-picker v-model="scope.row.firstTime" placeholder="选择时间" size="small" style="width: 90px"/>
       </template>
     </el-table-column>
-    <el-table-column width="100">
+    <el-table-column >
       <template #default="scope">  
         <span class="selectText">开关</span>
-        <el-select v-model="scope.row.switchValue" class="m-2" placeholder="开/关" size="small" style="width: 60px">
-          <el-option v-for="item in switchOptions" :key="item.value" :label="item.label" :value="item.value"/>
+        <el-select v-model="scope.row.switchValue" class="m-2" placeholder="开/关" size="small" style="width: 70px">
+          <el-option v-for="item in firstSwitchOption" :key="item.value" :label="item.label" :value="item.value"/>
         </el-select>
       </template>
     </el-table-column>
-    <el-table-column width="100">
+    <el-table-column>
       <template #default="scope">
         <span class="selectText">模式</span>
         <el-select v-model="scope.row.modeValue" class="m-2" placeholder="模式" size="small" style="width: 60px">
-          <el-option v-for="item in switchOptions" :key="item.value" :label="item.label" :value="item.value"/>
+          <el-option v-for="item in ModeOption" :key="item.value" :label="item.label" :value="item.value"/>
         </el-select>
       </template>
     </el-table-column>
-    <el-table-column width="100">
+    <el-table-column >
       <template #default="scope">
         <span class="selectText">风速</span>
         <el-select v-model="scope.row.windValue" class="m-2" placeholder="风速" size="small" style="width: 60px">
-          <el-option  v-for="item in switchOptions" :key="item.value" :label="item.label" :value="item.value"/>
+          <el-option  v-for="item in WindOption" :key="item.value" :label="item.label" :value="item.value"/>
         </el-select>
       </template>
     </el-table-column>
-    <el-table-column width="110">
+    <el-table-column>
       <template #default="scope">
         <span class="selectText">温度</span>
         <el-input-number v-model="scope.row.numValue" :min="25" :max="30" size="small" controls-position="right" @change="handleChange" style="width: 70px"/>
       </template>
     </el-table-column>
   </el-table>
-  <br>
-  <br>
-  <br>
+
   <br>
   
-  <el-table :data="data" @selection-change="" stripe>
-    <el-table-column type="selection" />
+  <el-table :data="tempData" @selection-change="handleSelectionChange($event, 'temp')">
+    <el-table-column type="selection"/>
+    <el-table-column label="定温" width="130">
+      <template #default="scope">  
+        <el-select v-model="scope.row.chooseValue" class="m-2" placeholder="/" size="small" style="width: 50px">
+          <el-option v-for="item in secondSwitchOption" :key="item.value" :label="item.label" :value="item.value"/>
+        </el-select>
+        <el-input-number v-model="scope.row.chooseNum" :min="25" :max="30" size="small" controls-position="right" @change="handleChange" style="width: 70px"/>
+      </template>
+    </el-table-column>
     <el-table-column>
-      <template #default>
-        <el-select v-model="switchValue" class="m-2" placeholder="开/关" size="" style="width: 40px">
-          <el-option v-for="item in switchOptions" :key="item.value" :label="item.label" :value="item.value"/>
+      <template #default="scope">  
+        <span class="selectText">开关</span>
+        <el-select v-model="scope.row.switchValue" class="m-2" placeholder="开/关" size="small" style="width: 70px">
+          <el-option v-for="item in firstSwitchOption" :key="item.value" :label="item.label" :value="item.value"/>
         </el-select>
       </template>
     </el-table-column>
     <el-table-column>
-      <template #default>
-        <el-select v-model="switchValue" class="m-2" placeholder="开/关" size="" style="width: 40px">
-          <el-option v-for="item in switchOptions" :key="item.value" :label="item.label" :value="item.value"/>
+      <template #default="scope">
+        <span class="selectText">模式</span>
+        <el-select v-model="scope.row.modeValue" class="m-2" placeholder="模式" size="small" style="width: 60px">
+          <el-option v-for="item in ModeOption" :key="item.value" :label="item.label" :value="item.value"/>
         </el-select>
       </template>
     </el-table-column>
     <el-table-column>
-      <template #default>
-        <el-select v-model="switchValue" class="m-2" placeholder="开/关" size="" style="width: 40px">
-          <el-option v-for="item in switchOptions" :key="item.value" :label="item.label" :value="item.value"/>
+      <template #default="scope">
+        <span class="selectText">风速</span>
+        <el-select v-model="scope.row.windValue" class="m-2" placeholder="风速" size="small" style="width: 60px">
+          <el-option  v-for="item in WindOption" :key="item.value" :label="item.label" :value="item.value"/>
         </el-select>
       </template>
     </el-table-column>
-    <el-table-column property='name' label="定时"/>
+    <el-table-column>
+      <template #default="scope">
+        <span class="selectText">温度</span>
+        <el-input-number v-model="scope.row.numValue" :min="25" :max="30" size="small" controls-position="right" @change="handleChange" style="width: 70px"/>
+      </template>
+    </el-table-column>
   </el-table>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { firstSwitchOption, secondSwitchOption, ModeOption, WindOption } from '@/type/intelligentType.js'
+import { useIntelligent } from '@/store/use-intelligent.js';
 defineProps({
   selected: {
     type: Array, 
   }
 })
-const data = ref([{
-  id: 'startTime',
-  isSelectd: false,
-  firstTime: '',
-  switchValue: '',
-  modeValue: '',
-  windValue: '',
-  numValue: 25
-},{
-  id: 'endTime',
-  isSelectd: false,
-  firstTime: '',
-  switchValue: '',
-  modeValue: '',
-  windValue: '',
-  numValue: 25
-}])
-const optionSelected = ref([])
-// const 
-const switchOptions = [
-  {
-    lable: '开',
-    value: '开'
-  },
-  {
-    lable: '关',
-    value: '关'
-  }
-]
 
-function handleSelectionChange(ev){
-  console.log(ev)
-  // if()
-  console.log(optionSelected.value);
-}
+const store = useIntelligent();
+const timeData = computed(() => store.timeData);
+const tempData = computed(() => store.tempData);
+const optionSelectedTime = computed(() => store.optionSelectedTime);
+const optionSelectedTemp = computed(() => store.optionSelectedTemp);
 
-function handleSelectionValue(optionSelectedArr, controlType){
-  let flag = false
-  for (let evobj of ev) {
-    flag = false
-    optionSelectedArr.value.forEach((item)=>{
-      if(item.id && item.id === evobj.id){
-        flag = true
-      }
-    })
-    if(!flag){
-      optionSelectedArr.value.push(evobj)
-    }
+function handleSelectionChange(ev, type){
+  if(type === 'time'){
+    store.clearOptionSelectedTime()
+    store.handleSelectionValue(optionSelectedTime.value, ev)
+  }else if(type === 'temp'){
+    store.clearOptionSelectedTemp()
+    store.handleSelectionValue(optionSelectedTemp.value, ev)
   }
 }
 </script>

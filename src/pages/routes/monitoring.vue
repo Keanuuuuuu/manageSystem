@@ -62,7 +62,7 @@
   </div>
 
 
-  <el-dialog :modelValue="dialogVisible" :title="titleName" @closed="close" width="600" center>
+  <el-dialog :modelValue="dialogVisible" :title="titleName" @closed="close" :width="width" center>
 
     <!-- 实时控制 -->
     <control-dialog v-if="control_dialogValue" :value_one="value_one" :value_two="value_two" :value_three="value_three"
@@ -90,6 +90,7 @@ import ConcurrencyRequest from '@/utils/ConcurrencyRequest.js'
 import systemEventBus from '@/utils/systemEventBus';
 
 import { useCustomStore } from '@/store'; // 引入pinia
+import { useIntelligent } from '@/store/use-intelligent.js'
 
 import controlDialog from '@/components/monitoring/Dialog/controlDialog.vue'
 import intelligentControl from '@/components/monitoring/Dialog/intelligentControlDialog.vue'
@@ -99,30 +100,32 @@ import MonitorDisplayControl from '@/components/monitoring/ControlComponents/Mon
 import leftTree from '@/components/monitoring/leftTree.vue'
 
 
-const store = useCustomStore();
+const store = useCustomStore()
+const intelligentStore = useIntelligent()
 
 const handleSelectionChange = (ev) => { // 当选择项发生变化时会触发该事件
-  for (let evobj of ev) {
+  for (const evobj of ev) {
     selected.value.add(evobj.id)
   }
 }
 
-let dialogVisible = ref(false)
+const dialogVisible = ref(false)
 
-let control_dialogValue = ref(false)
-let intelligent_controlValue = ref(false)
+const control_dialogValue = ref(false)
+const intelligent_controlValue = ref(false)
 
 
-let titleName = ref('')
+const titleName = ref('')
 
-let currentPage = ref(1)
-let pageSize = ref(10)
+const currentPage = ref(1)
+const pageSize = ref(10)
 
-let value_one = ref()
-let value_two = ref()
-let value_three = ref()
-let num = ref()
-let selected = ref(new Set())
+const value_one = ref()
+const value_two = ref()
+const value_three = ref()
+const num = ref()
+const selected = ref(new Set())
+const width =  computed(() => control_dialogValue.value?600:700)
 
 
 
@@ -158,10 +161,11 @@ const temperatureValue = computed(() => store.Temperature);
 
 
 function confirm(clShow, itShow) {
+  console.log(clShow, itShow);
   if(clShow) {
     // console.log(switchValue.value, modeValue.value, windValue.value, temperatureValue.value)
     // 拿到数据后发送请求，后期需完善数据是否输入及格式检测
-    let res = switchString(switchValue.value, modeValue.value, windValue.value, temperatureValue.value)
+    const res = switchString(switchValue.value, modeValue.value, windValue.value, temperatureValue.value)
 
     // 发送请求后关闭窗口
     dialogVisible.value = false
@@ -177,13 +181,22 @@ function confirm(clShow, itShow) {
 
     modifyNodePost([...selected.value], res)
   }else {
-
+    console.log(intelligentStore.optionSelectedTime, intelligentStore.optionSelectedTemp);
+    if ([...selected.value].length === 0 || (intelligentStore.optionSelectedTime.length === 0 && intelligentStore.optionSelectedTemp.length === 0)) {
+      ElMessage({
+        showClose: true,
+        message: "控制的空调数目为空或控制项不完整",
+        type: "warning",
+      });
+      return
+    }
   }
 }
 
 function cancel() {
   // 触发cancel dialog不关闭，数据清空
   selected.value.clear()
+  dialogVisible.value = false
 }
 
 function close() {

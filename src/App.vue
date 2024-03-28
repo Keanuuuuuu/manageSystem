@@ -34,9 +34,8 @@
   </template>
 </template>
 
-<script>
+<script setup>
 import { useRouter } from "vue-router";
-
 import CustomMenu from "@/components/common/CustomMenu/index.vue"
 import Navigator from "@/components/common/Navigator.vue";
 
@@ -47,27 +46,8 @@ import changePSWTitleBar from '@/components/common/TitleBar/changePSWTitleBar.vu
 import PWDTitleBar from "@/components/common/TitleBar/PWDTitleBar.vue";
 import changeInfoTitleBar from "@/components/common/TitleBar/changeInfoTitleBar.vue";
 
+let route = useRouter();
 
-export default {
-  name: "App",
-  components: {
-    Navigator,
-    TitleBar,
-    LoginTitleBar,
-    LogTitleBar,
-    PWDTitleBar,
-    changeInfoTitleBar,
-    changePSWTitleBar,
-    CustomMenu
-  },
-  setup() {
-    let route = useRouter();
-
-    return {
-      route
-    }
-  }
-}
 </script>
 
 <style lang="scss" scoped>
