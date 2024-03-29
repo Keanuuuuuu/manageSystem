@@ -33,7 +33,7 @@ function createMainWindow() {
     windows.mainWindow = null
   })
 
-  windows.mainWindow.webContents.openDevTools()
+  // windows.mainWindow.webContents.openDevTools()
 }
 
 function createLoginWindow() {
@@ -52,7 +52,7 @@ function createLoginWindow() {
     windows.loginWindow = null
   })
 
-  windows.loginWindow.webContents.openDevTools()
+  // windows.loginWindow.webContents.openDevTools()
 }
 
 function createPWDWindow() {
@@ -71,7 +71,7 @@ function createPWDWindow() {
     windows.PWDWindow = null
   })
 
-  windows.PWDWindow.webContents.openDevTools()
+  // windows.PWDWindow.webContents.openDevTools()
 }
 
 function createDialog() {
@@ -90,7 +90,7 @@ function createDialog() {
     windows.dialog = null
   })
 
-  windows.dialog.webContents.openDevTools()
+  // windows.dialog.webContents.openDevTools()
 }
 
 function createChangeInfoDialog() {
@@ -109,7 +109,7 @@ function createChangeInfoDialog() {
     windows.infoDialog = null
   })
 
-  windows.infoDialog.webContents.openDevTools()
+  // windows.infoDialog.webContents.openDevTools()
 }
 
 function createChangePSW() {

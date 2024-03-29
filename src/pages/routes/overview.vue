@@ -19,8 +19,8 @@
       <el-col :span="5">
         <div class="short panel" id="hourse">
           <h2>房间</h2>
-          <h4>房间总数{{ store.overviewData.room.sum }}间</h4>
-          <h4>开启空调房间{{ store.overviewData.room.running }}间</h4>
+          <h4>{{ store.overviewData.room.running }}/{{ store.overviewData.room.sum }}间</h4>
+          <h5>开启空调房间数/房间总数</h5>
           <el-icon class="icon">
             <House />
           </el-icon>
@@ -227,6 +227,10 @@ const fetchData = async () => {
 
   h4 {
     margin-left: 15px;
+  }
+
+  h5 {
+    margin-left: 10px;
   }
 
   .panel h2:nth-child(2) {
