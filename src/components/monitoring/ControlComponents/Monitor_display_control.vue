@@ -21,7 +21,7 @@
 <script setup>
 import { ref, defineProps, defineEmits } from 'vue'
 import { ElMessage } from "element-plus";
-import { Search } from '@element-plus/icons-vue'
+import { Search, Stopwatch } from '@element-plus/icons-vue'
 import { post } from "@/api/http.js";
 import { dataFlattenById } from '@/utils/treeArr.js'
 import { useCustomStore } from '@/store'; // 引入pinia
@@ -47,7 +47,12 @@ function handleSearch() {
   }
 }
 
-
+const handleNodeClick = (data) => {
+    store.lastTreeNode = data
+    let dataFlattenByIdResult = dataFlattenById(data.id, airconditionNodeArray.value) //将有层级的节点数组扁平化
+    store.setMonitorTableData(dataFlattenByIdResult)   //将结果交由pinia 在table中展示
+    store.setMonitorHead({ label: data.label, length: dataFlattenByIdResult.length })
+}
 
 const airconditionNodeArray = ref([])
 
@@ -60,6 +65,7 @@ async function InitalAirconditionState() {
   airconditionNodeArray.value = res.data
   let dataFlattenByIdResult = dataFlattenById("16", airconditionNodeArray.value) //将有层级的节点数组扁平化
   store.setMonitorTableData(dataFlattenByIdResult)   //将结果交由pinia 在table中展示
+  handleNodeClick(store.lastTreeNode)
 }
 
 const fetchData = async () => {

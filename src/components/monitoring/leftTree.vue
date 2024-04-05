@@ -81,6 +81,7 @@ const airconditionNode = reactive({ id: '16' }) //默认初始时获取16栋的�
 const airconditionNodeArray = ref([])
 
 const handleNodeClick = (data) => {
+    store.lastTreeNode = data
     airconditionNode.id = data.id;
     airconditionNode.name = data.label;
     let dataFlattenByIdResult = dataFlattenById(data.id, airconditionNodeArray.value) //将有层级的节点数组扁平化

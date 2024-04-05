@@ -17,7 +17,8 @@ export const useCustomStore = defineStore({
     leftTreeData: [],
     accountTableData: [],
     authTree: [],
-    overviewData:''
+    overviewData:'',
+    lastTreeNode:[]
   }),
   actions: {
     addNavigatorRoutes(route) {        //添加导航路由数组
