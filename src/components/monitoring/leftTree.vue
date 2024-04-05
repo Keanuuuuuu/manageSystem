@@ -13,11 +13,11 @@
                 <template #default="{ node, data }">
                     <span class="custom-tree-node" v-mouse-menu="{ params: data, ...options_tree }">
                         <span>{{ data.label }}</span>
-                        <span class="node-number" v-if="data.children">(2/{{ data.children.length }})</span>
+                        <span class="node-number" v-if="data.children">({{ countOnline(data.children) }}/{{ countChildren(data.children) }})</span>
                         <div v-if="!data.children">
                             <span>
-                                <span> --- <img src="@/assets/work.png" title="在线"> </span>
-                                <!-- 现在只是一个固定的1来表示状态，要换成插值表达式，根据请求返回的故障码我来做一个判断 -->
+                                <span v-if="data.online"> <img src="@/assets/AirConditioner-Filled.png" title="在线" width="50%"> </span>
+                                <span v-if="!data.online"> <img src="@/assets/AirConditioner-Filled-bad.png" title="在线" width="50%"> </span>
                             </span>
                         </div>
                     </span>
@@ -316,12 +316,46 @@ const options_tree = reactive({
     ]
 })
 
+function countOnline(arr) {
+  let onlineCount = 0;
+
+  arr.forEach(item => {
+    if (item.online === true) {
+      onlineCount++;
+    }
+
+    if (item.children && item.children.length > 0) {
+      onlineCount += countOnline(item.children);
+    }
+  });
+
+  return onlineCount;
+}
+
+function countChildren(arr) {
+    let onlineChildrenCount = 0;
+
+    arr.forEach(item => {
+        if (item.children && item.children.length > 0) {
+            onlineChildrenCount += countChildren(item.children);
+        }
+
+        if (item.online === true || item.online === false) {
+            onlineChildrenCount++;
+        }
+    });
+
+    return onlineChildrenCount;
+}
 </script>
 
 <style lang="scss" scoped>
 .tree {
-    border-right: 1px solid black;
+    border: 1px dashed black;
+    border: 1px dashed black;
+    box-shadow: 5px 0px 4px rgba($color: #000000, $alpha: 0.1);
     box-sizing: border-box;
+    margin-right: 5px;
     width: 210px;
 }
 

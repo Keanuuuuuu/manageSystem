@@ -78,6 +78,8 @@ export default {
   position: relative;
   -webkit-app-region: no-drag;
   width: 100%;
+  height: 28px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: row;
 

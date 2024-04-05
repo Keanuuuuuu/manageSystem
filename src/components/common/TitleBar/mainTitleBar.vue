@@ -57,6 +57,7 @@ const windowClose = () => {
 <style lang="scss" scoped>
 .main-top {
   width: 100%;
+  height: 38px;
   background-color: $color-theme;
   -webkit-app-region: drag; //事件处可以禁用拖拽区域
   color: white;

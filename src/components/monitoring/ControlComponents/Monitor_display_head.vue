@@ -68,7 +68,7 @@ const countOpenDevices = computed(() => {
 
 <style lang="scss" scoped>
 .Monitor_display_head {
-  background-color: #E7EEF3;
+  background-color: rgba($color: #467AFF, $alpha: 0.1);
   height: 10%;
   display: flex;
   flex-direction: row;

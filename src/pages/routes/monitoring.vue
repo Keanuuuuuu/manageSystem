@@ -25,7 +25,8 @@
       <div class="Monitor_the_display_data_list">
         <el-table ref="multipleTableRef"
           :data="store.monitorTableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)"
-          @selection-change="handleSelectionChange" stripe :header-cell-style="headerRowStyle">
+          @selection-change="handleSelectionChange" stripe :header-cell-style="headerRowStyle" 
+          :table-layout="tableLayout" :cell-style="cellStyle">
           <!-- 
             1、ele对于列表中每一项数据的展示可以使用property属性，也可以使用template模板 
             2、sortable为设置是否启用排序功能
@@ -33,20 +34,19 @@
             4、tableData.slice为分页相关
             5、selection-change当选择项发生变化时会触发该事件
           -->
-          <el-table-column type="selection" />
-          <el-table-column property='name' label="名称" sortable />
-          <el-table-column property='status' label="状态" sortable />
-          <el-table-column property='mode' label="模式" sortable />
-          <el-table-column property='temperature' label="温度" sortable />
-          <el-table-column property='windSpeed' label="风速" sortable />
-          <el-table-column property='roomTemperature' label="室温" sortable />
+          <el-table-column type="selection" :selectable="selectable"/>
+          <el-table-column property='name' label="名称" sortable/>
+          <el-table-column property='status' label="状态" sortable/>
+          <el-table-column property='mode' label="模式" sortable/>
+          <el-table-column property='temperature' label="温度" sortable/>
+          <el-table-column property='windSpeed' label="风速" sortable/>
+          <el-table-column property='roomTemperature' label="室温" sortable/>
           <el-table-column label="详情">
             <template #default>
               <el-button>详情...</el-button>
             </template>
           </el-table-column>
-          <el-table-column label="智能控制" width="140">
-
+          <el-table-column label="智能控制">
             <template #default>
               <el-switch size="small" />
             </template>
@@ -130,6 +130,7 @@ const value_three = ref()
 const num = ref()
 const selected = ref(new Set())
 const width =  computed(() => control_dialogValue.value?600:700)
+const tableLayout = ref('fixed')
 
 
 
@@ -220,13 +221,22 @@ function handleCurrentChange(val) {
 }
 
 
-const headerRowStyle = ({ row, rowIndex }) => { // 修改表头的回调函数
+const headerRowStyle = ( row, rowIndex ) => { // 修改表头的回调函数
   return {
-    backgroundColor: '#E7EEF3 !important'
+    backgroundColor: 'rgba(70, 122, 255, 0.05) !important',
+    textAlign: 'center'
   }
 }
 
+const cellStyle = () => {
+  return {
+    textAlign: 'center',
+  }
+}
 
+const selectable = (row, rowIndex) => {
+  return row.online;
+}
 
 </script>
 
@@ -234,7 +244,7 @@ const headerRowStyle = ({ row, rowIndex }) => { // 修改表头的回调函数
 .content {
   display: flex;
   flex-direction: row;
-  height: 82vh;
+  height: calc(100vh - 38px - 28px - 60px);
   background-repeat: no-repeat;
   // 路由界面的高度百分比 + 顶部路由按键的高度百分比 = 100% 即整个arti组件的高度
 }
@@ -275,14 +285,31 @@ const headerRowStyle = ({ row, rowIndex }) => { // 修改表头的回调函数
   padding-right: 8px;
 }
 
-.el-table tr {
-  background-color: #E7EEF3;
+::v-deep .el-table thead th  {
+  color: #000000;
+  font-weight: 500 !important;
+  font-family: Inter Inter;
+}
+
+::v-deep .el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
+	background: #F9F9F9;
+}
+
+::v-deep .el-table--enable-row-hover .el-table__body tr:hover>td {
+	background-color: #F9F9F9;
+}
+
+::v-deep .el-button .btn {
+  border: 1px dashed black;
 }
 
 .el-pagination {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin: 20px 0;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  border-top: 1px solid #0000005C;
+  padding: 20px 0;
 }
 </style>
