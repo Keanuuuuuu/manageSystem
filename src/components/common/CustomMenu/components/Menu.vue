@@ -1,5 +1,5 @@
 <!-- 
-* @description: 定制化菜单 系统/视图/工具/帮助    判断并发送路由或弹窗类型
+* @description: 定制化菜单 系统/视图/工具/帮助    监听并响应菜单点击事件 判断并发送路由或弹窗类型 在navigator中最终执行 
 * @fileName: Menu.vue
 * @author: 刘世博 文洋
 * @date: 2024-01-09
@@ -56,7 +56,6 @@ export default {
       return {
         left: `${dropdownPosition.value.x}px`,
         top: `${dropdownPosition.value.y}px`,
-        // width: `${dropdownPosition.value.w}px`
       }
     })
 
@@ -104,7 +103,7 @@ export default {
       systemEventBus.$on('chooseItem', (res, type, token) => {
         if (token === page.token) {
           selectValue.value = res
-          // console.log(type);
+          console.log(type);
           if (type === "routes") {
             // console.log('路由类型',res);
             systemEventBus.$emit('GoRoutes', res) //res为对应的route.name Navigator组件可根据name进行跳转
@@ -114,11 +113,16 @@ export default {
             systemEventBus.$emit('openDialog', res)
           }
           if(type === "changeInfoDialog"){
-            console.log(111);
             systemEventBus.$emit('openChangeInfoDialog', res)
           }
           if (type === "changePSW"){
             systemEventBus.$emit('openChangePSW', res)
+          }
+          if (type === "quitSystem"){
+            systemEventBus.$emit('quitSystem', res)
+          }
+          if (type === "link"){
+            systemEventBus.$emit('openLink', res)
           }
           selectOpen.value = false
         }

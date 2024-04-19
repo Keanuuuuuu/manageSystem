@@ -23,7 +23,7 @@ const routes = [
     children: [
       {
         path: 'overview',
-        name: '页面总览',
+        name: '总览',
         component: Overview
       },
       {
@@ -48,7 +48,7 @@ const routes = [
     children: [
       {
         path: 'log',
-        name: '日志管理',
+        name: '日志记载',
         component: Log
       },
       {

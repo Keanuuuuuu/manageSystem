@@ -11,28 +11,24 @@
       <template #selectDropDown>
         <Item :value="value1_1" :type="changePSW">{{value1_1}}</Item>
         <Item :value="value1_2" :type="changeInfoDialog">{{value1_2}}</Item>
-        <Item :value="value1_3" :type="dialog">{{value1_3}}</Item>
-        <Item :value="value1_4" :type="dialog">{{value1_4}}</Item>
+        <Item :value="value1_3" :type="quitSystem">{{value1_3}}</Item>
       </template>
     </Menu>
     <Menu :menu="menu2">
       <template #selectDropDown>
         <Item :value="value2_1" :type="routes">{{value2_1}}</Item>
         <Item :value="value2_2" :type="routes">{{value2_2}}</Item>
-        <Item :value="value2_3" :type="routes">{{value2_3}}</Item>
       </template>
     </Menu>
     <Menu :menu="menu3">
       <template #selectDropDown>
-        <Item :value="value3_1" :type="dialog">{{value3_1}}</Item>
         <Item :value="value3_2" :type="dialog">{{value3_2}}</Item>
         <Item :value="value3_3" :type="routes">{{value3_3}}</Item>
-        <Item :value="value3_4" :type="dialog">{{value3_4}}</Item>
       </template>
     </Menu>
     <Menu :menu="menu4">
       <template #selectDropDown>
-        <Item :value="value4_1" :type="dialog">{{value4_1}}</Item>
+        <Item :value="value4_1" :type="link">{{value4_1}}</Item>
       </template>
     </Menu>
 
@@ -60,6 +56,9 @@ let routes="routes"
 let dialog="dialog"
 let changeInfoDialog="changeInfoDialog"
 let changePSW="changePSW"
+let quitSystem="quitSystem"
+let link="link"
+
 let menu1= "系统"
 let menu2= "视图"
 let menu3= "工具"
@@ -67,14 +66,10 @@ let menu4= "帮助"
 let value1_1= "修改密码"
 let value1_2= "修改信息"
 let value1_3= "退出系统"
-let value1_4= "未读信息"
-let value2_1= "内机监控"
-let value2_2= "页面总览"
-let value2_3= "数据统计"
-let value3_1= "智能控制"
+let value2_1= "总览"
+let value2_2= "内机监控"
 let value3_2= "日志记载"
 let value3_3= "账号管理"
-let value3_4= "报警设置"
 let value4_1= "帮助"
 
 function logout() {

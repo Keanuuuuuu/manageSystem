@@ -47,10 +47,18 @@ onMounted(() => {
     ipcRenderer.send('openChangePSW');
   });
 
-
   systemEventBus.$on('GoRoutes', (route) => {
     store.addNavigatorRoutes(route);
     router.push({ name: route });
+  });
+
+  systemEventBus.$on('quitSystem', () => {
+    ipcRenderer.send("window-close"); // 向主进程通信 关闭
+  });
+
+  systemEventBus.$on('openLink', () => {
+    console.log(1);
+    window.open('https://github.com/itawenya');
   });
 
   router.beforeEach((to, from, next) => {
@@ -66,7 +74,7 @@ function switchTab(route) {
 
 function closeTab(route) {
   store.deleteNavigatorRoutes(route);
-  router.push({ name: '页面总览' });
+  router.push({ name: '总览' });
 }
 </script>
 

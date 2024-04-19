@@ -7,7 +7,7 @@ export const useCustomStore = defineStore({
     Mode: '制冷',
     Wind: '自动',
     Temperature: 25,
-    navigatorRoutes: ['页面总览'],
+    navigatorRoutes: ['总览'],
     monitorTableData: [],
     originalMonitorTableData: [], // 保存初始数据 这样多次筛选都能基于全集
     airconditionNodeData: {
@@ -30,7 +30,7 @@ export const useCustomStore = defineStore({
     deleteNavigatorRoutes(route) {     //删除导航路由数组
       let indexToDelete = this.navigatorRoutes.indexOf(route)
 
-      if (indexToDelete !== -1 && indexToDelete !== 0) { //第一个元素不能被删除，即页面总览
+      if (indexToDelete !== -1 && indexToDelete !== 0) { //第一个元素不能被删除，即总览
         this.navigatorRoutes.splice(indexToDelete, 1)
       }
     },
