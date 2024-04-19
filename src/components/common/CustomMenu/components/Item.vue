@@ -53,7 +53,9 @@ li:nth-of-type(odd){ background: #6B7EE4FF;}
 li:nth-of-type(even){ background:#8190e2FF;}
 
 li:hover {
-  background-color: rgb(185,190,194);
+  color: black;
+  // background-color: rgb(200, 207, 213);
+  background-color: rgb(246,248,254);
   transition: all .2s;
 }
 </style>

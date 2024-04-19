@@ -9,7 +9,6 @@
   <div class="main-top">
     <div>
       <div class="left">
-        <img src="@/assets/logo.png">
         <span>中央空调集中管理平台</span>
       </div>
       <div class="right">

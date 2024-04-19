@@ -13,24 +13,24 @@
       <el-select style="width: 110px" v-model="selectedRateValue" placeholder="选择频率" @change="handleRefreshRateChange">
         <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
-      <el-button @click="fetchData">手动刷新数据</el-button>
+      <el-button @click="fetchData">刷新</el-button>
     </div>
     <el-row v-if="store.overviewData" :gutter="30" id="data">
       <el-col :span="5">
         <div class="short panel" id="hourse">
           <h2>房间</h2>
-          <h4>{{ store.overviewData.room.running }}/{{ store.overviewData.room.sum }}间</h4>
-          <h5>开启空调房间数/房间总数</h5>
+          <h4>房间总数<span>{{ store.overviewData.room.sum }}</span>间</h4>
+          <h4>开启空调房间<span>{{ store.overviewData.room.running }}</span>间</h4>
           <el-icon class="icon">
             <House />
           </el-icon>
         </div>
         <div class="short panel" id="number">
           <h2>空调内机</h2>
-          <h4>内机总数{{ store.overviewData.machine.sum }}台</h4>
-          <h4>在线内机{{ store.overviewData.machine.online }}台</h4>
-          <h4>运行内机{{ store.overviewData.machine.running }}台</h4>
-          <h4>故障内机{{ store.overviewData.machine.error }}台</h4>
+          <h4>内机总数<span>{{ store.overviewData.machine.sum }}</span>台</h4>
+          <h4>在线内机<span>{{ store.overviewData.machine.online }}</span>台</h4>
+          <h4>运行内机<span>{{ store.overviewData.machine.running }}</span>台</h4>
+          <h4>故障内机<span style="color: red;">{{ store.overviewData.machine.error }}</span>台</h4>
           <el-icon class="icon">
             <CreditCard />
           </el-icon>
@@ -207,11 +207,11 @@ const fetchData = async () => {
     transition: all 0.3s;
     cursor: pointer;
     border-radius: $border-radius;
-    background-color: rgb(231, 238, 243);
+    background-color: rgb(246,248,254);
 
     h2 {
       display: block;
-      margin-top: 20px;
+      margin-top: 15px;
       margin-left: 25px;
       opacity: .6;
     }
@@ -227,6 +227,12 @@ const fetchData = async () => {
 
   h4 {
     margin-left: 15px;
+    span{
+      margin: 3px;
+      font-size: 20px;
+      color: rgb(123,143,216);
+    }
+
   }
 
   h5 {
