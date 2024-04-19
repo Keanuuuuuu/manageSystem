@@ -18,7 +18,8 @@ export const useCustomStore = defineStore({
     accountTableData: [],
     authTree: [],
     overviewData:'',
-    lastTreeNode:[]
+    lastTreeNode:[],
+    airconditionNodeArrayLoading: false,
   }),
   actions: {
     addNavigatorRoutes(route) {        //添加导航路由数组

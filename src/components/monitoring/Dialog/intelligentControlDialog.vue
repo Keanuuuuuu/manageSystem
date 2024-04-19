@@ -7,17 +7,22 @@
 !-->
 
 <template>
-  <span>智能控制</span>
-  当前选中：
-  <div v-for="item in selected" :key="item">
-    {{ item }}
+  <div class="contentDialog-head">
+    <el-scrollbar>
+      <div class="contentDialog-head-content">
+          <span>当前选中：</span>
+          <div v-for="item in selected" :key="item.index">
+            {{ item }}、
+          </div>
+      </div>
+    </el-scrollbar>
   </div>
   <br>
   <el-table :data="timeData" @selection-change="handleSelectionChange($event, 'time')">
     <el-table-column type="selection" />
     <el-table-column label="定时" >
       <template #default="scope">  
-        <el-time-picker v-model="scope.row.firstTime" placeholder="选择时间" size="small" style="width: 90px"/>
+        <el-time-picker v-model="scope.row.firstTime" placeholder="选择时间" size="small" style="width: 90px" value-format="HH:mm:ss"/>
       </template>
     </el-table-column>
     <el-table-column >
@@ -47,7 +52,7 @@
     <el-table-column>
       <template #default="scope">
         <span class="selectText">温度</span>
-        <el-input-number v-model="scope.row.numValue" :min="25" :max="30" size="small" controls-position="right" @change="handleChange" style="width: 70px"/>
+        <el-input-number v-model="scope.row.numValue" :min="0" :max="30" size="small" controls-position="right" @change="handleChange" style="width: 70px"/>
       </template>
     </el-table-column>
   </el-table>
@@ -56,23 +61,7 @@
   
   <el-table :data="tempData" @selection-change="handleSelectionChange($event, 'temp')">
     <el-table-column type="selection"/>
-    <el-table-column label="定温" width="130">
-      <template #default="scope">  
-        <el-select v-model="scope.row.chooseValue" class="m-2" placeholder="/" size="small" style="width: 50px">
-          <el-option v-for="item in secondSwitchOption" :key="item.value" :label="item.label" :value="item.value"/>
-        </el-select>
-        <el-input-number v-model="scope.row.chooseNum" :min="25" :max="30" size="small" controls-position="right" @change="handleChange" style="width: 70px"/>
-      </template>
-    </el-table-column>
-    <el-table-column>
-      <template #default="scope">  
-        <span class="selectText">开关</span>
-        <el-select v-model="scope.row.switchValue" class="m-2" placeholder="开/关" size="small" style="width: 70px">
-          <el-option v-for="item in firstSwitchOption" :key="item.value" :label="item.label" :value="item.value"/>
-        </el-select>
-      </template>
-    </el-table-column>
-    <el-table-column>
+    <el-table-column label="定温" width="120">
       <template #default="scope">
         <span class="selectText">模式</span>
         <el-select v-model="scope.row.modeValue" class="m-2" placeholder="模式" size="small" style="width: 60px">
@@ -80,7 +69,7 @@
         </el-select>
       </template>
     </el-table-column>
-    <el-table-column>
+    <el-table-column width="120">
       <template #default="scope">
         <span class="selectText">风速</span>
         <el-select v-model="scope.row.windValue" class="m-2" placeholder="风速" size="small" style="width: 60px">
@@ -91,20 +80,29 @@
     <el-table-column>
       <template #default="scope">
         <span class="selectText">温度</span>
-        <el-input-number v-model="scope.row.numValue" :min="25" :max="30" size="small" controls-position="right" @change="handleChange" style="width: 70px"/>
+        <el-input-number v-model="scope.row.numValue" :min="0" :max="30" size="small" controls-position="right" @change="handleChange" style="width: 70px"/>
       </template>
     </el-table-column>
   </el-table>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { firstSwitchOption, secondSwitchOption, ModeOption, WindOption } from '@/type/intelligentType.js'
 import { useIntelligent } from '@/store/use-intelligent.js';
-defineProps({
+import { post } from '@/api/http.js'
+const props = defineProps({
   selected: {
     type: Array, 
   }
+})
+
+onMounted(()=>{
+  store.clearOptionSelectedTime()
+  store.clearOptionSelectedTemp()
+  store.clearTimeData()
+  store.clearTempData()
+  controlOnly()
 })
 
 const store = useIntelligent();
@@ -120,6 +118,17 @@ function handleSelectionChange(ev, type){
   }else if(type === 'temp'){
     store.clearOptionSelectedTemp()
     store.handleSelectionValue(optionSelectedTemp.value, ev)
+  }
+  console.log(optionSelectedTime.value[0], optionSelectedTemp.value);
+}
+
+async function controlOnly(){
+  console.log("触发control");
+  if(props.selected.length === 1){
+    const res = await post('auto/infor', { "id": props.selected[0],})
+    console.log(res)
+    store.setTimeData(res.data.time)
+    store.setTempData(res.data.temperature)
   }
 }
 </script>
@@ -138,4 +147,15 @@ function handleSelectionChange(ev, type){
 ::v-deep.el-table .cell {
   padding: 0  5px !important;
 }
+
+.contentDialog-head{
+    .contentDialog-head-content{
+      span{
+        min-width: 70px;
+      }
+      display: flex;
+      flex-direction: row;
+      width: 360px;
+    }
+  }
 </style>

@@ -84,8 +84,8 @@ export default {
   flex-direction: row;
 
   width: 100%;
-    background-color: rgb(231,238,243);
-    border-bottom:2px solid rgb(217, 219, 223);
+  background-color: #FFFFFF;
+  border-bottom:2px solid rgb(217, 219, 223);
 }
 
 .custom-menu {

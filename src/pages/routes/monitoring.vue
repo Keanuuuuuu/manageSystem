@@ -26,7 +26,7 @@
         <el-table ref="multipleTableRef"
           :data="store.monitorTableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)"
           @selection-change="handleSelectionChange" stripe :header-cell-style="headerRowStyle" 
-          :table-layout="tableLayout" :cell-style="cellStyle">
+          :table-layout="tableLayout" :cell-style="cellStyle" v-loading="store.airconditionNodeArrayLoading">
           <!-- 
             1、ele对于列表中每一项数据的展示可以使用property属性，也可以使用template模板 
             2、sortable为设置是否启用排序功能
@@ -47,8 +47,8 @@
             </template>
           </el-table-column>
           <el-table-column label="智能控制">
-            <template #default>
-              <el-switch size="small" />
+            <template #default="scope">
+              <span>{{ intelligent(scope.row.autoControl) }}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -63,8 +63,14 @@
   </div>
 
 
-  <el-dialog :modelValue="dialogVisible" :title="titleName" @closed="close" :width="width" center>
-    <el-scrollbar height="400px">
+  <el-dialog
+    :modelValue="dialogVisible" :title="titleName" @closed="close" :width="width" center align-center class="control-dialog">
+    <template #header>
+      <div class="control-header">
+        <span >{{ control_dialogValue?"实时控制":"智能控制" }}</span>
+      </div>
+    </template>
+    <el-scrollbar>
       <!-- 实时控制 -->
       <control-dialog v-if="control_dialogValue" :value_one="value_one" :value_two="value_two"
         :value_three="value_three" :num="num" :selected="[...selected]" @updateDialogValue="value_one = $event"
@@ -89,7 +95,7 @@ import { toRaw, ref, computed } from 'vue'
 import { post } from '@/api/http.js'
 import { ElMessage } from "element-plus"
 
-import { switchString } from '@/utils/digitalTransformation.js'
+import { switchString, switchStringIntelligentTime, switchStringIntelligentTemp } from '@/utils/digitalTransformation.js'
 import ConcurrencyRequest from '@/utils/ConcurrencyRequest.js'
 import systemEventBus from '@/utils/systemEventBus';
 
@@ -158,6 +164,71 @@ async function modifyNodePost(selectedobj, res) {
   })
 }
 
+// 内机智能控制的POST处理方法
+async function intelligentControlPost(selectedobj, optionSelectedTime, optionSelectedTemp) {
+  let res = {}
+  if(optionSelectedTime.length === 0 && optionSelectedTemp.length !== 0){
+    res = await tempPost(selectedobj, optionSelectedTemp)
+    ElMessage({showClose: true, message: res.msg, type: "success"});
+  }else if(optionSelectedTime.length !== 0 && optionSelectedTemp.length === 0){
+    res = await timePost(selectedobj, optionSelectedTime)
+    ElMessage({showClose: true, message: res.msg, type: "success"});
+  }else if(optionSelectedTime.length !== 0 && optionSelectedTemp.length !== 0 || optionSelectedTime.length === 0 && optionSelectedTemp.length === 0){
+    Promise.all([tempPost(selectedobj, optionSelectedTemp), timePost(selectedobj, optionSelectedTime)]).then((values) => {
+      values.forEach((item)=>{
+        ElMessage({showClose: true, message: item.msg, type: "success"});
+      })
+    }).catch((err) => {
+      console.log(err)
+      ElMessage({showClose: true, message: err, type: "warning",});
+    });
+  }
+}
+
+async function timePost(selectedobj, optionSelectedTime) {
+  let timeArr = []
+  const res = switchStringIntelligentTime(optionSelectedTime)
+  if(res.length === 0){
+    timeArr = []
+  }else if(res.length === 2){
+    timeArr = [res[0], res[1]]
+  }else if(res.length === 1){
+    timeArr = [res[0]]
+  }
+  return new Promise((resolve, reject) => {
+    post('auto/time',
+      {
+        "selected": selectedobj,
+        "setinfor": timeArr
+      }
+    ).then(async (res) => {
+      console.log(res);
+      systemEventBus.$emit('updateAirconditionPost') //修改之后触发更新
+      resolve(res)
+    }, async (resaon) => {
+      reject(resaon);
+    })
+  })
+}
+
+async function tempPost(selectedobj, optionSelectedTemp) {
+  const res = switchStringIntelligentTemp(optionSelectedTemp)
+  return new Promise((resolve, reject) => {
+    post('auto/temperature',
+      {
+        "selected": selectedobj,
+        "setinfor": res[0]
+      }
+    ).then(async (res) => {
+      console.log(res);
+      systemEventBus.$emit('updateAirconditionPost') //修改之后触发更新
+      resolve(res)
+    }, async (resaon) => {
+      reject(resaon);
+    })
+  })
+}
+
 // pinia
 const switchValue = computed(() => store.Switch);
 const modeValue = computed(() => store.Mode);
@@ -186,15 +257,16 @@ function confirm(clShow, itShow) {
 
     modifyNodePost([...selected.value], res)
   }else {
-    console.log(intelligentStore.optionSelectedTime, intelligentStore.optionSelectedTemp);
-    if ([...selected.value].length === 0 || (intelligentStore.optionSelectedTime.length === 0 && intelligentStore.optionSelectedTemp.length === 0)) {
+    // console.log(intelligentStore.optionSelectedTime, intelligentStore.optionSelectedTemp);
+    if ([...selected.value].length === 0 ) {
       ElMessage({
         showClose: true,
-        message: "控制的空调数目为空或控制项不完整",
+        message: "控制的空调数目为空",
         type: "warning",
       });
       return
     }
+    intelligentControlPost([...selected.value], intelligentStore.optionSelectedTime, intelligentStore.optionSelectedTemp)
   }
 }
 
@@ -238,9 +310,20 @@ const selectable = (row, rowIndex) => {
   return row.online;
 }
 
+const intelligent = (autoControl) => {
+  if(autoControl === 0){
+    return '无智能控制'
+  }else if(autoControl === 1){
+    return '定时控制'
+  }else if(autoControl === 2){
+    return '定温控制'
+  }else if(autoControl === 2){
+    return '定时定温控制'
+  }
+}
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" >
 .content {
   display: flex;
   flex-direction: row;
@@ -311,5 +394,32 @@ const selectable = (row, rowIndex) => {
   box-sizing: border-box;
   border-top: 1px solid #0000005C;
   padding: 20px 0;
+}
+
+.control-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: #4255b9FF;
+  color: #FFFFFF;
+  span{
+    width: 120px;
+    margin: 10px auto;
+    font-size: 20px;
+    height: 40px;
+    line-height: 40px;
+  }
+}
+
+.control-dialog{
+  border-radius: 100px;
+  .el-dialog__header{
+    padding: 0;
+    margin-right: 0;
+    .el-dialog__headerbtn .el-dialog__close{
+      font-size: 25px;
+      color: #FFFFFF;
+    }
+  }
 }
 </style>

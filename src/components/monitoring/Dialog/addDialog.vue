@@ -16,7 +16,6 @@
     status-icon
   >
   <el-scrollbar height="500px">
-    <span>编辑节点</span>
     <el-form-item label="节点属性:" prop="nodeProperties">
       <el-radio-group v-model="ruleFormRoom.nodeProperties">
         <el-radio label="标签" />

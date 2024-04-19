@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue'
+import { switchStringIntelligentTimeReverse, switchStringIntelligentTempReverse } from '@/utils/digitalTransformation.js'
 
 export const useIntelligent = defineStore({
   id: 'intelligentStore',
@@ -27,19 +28,6 @@ export const useIntelligent = defineStore({
       id: 'lowTemp',
       type: 2,
       isSelectd: false,
-      chooseValue: '',
-      chooseNum: 25,
-      switchValue: '',
-      modeValue: '',
-      windValue: '',
-      numValue: 25
-    },{
-      id: 'highTemp',
-      type: 2,
-      isSelectd: false,
-      chooseValue: '',
-      chooseNum: 25,
-      switchValue: '',
       modeValue: '',
       windValue: '',
       numValue: 25
@@ -68,6 +56,41 @@ export const useIntelligent = defineStore({
     },
     clearOptionSelectedTemp(){
       this.optionSelectedTemp = []
-    }
+    },
+    setTimeData(time){
+      const res = switchStringIntelligentTimeReverse(time)
+      this.timeData.forEach((item, index)=>{
+        console.log(item);
+        item.firstTime = res[index]?.firstTime
+        item.switchValue = res[index]?.switchValue
+        item.modeValue = res[index]?.modeValue
+        item.windValue = res[index]?.windValue
+        item.numValue = res[index]?.numValue
+      })
+    },
+    setTempData(temp){
+      const res = switchStringIntelligentTempReverse(temp)
+      this.tempData.forEach((item, index)=>{
+        item.modeValue = res[index]?.modeValue
+        item.windValue = res[index]?.windValue
+        item.numValue = res[index]?.numValue
+      })
+    },
+    clearTimeData(){
+      this.timeData.forEach((item, index)=>{
+        item.firstTime = ''
+        item.switchValue = ''
+        item.modeValue = ''
+        item.windValue = ''
+        item.numValue = 25
+      })
+    },
+    clearTempData(){
+      this.tempData.forEach((item, index)=>{
+        item.modeValue = ''
+        item.windValue = ''
+        item.numValue = 25
+      })
+    },
   }
 });

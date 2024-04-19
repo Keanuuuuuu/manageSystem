@@ -46,8 +46,11 @@ li {
   align-items: center;
   justify-content: center;
   width: 80px;
-  padding: 4px 20px;
+  padding: 6px 20px;
+  color: #FFFFFFFF;
 }
+li:nth-of-type(odd){ background: #6B7EE4FF;}
+li:nth-of-type(even){ background:#8190e2FF;}
 
 li:hover {
   background-color: rgb(185,190,194);

@@ -17,7 +17,7 @@
     <teleport to="body">
       <transition name="menu">
         <div ref="menu_dropdown" v-show="selectOpen" :style="dropdownStyle" class="menu-dropdown">
-          <ul>
+          <ul class="menu_ul">
             <slot name="selectDropDown"></slot>
           </ul>
         </div>
@@ -171,6 +171,8 @@ export default {
     list-style: none;
     overflow: hidden;
     border: #E6E8EC 2px solid;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
     box-sizing: border-box;
     box-shadow: 0 4px 12px rgba(35, 38, 47, 0.1);
     display: flex;

@@ -25,7 +25,12 @@
             </el-tree>
         </el-scrollbar>
     </div>
-    <el-dialog :modelValue="dialogVisible" :title="titleName" @closed="close" width="600px" align-center>
+    <el-dialog :modelValue="dialogVisible" :title="titleName" @closed="close" width="600px" align-center class="tree-dialog">
+        <template #header>
+            <div class="tree-header">
+                <span >{{ add_dialogValue?"新增节点":"删除节点" }}</span>
+            </div>
+        </template>
         <!-- 新增节点 -->
         <add-dialog v-show="add_dialogValue" :addType="addType" @addDialogSubmit="addDialogfn"></add-dialog>
 
@@ -37,7 +42,7 @@
 
 <script setup>
 import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
-import { post, del } from '@/api/http.js'
+import { post, del, put } from '@/api/http.js'
 import { MouseMenuDirective as vMouseMenu } from '@howdyjs/mouse-menu'
 import { ElMessage } from "element-plus"
 import { useCustomStore } from '@/store';
@@ -94,6 +99,7 @@ const handleNodeClick = (data) => {
 
 // 获取原始列表
 async function getAirconditionPost() {
+    store.airconditionNodeArrayLoading = true
     const res = await post('/machinestate', {
         id: "16"
     }, {
@@ -102,6 +108,7 @@ async function getAirconditionPost() {
     // console.log('中心看板内机状态=========================》', res);
     airconditionNodeArray.value = res.data
     handleNodeClick(airconditionNode, airconditionNodeArray.value)
+    store.airconditionNodeArrayLoading = false
 }
 
 
@@ -321,7 +328,7 @@ function countOnline(arr) {
   let onlineCount = 0;
 
   arr.forEach(item => {
-    if (item.online === true) {
+    if (item.open === true) {
       onlineCount++;
     }
 
@@ -350,7 +357,7 @@ function countChildren(arr) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" >
 .tree {
     border: 1px dashed black;
     border: 1px dashed black;
@@ -371,6 +378,33 @@ function countChildren(arr) {
         margin-left: 10px;
         color: black;
     }
+}
+
+.tree-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: #4255b9FF;
+  color: #FFFFFF;
+  span{
+    width: 120px;
+    margin: 10px auto;
+    font-size: 20px;
+    height: 40px;
+    line-height: 40px;
+  }
+}
+
+.tree-dialog{
+  border-radius: 100px;
+  .el-dialog__header{
+    padding: 0;
+    margin-right: 0;
+    .el-dialog__headerbtn .el-dialog__close{
+      font-size: 25px;
+      color: #FFFFFF;
+    }
+  }
 }
 </style>
 

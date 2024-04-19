@@ -30,8 +30,6 @@ const store = useCustomStore()
 const props = defineProps(['dialogVisible', 'control_dialogValue', 'intelligent_controlValue'])
 const emit = defineEmits()
 
-const fullscreenLoading = ref(false)
-
 const search = ref('')
 
 function handleSearch() {
@@ -70,10 +68,10 @@ async function InitalAirconditionState() {
 
 const fetchData = async () => {
   try {
-    fullscreenLoading.value = true
+    store.airconditionNodeArrayLoading = true
     // 执行获取数据的逻辑，例如重新调用 InitalAirconditionState 方法
     await InitalAirconditionState();
-    fullscreenLoading.value = false
+    store.airconditionNodeArrayLoading = false
     ElMessage({
       showClose: true,
       message: "已成功更新数据！",

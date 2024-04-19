@@ -10,7 +10,6 @@
   <el-form ref="ruleFormRoomRef" :model="ruleFormRoom" :rules="rules" label-width="100px" class="demo-ruleForm"
     :size="formSize" status-icon>
     <el-scrollbar height="500px">
-      <span>删除节点</span>
       <el-form-item label="节点属性:" prop="nodeProperties">
         <el-radio-group v-model="ruleFormRoom.nodeProperties">
           <el-radio label="标签" />

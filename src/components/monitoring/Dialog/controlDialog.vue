@@ -7,9 +7,15 @@
 !-->
 <template>
   <div class="contentDialog">
-    当前选中：
-    <div v-for="item in selected" :key="item.index">
-      {{ item }}
+    <div class="contentDialog-head">
+      <el-scrollbar>
+        <div class="contentDialog-head-content">
+            <span>当前选中：</span>
+            <div v-for="item in selected" :key="item.index">
+              {{ item }}、
+            </div>
+        </div>
+      </el-scrollbar>
     </div>
 
     <div class="control Switch_control">
@@ -199,9 +205,21 @@ export default {
   display: flex;
   flex-direction: column;
   width: 450px;
-  justify-content: center;
-  align-items: center;
+  // justify-content: center;
+  // align-items: center;
   margin: 0 auto;
+  .contentDialog-head{
+    margin-left: 45px;
+    width: 360px;
+    .contentDialog-head-content{
+      span{
+        min-width: 70px;
+      }
+      display: flex;
+      flex-direction: row;
+      width: 360px;
+    }
+  }
   .control{
     display: flex;
     flex-direction: row;

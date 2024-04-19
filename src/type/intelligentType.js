@@ -25,19 +25,6 @@ export const tempData = ref([{
   id: 'lowTemp',
   type: 2,
   isSelectd: false,
-  chooseValue: '',
-  chooseNum: 25,
-  switchValue: '',
-  modeValue: '',
-  windValue: '',
-  numValue: 25
-},{
-  id: 'highTemp',
-  type: 2,
-  isSelectd: false,
-  chooseValue: '',
-  chooseNum: 25,
-  switchValue: '',
   modeValue: '',
   windValue: '',
   numValue: 25
@@ -53,7 +40,7 @@ export const firstSwitchOption = ref([
     label: '关',
   },
 ]);
-export const ModeOption = ref([
+export const ModeOption = ref([  
   {
     value: '制冷',
     label: '制冷',
