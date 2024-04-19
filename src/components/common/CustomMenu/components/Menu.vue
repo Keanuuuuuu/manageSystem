@@ -144,7 +144,7 @@ export default {
   padding: 0 10px;
   color: #23262F;
   cursor: pointer;
-  border: #E6E8EC 2px solid;
+  // border: #E6E8EC 2px solid;
   box-sizing: border-box;
   transition: border .2s;
   margin-left: 10px;
@@ -159,7 +159,8 @@ export default {
 }
 
 .menu-container:hover {
-  border: #23262F 2px solid;
+  background-color: rgb(227, 231, 245);
+  // border: #23262F 2px solid;
 }
 
 .menu-dropdown {

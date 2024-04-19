@@ -14,14 +14,6 @@
         <span @click.stop="closeTab(route)">✖</span>
       </div>
     </div>
-
-    <div id="switch">
-      <el-tooltip effect="dark" content="切换账号" placement="left-end">
-        <el-icon id="power" @click="logout">
-          <Switch />
-        </el-icon>
-      </el-tooltip>
-    </div>
   </div>
 </template>
 
@@ -35,8 +27,6 @@ import { useIpcRenderer } from '@vueuse/electron';
 const ipcRenderer = useIpcRenderer();
 const router = useRouter();
 const store = useCustomStore(); //小写的是pinia的store
-const Store = require('electron-store'); 
-const Estore = new Store();
 
 const navigatorRoutes = store.navigatorRoutes;
 const currentRoute = ref(router.currentRoute.value.name);
@@ -69,15 +59,6 @@ onMounted(() => {
   });
 });
 
-function logout() {
-  Estore.set('logindata', {
-    username: null,
-    password: null,
-  });
-  Estore.set('token', null);
-  Estore.set('recordPassword', false);
-  ipcRenderer.send('login-deny');
-}
 
 function switchTab(route) {
   router.push({ name: route });
@@ -95,8 +76,7 @@ function closeTab(route) {
   display: flex;
   box-sizing: border-box;
   height: 60px;
-  border-top: 2px solid rgb(217, 219, 223);
-  border-bottom: 2px solid rgb(217, 219, 223);
+  background-color: rgb(245, 245, 245);
 
   .tab-bar {
     margin-left: 5px;
@@ -105,25 +85,25 @@ function closeTab(route) {
     height: 40px;
 
     .tab {
-      padding: 8px 12px;
+      padding: 7px 8px;
       margin-right: 8px;
-      border-radius: 4px;
+      border-radius: 8px;
       cursor: pointer;
       border: 2px solid #ccc;
-      background-color:  whitesmoke;
+      background-color:  white;
 
       &:hover {
-        background-color:rgb(231,238,243);
+        background-color:rgb(246,248,254);
         border: 2px solid $color-theme;
       }
 
       &.active {
-        background-color: rgb(231, 238, 243);
+        // background-color: rgb(231, 238, 243);
         border: 2px solid $color-theme;
       }
 
       span {
-        margin-left: 8px;
+        margin-left: 4px;
         cursor: pointer;
       }
 
@@ -134,23 +114,4 @@ function closeTab(route) {
   }
 }
 
-#switch {
-  position: absolute;
-  right: 0;
-
-  #power {
-    cursor: pointer;
-    display: block;
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 20px;
-    width: 40px;
-    height: 30px;
-
-    &:hover {
-      color: red;
-    }
-  }
-}
 </style>
