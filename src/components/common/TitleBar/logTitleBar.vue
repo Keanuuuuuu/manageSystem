@@ -1,5 +1,5 @@
 <!-- 
-* @description: 日志管理titleBar
+* @description: 日志记载titleBar
 * @fileName: logTitleBar.vue
 * @author: 刘世博
 * @date: 2024-01-09
@@ -8,7 +8,7 @@
 <template>
   <div class="main-top" @click="logWindowMin">
     <div class="left">
-      <span>日志管理</span>
+      <span>日志记载</span>
     </div>
     <div class="right">
       <span class="window-min" @click="logWindowMin">

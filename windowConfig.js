@@ -56,6 +56,7 @@ exports.dialogConfig = {
   center:true,
   frame: false,
   autoHideMenuBar: true, 
+  resizable: false,
   webPreferences: {
     nodeIntegration: true,
     contextIsolation: false,
@@ -83,7 +84,7 @@ exports.changeInfoDialogConfig = {
 
 exports.changePSWConfig = {
   width: 400,
-  height: 400,
+  height: 360,
   center:true,
   frame: false,
   autoHideMenuBar: true, 

@@ -8,16 +8,18 @@
 <template>
     <div class="tree">
         <el-scrollbar>
-            <el-tree :data="store.leftTreeData" @node-click="handleNodeClick" :default-expand-all="true"
-                :expand-on-click-node="false">
+            <el-tree :data="store.leftTreeData" @node-click="handleNodeClick" :expand-on-click-node="false">
                 <template #default="{ node, data }">
                     <span class="custom-tree-node" v-mouse-menu="{ params: data, ...options_tree }">
                         <span>{{ data.label }}</span>
-                        <span class="node-number" v-if="data.children">({{ countOnline(data.children) }}/{{ countChildren(data.children) }})</span>
+                        <span class="node-number" v-if="data.children">({{ countOnline(data.children) }}/{{
+                countChildren(data.children) }})</span>
                         <div v-if="!data.children">
                             <span>
-                                <span v-if="data.online"> <img src="@/assets/AirConditioner-Filled.png" title="在线" width="50%"> </span>
-                                <span v-if="!data.online"> <img src="@/assets/AirConditioner-Filled-bad.png" title="在线" width="50%"> </span>
+                                <span v-if="data.online"> <img src="@/assets/AirConditioner-Filled.png" title="在线"
+                                        width="50%"> </span>
+                                <span v-if="!data.online"> <img src="@/assets/AirConditioner-Filled-bad.png" title="在线"
+                                        width="50%"> </span>
                             </span>
                         </div>
                     </span>
@@ -25,10 +27,11 @@
             </el-tree>
         </el-scrollbar>
     </div>
-    <el-dialog :modelValue="dialogVisible" :title="titleName" @closed="close" width="600px" align-center class="tree-dialog">
+    <el-dialog :modelValue="dialogVisible" :title="titleName" @closed="close" width="600px" align-center
+        class="tree-dialog">
         <template #header>
             <div class="tree-header">
-                <span >{{ add_dialogValue?"新增节点":"删除节点" }}</span>
+                <span>{{ add_dialogValue ? "新增节点" : "删除节点" }}</span>
             </div>
         </template>
         <!-- 新增节点 -->
@@ -325,19 +328,19 @@ const options_tree = reactive({
 })
 
 function countOnline(arr) {
-  let onlineCount = 0;
+    let onlineCount = 0;
 
-  arr.forEach(item => {
-    if (item.open === true) {
-      onlineCount++;
-    }
+    arr.forEach(item => {
+        if (item.open === true) {
+            onlineCount++;
+        }
 
-    if (item.children && item.children.length > 0) {
-      onlineCount += countOnline(item.children);
-    }
-  });
+        if (item.children && item.children.length > 0) {
+            onlineCount += countOnline(item.children);
+        }
+    });
 
-  return onlineCount;
+    return onlineCount;
 }
 
 function countChildren(arr) {
@@ -357,7 +360,7 @@ function countChildren(arr) {
 }
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 .tree {
     border: 1px dashed black;
     border: 1px dashed black;
@@ -381,30 +384,32 @@ function countChildren(arr) {
 }
 
 .tree-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  background-color: #4255b9FF;
-  color: #FFFFFF;
-  span{
-    width: 120px;
-    margin: 10px auto;
-    font-size: 20px;
-    height: 40px;
-    line-height: 40px;
-  }
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: #4255b9FF;
+    color: #FFFFFF;
+
+    span {
+        width: 120px;
+        margin: 10px auto;
+        font-size: 20px;
+        height: 40px;
+        line-height: 40px;
+    }
 }
 
-.tree-dialog{
-  border-radius: 100px;
-  .el-dialog__header{
-    padding: 0;
-    margin-right: 0;
-    .el-dialog__headerbtn .el-dialog__close{
-      font-size: 25px;
-      color: #FFFFFF;
+.tree-dialog {
+    border-radius: 100px;
+
+    .el-dialog__header {
+        padding: 0;
+        margin-right: 0;
+
+        .el-dialog__headerbtn .el-dialog__close {
+            font-size: 25px;
+            color: #FFFFFF;
+        }
     }
-  }
 }
 </style>
-
