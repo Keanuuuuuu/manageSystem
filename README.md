@@ -46,7 +46,6 @@ npm run dev
 
 # 打包文件 输出文件为dist_electron
 npm run electron:build
-
 ```
 
 
