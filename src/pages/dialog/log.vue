@@ -1,12 +1,12 @@
 <template>
   <div class="log_container">
-    <div class="log_container-head">
+    <!-- <div class="log_container-head">
       <el-input v-model="pageSize" style="width: 150px; margin-right: 10px" placeholder="日志容量" />
       <el-input v-model="pageNumber" style="width: 150px; margin-right: 10px" placeholder="日志页码" />
       <el-button  type="primary" plain @click="handleClick">点击获取日志</el-button>
-    </div>
+    </div> -->
     <div class="log_container-table">
-      <el-table :data="tableData.slice((currentPage - 1) * pagesize2, currentPage * pagesize2)" :border="1" stripe height="510">
+      <el-table :data="tableData" :border="1" stripe height="580">
         <el-table-column type="expand">
           <template #default="props">
             <div m="4" class="message">
@@ -24,9 +24,11 @@
         <el-table-column label="Time" prop="time" />
       </el-table>
 
-      <el-pagination :current-page="currentPage" :page-size="pagesize2" :page-sizes="[5, 10, 20, 30, 40]" background
-          layout="total, sizes, prev, pager, next, jumper" :total="tableData.length"
-          @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+      <div class="pagination">
+        <el-pagination :current-page="currentPage" :small="true" :page-size="pagesize2" :page-sizes="[5, 10, 20, 30, 40]" background
+          layout="sizes, prev, pager, next, jumper" :total="totalNum"
+          @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+      </div>
     </div>
   </div>
 </template>
@@ -36,35 +38,35 @@ import { reactive, ref, defineEmits, defineProps, onMounted } from 'vue'
 import { post } from '@/api/http.js'
 const currentPage = ref(1)
 const pagesize2 = ref(10)
-let pageSize = ref(3)
-let pageNumber = ref(1)
-let tableData = ref([])
+const pageSize = ref(3)
+const pageNumber = ref(1)
+const tableData = ref([])
+const totalNum = ref(0)
 
 onMounted(()=>{
-  postLog()
+  postLog(10, 1)
 })
 
-async function postLog() {
+async function postLog(pageSize, pageNumber) {
    const res = await post('/logs',
       {
-        "pageSize": pageSize.value,
-        "pageNumber": pageNumber.value,
+        "pageSize": pageSize,
+        "pageNumber": pageNumber,
       }
     )
-    tableData.value = res.data
-    console.log(tableData.value);
-}
-
-function handleClick() {
-  postLog()
+    tableData.value = res.data.userLogs
+    totalNum.value = res.data.count
+    // console.log(tableData.value);
 }
 
 function handleSizeChange(val) {
   pagesize2.value = val
+  postLog(val, currentPage.value)
 }
 
 function handleCurrentChange(val) {
   currentPage.value = val
+  postLog(pagesize2.value, val)
 }
 
 function transform(arr) {
@@ -73,12 +75,20 @@ function transform(arr) {
 </script>
 
 <style lang="scss" scoped>
+.log_container{
+  width: 600px;
+  height: 665px;
+}
+.pagination{
+  width: 600px;
+}
 .log_container-head{
-  margin: 10px;
+  // margin: 10px;
 }
 
 .log_container-table{
-  width: 100%;
+  width: 600px;
+  height: 665px;
 }
 
 .message{
