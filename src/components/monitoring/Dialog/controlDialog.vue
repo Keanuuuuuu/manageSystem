@@ -11,8 +11,8 @@
       <el-scrollbar>
         <div class="contentDialog-head-content">
             <span>当前选中：</span>
-            <div v-for="item in selected" :key="item.index">
-              {{ item }}、
+            <div v-for="(item,index) in selected" :key="item.index">
+              {{ item }}{{ selected.length > 1 && index !== selected.length - 1?'、':"" }}
             </div>
         </div>
       </el-scrollbar>

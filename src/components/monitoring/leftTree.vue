@@ -6,7 +6,7 @@
 * @version: 
 !-->
 <template>
-    <div class="tree">
+    <div class="tree"  v-loading="store.airconditionNodeArrayLoading">
         <el-scrollbar>
             <el-tree :data="store.leftTreeData" @node-click="handleNodeClick" :expand-on-click-node="false" node-key="id" :default-expanded-keys="['16']">
                 <template #default="{ node, data }">
@@ -27,11 +27,10 @@
             </el-tree>
         </el-scrollbar>
     </div>
-    <el-dialog :modelValue="dialogVisible" :title="titleName" @closed="close" width="600px" align-center
-        class="tree-dialog">
+    <el-dialog :modelValue="dialogVisible" :title="titleName" @closed="close" width="600px" align-center class="tree-dialog" center>
         <template #header>
             <div class="tree-header">
-                <span>{{ add_dialogValue ? "新增节点" : "删除节点" }}</span>
+                <span >{{ add_dialogValue?"新增节点":delete_dialogValue?"删除节点":"修改节点" }}</span>
             </div>
         </template>
         <!-- 新增节点 -->
@@ -40,6 +39,9 @@
         <!-- 删除节点 -->
         <delete-dialog v-show="delete_dialogValue" :deleteType="deleteType"
             @deleteDialogSubmit="deleteDialogfn"></delete-dialog>
+
+        <!-- 修改节点 -->
+        <change-dialog v-show="change_dialogValue" :changeType="changeType" @changeDialogSubmit="changeDialogfn"></change-dialog>
     </el-dialog>
 </template>
 
@@ -52,6 +54,7 @@ import { useCustomStore } from '@/store';
 
 import addDialog from '@/components/monitoring/Dialog/addDialog.vue'
 import deleteDialog from '@/components/monitoring/Dialog/deleteDialog.vue'
+import changeDialog from '@/components/monitoring/Dialog/changeDialog.vue'
 
 import { dataFlattenById } from '@/utils/treeArr.js'
 import systemEventBus from '@/utils/systemEventBus';
@@ -125,17 +128,24 @@ let deleteType = reactive({
     __buildingId: '若无值请刷新',
     _machineId: '若无值请刷新'
 })
+let changeType = reactive({
+    __buildingId: '若无值请刷新',
+    __oldId: '若无值请刷新',
+    newId: "若无值请刷新"
+})
 
 
 let dialogVisible = ref(false)
 
 let add_dialogValue = ref(false)
 let delete_dialogValue = ref(false)
-
+let change_dialogValue = ref(false)
+ 
 function close() {
     dialogVisible.value = false
     delete_dialogValue.value = false
     add_dialogValue.value = false
+    change_dialogValue.value = false
 }
 
 
@@ -157,6 +167,30 @@ const addRoom = async (value) => {
         type: "warning",
     });
     console.log("添加房间:", res);
+}
+
+// 修改房间
+const changeRoom = async (value) => {
+    const res = await post('/room', {
+        "buildingId": value.__buildingId, //楼栋id
+        "oldId": value.__oldId, //房间id
+        "newId": value.newId, //修改后的房间id
+        "label": value.label //房间label
+    })
+    await getTreeArr()
+    if(res.code === 21202){
+        ElMessage({
+            showClose: true,
+            message: res.msg,
+            type: "success",
+        });
+    }else {
+        ElMessage({
+            showClose: true,
+            message: res.msg,
+            type: "warnig",
+        }); 
+    }
 }
 
 // 添加设备
@@ -186,17 +220,6 @@ const addDevice = async (value) => {
     console.log(res);
 }
 
-const addDialogfn = (value) => {
-    console.log('addDialogSubmit', value);
-    if (value.nodeProperties === "房间") {
-        addRoom(value)
-        dialogVisible.value = false
-    } else if (value.nodeProperties === "设备") {
-        addDevice(value)
-        dialogVisible.value = false
-    }
-}
-
 function handleAdd(params) {
     addType.__buildingId = params.id.slice(0, 2);
     addType.__roomId = params.id.slice(0, 6);
@@ -219,6 +242,26 @@ function handleAdd(params) {
     // 展示对应的内部dialog时，要把别的设置为false
     delete_dialogValue.value = false
     // 增加节点后刷新
+}
+
+function handleChange(params) {
+    console.log(params);
+    changeType.__buildingId = params.id.slice(0, 2);
+    changeType.__oldId = params.id.slice(0, 6);
+    changeType.newId = params.id.slice(0, 6);
+    if (params.id.length === 2 || params.id.length === 8) {
+        ElMessage({
+            showClose: true,
+            message: "设备或楼栋不支持修改节点",
+            type: "warning",
+        });
+        return;
+    }
+    dialogVisible.value = true
+    change_dialogValue.value = true
+    // 展示对应的内部dialog时，要把别的设置为false
+    add_dialogValue.value = false
+    delete_dialogValue.value = false
 }
 
 // 删除房间
@@ -257,6 +300,17 @@ const deleteMachine = async (value) => {
     console.log("删除内机:", res);
 }
 
+const addDialogfn = (value) => {
+    console.log('addDialogSubmit', value);
+    if (value.nodeProperties === "房间") {
+        addRoom(value)
+        dialogVisible.value = false
+    } else if (value.nodeProperties === "设备") {
+        addDevice(value)
+        dialogVisible.value = false
+    }
+}
+
 const deleteDialogfn = (value) => {
     console.log('deleteDialogSubmit', value);
     if (value.nodeProperties === "房间") {
@@ -268,6 +322,12 @@ const deleteDialogfn = (value) => {
         deleteMachine(value);
         dialogVisible.value = false
     }
+}
+
+const changeDialogfn = (value) => {
+    console.log('changeDialogSubmit', value);
+    changeRoom(value)
+    dialogVisible.value = false
 }
 
 function handleDelete(params) {
@@ -304,13 +364,6 @@ const options_tree = reactive({
     },
     menuList: [
         {
-            label: '数据查询',
-            tips: 'Search',
-            fn: (params, currentEl, bindingEl, e) => {
-                handleSearch(params, currentEl, bindingEl, e)
-            }
-        },
-        {
             label: '删除节点',
             tips: 'Delete',
             fn: (params) => {
@@ -322,6 +375,13 @@ const options_tree = reactive({
             tips: 'Add',
             fn: (params) => {
                 handleAdd(params)
+            }
+        },
+        {
+            label: '修改节点',
+            tips: 'Add',
+            fn: (params) => {
+                handleChange(params)
             }
         }
     ]

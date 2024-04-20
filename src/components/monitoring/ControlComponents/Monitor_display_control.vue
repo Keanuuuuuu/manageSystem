@@ -66,11 +66,21 @@ async function InitalAirconditionState() {
   handleNodeClick(store.lastTreeNode)
 }
 
+async function getTreeArr() {
+    const res = await post('/leftbar', null, {
+        baseURL: 'http://lab.zhongyaohui.club/'
+    })
+    // console.log('左侧树节点===================》', res.data[0].children);
+    store.setLeftTreeData(res.data[0].children)
+    // console.log(store.leftTreeData);
+}
+
 const fetchData = async () => {
   try {
     store.airconditionNodeArrayLoading = true
     // 执行获取数据的逻辑，例如重新调用 InitalAirconditionState 方法
     await InitalAirconditionState();
+    await getTreeArr();
     store.airconditionNodeArrayLoading = false
     ElMessage({
       showClose: true,

@@ -25,7 +25,7 @@
       <div class="Monitor_the_display_data_list">
         <el-table ref="multipleTableRef"
           :data="store.monitorTableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)"
-          @selection-change="handleSelectionChange" stripe :header-cell-style="headerRowStyle" 
+          @select="handleSelectionChange" @select-all="handleSelectionChange" stripe :header-cell-style="headerRowStyle" 
           :table-layout="tableLayout" :cell-style="cellStyle" v-loading="store.airconditionNodeArrayLoading">
           <!-- 
             1、ele对于列表中每一项数据的展示可以使用property属性，也可以使用template模板 
@@ -42,8 +42,8 @@
           <el-table-column property='windSpeed' label="风速" sortable/>
           <el-table-column property='roomTemperature' label="室温" sortable/>
           <el-table-column label="详情">
-            <template #default>
-              <el-button>详情...</el-button>
+            <template #default="scope">
+              <el-button @click="details(scope.row.id)">详情...</el-button>
             </template>
           </el-table-column>
           <el-table-column label="智能控制">
@@ -61,7 +61,29 @@
       </div>
     </div>
   </div>
-
+  <el-dialog
+    :modelValue="detailsDialogVisible" :title="titleName" @closed="detailsClose" :width="400" center align-center>
+    <el-scrollbar height="400">
+      <div m="4" class="message">
+        <h3>详情内容</h3>
+        <p m="t-0 b-2">内机id: {{detailsData.machineId}}</p>
+        <p m="t-0 b-2">内机label: {{detailsData.machineName}}</p>
+        <p m="t-0 b-2">房间id: {{detailsData.roomId}}</p>
+        <p m="t-0 b-2">楼栋id: {{detailsData.buildingId}}</p>
+        <p m="t-0 b-2">网关id: {{detailsData.gatewayId}}</p>
+        <p m="t-0 b-2">私有网关ip: {{detailsData.privateGatewayIp}}</p>
+        <p m="t-0 b-2">内机所属机组: {{detailsData.belongToGroup ?detailsData.belongToGroup:'无'}}</p>
+        <p m="t-0 b-2">集控器设备id: {{detailsData.deviceId}}</p>
+        <p m="t-0 b-2">集控器设备地址: {{detailsData.deviceOrder ?detailsData.deviceOrder:'无'}}</p>
+        <p m="t-0 b-2">内机地址: {{detailsData.machineOrder}}</p>
+        <p m="t-0 b-2">负责人姓名: {{detailsData.headName ?detailsData.headName:'无'}}</p>
+        <p m="t-0 b-2">负责人手机号: {{detailsData.headPhone ?detailsData.headPhone:'无'}}</p>
+        <p m="t-0 b-2">负责人邮箱: {{detailsData.headEmail ?detailsData.headEmail:'无'}}</p>
+        <p m="t-0 b-2">备注信息: {{detailsData.notes ?detailsData.notes:'无'}}</p>
+        <p m="t-0 b-2">智能控制: {{intelligent(detailsData.autoControl)}}</p>
+      </div>
+    </el-scrollbar>
+  </el-dialog>
 
   <el-dialog
     :modelValue="dialogVisible" :title="titleName" @closed="close" :width="width" center align-center class="control-dialog">
@@ -114,12 +136,30 @@ const store = useCustomStore()
 const intelligentStore = useIntelligent()
 
 const handleSelectionChange = (ev) => { // 当选择项发生变化时会触发该事件
+  const tempSet = new Set(selected.value)
+
   for (const evobj of ev) {
+    tempSet.delete(evobj.id)
     selected.value.add(evobj.id)
+  }
+
+  for (const id of tempSet) {
+    selected.value.delete(id)
+  }
+
+  if(ev.length === 0){
+    for (const id of tempSet) {
+      selected.value.add(id)
+    }
+  }
+
+  if( ev.length === 0){
+    selected.value.clear()
   }
 }
 
 const dialogVisible = ref(false)
+const detailsDialogVisible = ref(false)
 
 const control_dialogValue = ref(false)
 const intelligent_controlValue = ref(false)
@@ -137,6 +177,7 @@ const num = ref()
 const selected = ref(new Set())
 const width =  computed(() => control_dialogValue.value?600:700)
 const tableLayout = ref('fixed')
+const detailsData = ref({})
 
 
 
@@ -283,6 +324,9 @@ function close() {
   intelligent_controlValue.value = false
 }
 
+function detailsClose() {
+  detailsDialogVisible.value = false
+}
 
 function handleSizeChange(val) {
   pageSize.value = val
@@ -320,6 +364,16 @@ const intelligent = (autoControl) => {
   }else if(autoControl === 2){
     return '定时定温控制'
   }
+}
+
+const details = async (id) => {
+  console.log(id);
+  detailsDialogVisible.value = true
+  const res = await post('machine/detail',
+  {
+    "machineId": id,
+  })
+  detailsData.value = res.data
 }
 </script>
 

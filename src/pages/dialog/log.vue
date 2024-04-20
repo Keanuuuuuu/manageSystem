@@ -2,7 +2,7 @@
   <div class="log_container">
     <div class="log_container-head">
       <el-input v-model="pageSize" style="width: 150px; margin-right: 10px" placeholder="日志容量" />
-      <el-input v-model="pageNumber" style="width: 150px; margin-right: 10px" placeholder="其实页码" />
+      <el-input v-model="pageNumber" style="width: 150px; margin-right: 10px" placeholder="日志页码" />
       <el-button  type="primary" plain @click="handleClick">点击获取日志</el-button>
     </div>
     <div class="log_container-table">
