@@ -9,6 +9,7 @@
   <div class="main-top">
     <div>
       <div class="left">
+        <img src="@/assets/logo.png" alt="">
         <span>中央空调集中管理平台</span>
       </div>
       <div class="right">
@@ -72,8 +73,8 @@ const windowClose = () => {
     align-items: center;
 
     img {
-      margin-right: 15px;
-      width: 24px;
+      margin-right: 10px;
+      width: 20px;
     }
   }
 

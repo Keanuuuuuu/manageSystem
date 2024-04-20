@@ -15,10 +15,10 @@
                         <span class="node-number" v-if="data.children">({{ countOnline(data.children) }}/{{
                 countChildren(data.children) }})</span>
                         <div v-if="!data.children">
-                            <span>
-                                <span v-if="data.online"> <img src="@/assets/AirConditioner-Filled.png" title="在线"
+                            <span id="flag">
+                                <span v-if="data.online"> <img src="@/assets/AirConditioner-work.png" title="在线"
                                         width="50%"> </span>
-                                <span v-if="!data.online"> <img src="@/assets/AirConditioner-Filled-bad.png" title="在线"
+                                <span v-if="!data.online"> <img src="@/assets/AirConditioner-Filled-bad.png" title="离线"
                                         width="50%"> </span>
                             </span>
                         </div>
@@ -428,6 +428,9 @@ function countChildren(arr) {
     box-sizing: border-box;
     margin-right: 5px;
     width: 210px;
+    #flag{
+        margin-left: 10px;
+    }
 }
 
 .custom-tree-node {
