@@ -36,7 +36,7 @@
     <div id="switch">
       <el-tooltip effect="dark" content="切换账号" placement="left-end">
         <el-icon id="power" @click="logout">
-          <Switch />
+          <User /> <Switch id="foo"/>
         </el-icon>
       </el-tooltip>
     </div>
@@ -151,6 +151,12 @@ function logout() {
     &:hover {
       color: red;
     }
+  }
+  #foo{
+    position: absolute;
+    width: 14px;
+    left: 15px;
+    top: 3px;
   }
 }
 </style>
