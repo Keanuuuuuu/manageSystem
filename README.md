@@ -102,7 +102,7 @@ manageSystem                                    //
 │  │     │  ├─ addDialog.vue                    // 新增节点
 │  │     │  ├─ changeDialog.vue                 // 修改节点
 │  │     │  ├─ controlDialog.vue                // 实时控制
-│  │     │  ├─ deleteDialog.vue                 //  删除节点
+│  │     │  ├─ deleteDialog.vue                 // 删除节点
 │  │     │  └─ intelligentControlDialog.vue     // 智能控制
 │  │     └─ leftTree.vue                        // 内机监控中左侧树形组件
 │  ├─ globalStyle.scss                          // 全局变量样式
