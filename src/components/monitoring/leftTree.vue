@@ -8,7 +8,7 @@
 <template>
     <div class="tree">
         <el-scrollbar>
-            <el-tree :data="store.leftTreeData" @node-click="handleNodeClick" :expand-on-click-node="false">
+            <el-tree :data="store.leftTreeData" @node-click="handleNodeClick" :expand-on-click-node="false" node-key="id" :default-expanded-keys="['16']">
                 <template #default="{ node, data }">
                     <span class="custom-tree-node" v-mouse-menu="{ params: data, ...options_tree }">
                         <span>{{ data.label }}</span>
@@ -81,7 +81,7 @@ async function getTreeArr() {
     })
     // console.log('左侧树节点===================》', res.data[0].children);
     store.setLeftTreeData(res.data[0].children)
-    // console.log(store.leftTreeData);
+    console.log(store.leftTreeData);
 }
 
 

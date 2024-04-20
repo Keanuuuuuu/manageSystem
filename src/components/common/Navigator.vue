@@ -57,8 +57,7 @@ onMounted(() => {
   });
 
   systemEventBus.$on('openLink', () => {
-    console.log(1);
-    window.open('https://github.com/itawenya');
+    window.open('http://47.120.57.76/help.pdf');
   });
 
   router.beforeEach((to, from, next) => {
