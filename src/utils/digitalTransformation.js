@@ -80,7 +80,7 @@ export function switchStringIntelligentTime(items) {
         }else{
             res[index].model = null
         }
-        if(res[index].status = null || res[index].temperature === null || res[index].model === null || res[index].model === null){
+        if(res[index].status === null || res[index].temperature === null || res[index].model === null || res[index].model === null){
             flag++;
             res[index] = null
         }

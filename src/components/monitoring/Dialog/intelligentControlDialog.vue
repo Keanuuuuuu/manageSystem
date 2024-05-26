@@ -52,7 +52,7 @@
     <el-table-column>
       <template #default="scope">
         <span class="selectText">温度</span>
-        <el-input-number v-model="scope.row.numValue" :min="0" :max="30" size="small" controls-position="right" @change="handleChange" style="width: 70px"/>
+        <el-input-number v-model="scope.row.numValue" :min="20" :max="30" size="small" controls-position="right" @change="handleChange" style="width: 70px"/>
       </template>
     </el-table-column>
   </el-table>
@@ -80,7 +80,7 @@
     <el-table-column>
       <template #default="scope">
         <span class="selectText">温度</span>
-        <el-input-number v-model="scope.row.numValue" :min="0" :max="30" size="small" controls-position="right" @change="handleChange" style="width: 70px"/>
+        <el-input-number v-model="scope.row.numValue" :min="20" :max="30" size="small" controls-position="right" @change="handleChange" style="width: 70px"/>
       </template>
     </el-table-column>
   </el-table>

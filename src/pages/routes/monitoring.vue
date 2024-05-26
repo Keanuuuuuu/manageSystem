@@ -207,23 +207,18 @@ async function modifyNodePost(selectedobj, res) {
 
 // 内机智能控制的POST处理方法
 async function intelligentControlPost(selectedobj, optionSelectedTime, optionSelectedTemp) {
-  let res = {}
-  if(optionSelectedTime.length === 0 && optionSelectedTemp.length !== 0){
-    res = await tempPost(selectedobj, optionSelectedTemp)
-    ElMessage({showClose: true, message: res.msg, type: "success"});
-  }else if(optionSelectedTime.length !== 0 && optionSelectedTemp.length === 0){
-    res = await timePost(selectedobj, optionSelectedTime)
-    ElMessage({showClose: true, message: res.msg, type: "success"});
-  }else if(optionSelectedTime.length !== 0 && optionSelectedTemp.length !== 0 || optionSelectedTime.length === 0 && optionSelectedTemp.length === 0){
-    Promise.all([tempPost(selectedobj, optionSelectedTemp), timePost(selectedobj, optionSelectedTime)]).then((values) => {
-      values.forEach((item)=>{
-        ElMessage({showClose: true, message: item.msg, type: "success"});
+  Promise.all([tempPost(selectedobj, optionSelectedTemp), timePost(selectedobj, optionSelectedTime)]).then((values) => {
+      values.forEach((item, index)=>{
+        if(item.code === 21200 || item.code === 21201){
+          ElMessage({showClose: true, message: `${index === 0?'定温控制':'定时控制'}` + item.msg, type: "success"});
+        }else {
+          ElMessage({showClose: true, message: `${index === 0?'定温控制':'定时控制'}` + item.msg + '或控制项参数不全', type: "warning"});
+        }
       })
     }).catch((err) => {
       console.log(err)
       ElMessage({showClose: true, message: err, type: "warning",});
     });
-  }
 }
 
 async function timePost(selectedobj, optionSelectedTime) {
@@ -361,7 +356,7 @@ const intelligent = (autoControl) => {
     return '定时控制'
   }else if(autoControl === 2){
     return '定温控制'
-  }else if(autoControl === 2){
+  }else if(autoControl === 3){
     return '定时定温控制'
   }
 }
