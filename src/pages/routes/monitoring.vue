@@ -42,8 +42,8 @@
           <el-table-column property='temperature' label="温度" sortable/>
           <el-table-column property='windSpeed' label="风速" sortable/>
           <el-table-column property='roomTemperature' label="室温" sortable/>
-          <el-table-column label="智能控制" min-width="120px">
-            <template #default="scope" sortable>
+          <el-table-column label="智能控制" min-width="120px"sortable >
+            <template #default="scope" >
               <span>{{ intelligent(scope.row.autoControl) }}</span>
             </template>
           </el-table-column>
