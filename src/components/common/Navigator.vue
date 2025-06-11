@@ -60,6 +60,11 @@ onMounted(() => {
     window.open('http://47.120.57.76/help.pdf');
   });
 
+  systemEventBus.$on('openOverviewLog', (res) => {
+    console.log(res);
+    ipcRenderer.send('openOverviewLog');
+  });
+
   router.beforeEach((to, from, next) => {
     currentRoute.value = to.name;
     next();

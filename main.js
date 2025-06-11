@@ -1,7 +1,16 @@
 // electron的main.js
 
 const { app, ipcMain } = require('electron');
-const { windows, createMainWindow, createLoginWindow, createPWDWindow, createDialog, createChangeInfoDialog, createChangePSW } = require('./windowManager');
+const { 
+    windows, 
+    createMainWindow, 
+    createLoginWindow, 
+    createPWDWindow, 
+    createDialog, 
+    createChangeInfoDialog, 
+    createChangePSW,
+    createOverviewLog 
+} = require('./windowManager');
 
 const electronStore = require('electron-store');
 const Estore = new electronStore();
@@ -99,6 +108,23 @@ ipcMain.on('openDialog', () => {
         return
     }
     createDialog()
+})
+
+// 总览界面大窗操作
+ipcMain.on('openOverviewLog', () => {
+    if (windows.overviewLog !== null) {
+        windows.overviewLog.focus() // 存在 则聚焦
+        return
+    }
+    createOverviewLog()
+})
+
+// 总览界面大窗关闭操作
+ipcMain.on('overviewLog-close', () => {
+    if (windows.overviewLog !== null) {
+        windows.overviewLog.close()
+        windows.overviewLog = null
+    }
 })
 
 ipcMain.on('log-window-min', () => {

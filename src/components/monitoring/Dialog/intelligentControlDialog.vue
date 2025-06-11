@@ -59,8 +59,8 @@
 
   <br>
   
-  <el-table :data="tempData" @selection-change="handleSelectionChange($event, 'temp')">
-    <el-table-column type="selection"/>
+  <!-- <el-table :data="tempData" @selection-change="handleSelectionChange($event, 'temp')">
+    <el-table-column type="selection" :selectable="() => false"/>
     <el-table-column label="定温" width="120">
       <template #default="scope">
         <span class="selectText">模式</span>
@@ -83,7 +83,7 @@
         <el-input-number v-model="scope.row.numValue" :min="20" :max="30" size="small" controls-position="right" @change="handleChange" style="width: 70px"/>
       </template>
     </el-table-column>
-  </el-table>
+  </el-table> -->
 </template>
 
 <script setup>
@@ -99,17 +99,17 @@ const props = defineProps({
 
 onMounted(()=>{
   store.clearOptionSelectedTime()
-  store.clearOptionSelectedTemp()
+  // store.clearOptionSelectedTemp()
   store.clearTimeData()
-  store.clearTempData()
+  // store.clearTempData()
   controlOnly()
 })
 
 const store = useIntelligent();
 const timeData = computed(() => store.timeData);
-const tempData = computed(() => store.tempData);
+// const tempData = computed(() => store.tempData);
 const optionSelectedTime = computed(() => store.optionSelectedTime);
-const optionSelectedTemp = computed(() => store.optionSelectedTemp);
+// const optionSelectedTemp = computed(() => store.optionSelectedTemp);
 
 function handleSelectionChange(ev, type){
   if(type === 'time'){
@@ -119,7 +119,6 @@ function handleSelectionChange(ev, type){
     store.clearOptionSelectedTemp()
     store.handleSelectionValue(optionSelectedTemp.value, ev)
   }
-  console.log(optionSelectedTime.value[0], optionSelectedTemp.value);
 }
 
 async function controlOnly(){
@@ -128,7 +127,7 @@ async function controlOnly(){
     const res = await post('auto/infor', { "id": props.selected[0],})
     console.log(res)
     store.setTimeData(res.data.time)
-    store.setTempData(res.data.temperature)
+    // store.setTempData(res.data.temperature)
   }
 }
 </script>

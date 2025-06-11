@@ -1,7 +1,7 @@
 // 定义窗口对象的操作 最小化/还原/关闭
 
 const { BrowserWindow } = require('electron');
-const { mainWindowConfig, loginWindowConfig, PWDWindowConfig, dialogConfig,changeInfoDialogConfig, changePSWConfig } = require('./windowConfig');
+const { mainWindowConfig, loginWindowConfig, PWDWindowConfig, dialogConfig,changeInfoDialogConfig, changePSWConfig, overviewlogConfig } = require('./windowConfig');
 const path = require('path')
 const NODE_ENV = process.env.NODE_ENV
 
@@ -11,7 +11,8 @@ let windows = {
   loginWindow: null,
   PWDWindow: null,
   dialog: null,
-  infoDialog:null
+  infoDialog: null,
+  overviewLog: null,
 }
 
 
@@ -131,6 +132,23 @@ function createChangePSW() {
   // windows.changePSW.webContents.openDevTools()
 }
 
+function createOverviewLog() {
+  windows.overviewLog = new BrowserWindow(overviewlogConfig)
+  // 创建总览界面的中央空调内机运行信息界面逻辑...
+  if (NODE_ENV === 'development') {
+    windows.overviewLog.loadURL('http://localhost:5173/#/dialog/overviewLog')
+  } else {
+    windows.overviewLog.loadFile(NODE_ENV === 'development' ? 'http://localhost:5173/' : path.join(__dirname, 'dist/index.html'),
+      {
+        hash: '#/dialog/overviewLog'
+      })
+  }
+  windows.overviewLog.setFullScreen(true);
+  windows.overviewLog.on('closed', () => {
+    windows.overviewLog = null
+  })
+}
+
 // 其他窗口的创建逻辑...
 
 module.exports = {
@@ -140,5 +158,6 @@ module.exports = {
   createDialog,
   createChangeInfoDialog,
   createChangePSW,
+  createOverviewLog,
   windows
 };

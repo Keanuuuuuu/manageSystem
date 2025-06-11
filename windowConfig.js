@@ -63,7 +63,7 @@ exports.dialogConfig = {
     devTools: true   
   },
   icon: path.join(__dirname,'./src/assets/airCondition.png'),
-  title: '日志记载', // 自定义当前应用的标题
+  title: '日志查询', // 自定义当前应用的标题
 }
 
 exports.changeInfoDialogConfig = {
@@ -96,4 +96,20 @@ exports.changePSWConfig = {
   },
   icon: path.join(__dirname,'./src/assets/airCondition.png'),
   title: '修改密码', // 自定义当前应用的标题
+}
+
+exports.overviewlogConfig = {
+  width: 600,
+  height: 700,
+  center:true,
+  frame: false,
+  autoHideMenuBar: true, 
+  resizable: false,
+  webPreferences: {
+    nodeIntegration: true,
+    contextIsolation: false,
+    devTools: true   
+  },
+  icon: path.join(__dirname,'./src/assets/airCondition.png'),
+  title: '中央空调内机运行信息', // 自定义当前应用的标题
 }

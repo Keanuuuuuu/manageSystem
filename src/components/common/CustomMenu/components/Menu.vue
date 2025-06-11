@@ -124,6 +124,9 @@ export default {
           if (type === "link"){
             systemEventBus.$emit('openLink', res)
           }
+          if (type === 'slipOver'){
+            systemEventBus.$emit('slipOver', true)
+          }
           selectOpen.value = false
         }
       })

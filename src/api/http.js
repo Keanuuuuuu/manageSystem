@@ -6,7 +6,7 @@ const Estore = new Store();
 
 const instance = axios.create({
   // 配置请求根路径
-  baseURL: 'http://lab.zhongyaohui.club/',
+  baseURL: 'https://lab.zhongyaohui.club/',
   // 配置超时时间
   timeout: 50000,
   // 配置请求头信息
@@ -55,9 +55,10 @@ instance.interceptors.response.use(
 )
 
 
-export function get(url, params = {}) {
+export function get(url, params = {}, headers = {}) {
   return instance.get(url, {
-    params
+    params,
+    headers
   })
 }
 

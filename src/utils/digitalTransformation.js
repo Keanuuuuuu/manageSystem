@@ -38,7 +38,10 @@ export function switchString(...items) {
 // 用于智能控制的转换函数
 export function switchStringIntelligentTime(items) {
     console.log(items.length);
-    let res = [{},{}]
+    let res = []
+    for (let index = 0; index < items.length; index++) {
+        res.push({})
+    } 
     if(items.length === 0){
         return []
     }else if(items.length === 1){
@@ -85,7 +88,7 @@ export function switchStringIntelligentTime(items) {
             res[index] = null
         }
     })
-    if(flag === 2){
+    if(flag === items.length){
         res = []
     }
     return res

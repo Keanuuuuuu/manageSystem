@@ -11,17 +11,18 @@
           <template #default="props">
             <div m="4" class="message">
               <h3>操作内容</h3>
+              <p m="t-0 b-2">房间: {{ props.row.message.room }}</p>
+              <p m="t-0 b-2">内机: {{ props.row.message.name }}</p>
+              <p m="t-0 b-2">开关: {{ props.row.message.status }}</p>
               <p m="t-0 b-2">模式: {{ props.row.message.mode }}</p>
-              <p m="t-0 b-2">房间: {{ props.row.message.name }}</p>
               <p m="t-0 b-2">温度: {{ props.row.message.temperature }}</p>
               <p m="t-0 b-2">风速: {{ props.row.message.windSpeed }}</p>
-              <p m="t-0 b-2">状态: {{ props.row.message.status }}</p>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="Name" prop="name" />
-        <el-table-column label="Phone" prop="phone" />
-        <el-table-column label="Time" prop="time" />
+        <el-table-column label="姓名" prop="name" />
+        <el-table-column label="电话" prop="phone" />
+        <el-table-column label="时间" prop="time" />
       </el-table>
 
       <div class="pagination">

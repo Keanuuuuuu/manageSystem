@@ -8,7 +8,7 @@
 <template>
   <div class="main-top" @click="logWindowMin">
     <div class="left">
-      <span>日志记载</span>
+      <span>日志查询</span>
     </div>
     <div class="right">
       <span class="window-min" @click="logWindowMin">

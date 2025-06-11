@@ -56,7 +56,7 @@ function encryptPWD(password) {
 
 // 尝试登录
 function tryLogin() {
-  const customUrl = "http://lab.zhongyaohui.club/login";
+  const customUrl = "https://lab.zhongyaohui.club/login";
   const postData = {
     username: username.value.trim(),
     password: encryptPWD(password.value.trim()),

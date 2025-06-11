@@ -14,7 +14,7 @@
     </el-button-group>
     <div class="button-table-divider"></div>
 
-    <div v-if="store.accountTableData && store.accountTableData.length">
+    <div v-if="store.accountTableData && store.accountTableData.length" class="account-management-data">
       <el-table ref="multipleTableRef"
         :data="store.accountTableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)" stripe
         :header-cell-style="headerRowStyle" @select="handleSelected">
@@ -37,7 +37,7 @@
           @current-change="handleCurrentChange"></el-pagination>
       </div>
     </div>
-    <div v-else>
+    <div v-else  class="account-management-data">
       <el-table :data="noData" :header-cell-style="headerRowStyle">
         <el-table-column type="selection" />
         <el-table-column prop="username" label="账号"></el-table-column>
@@ -178,18 +178,13 @@ const headerRowStyle = () => { // 修改表头的回调函数
 
 .account-management {
   padding: 20px;
-}
 
-.pagination-container {
-  display: flex;
-  justify-content: center;
-  position: fixed;
-  left: 0;
-  bottom: 10px;
-  width: 100%;
-  padding: 5px;
-  background-color: #fff;
-  border-top: 2px solid #ebeef5;
+  .account-management-data {
+    height: calc(100vh - 38px - 28px - 60px - 40px - 50px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
 }
 
 .button-table-divider {

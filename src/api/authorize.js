@@ -26,7 +26,7 @@ export async function authorizeGet() {
   // token有值
   if (token) {
     // 构建动态的 apiUrl
-    const apiUrlTemplate = 'http://lab.zhongyaohui.club/login/{token}';
+    const apiUrlTemplate = 'https://lab.zhongyaohui.club/login/{token}';
     const apiUrl = apiUrlTemplate.replace('{token}', token);
     await authGet(apiUrl).then((res) => {
       // console.log(res.data.code);

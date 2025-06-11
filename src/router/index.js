@@ -4,12 +4,14 @@ import Overview from '../pages/routes/overview.vue'
 import Monitoring from '../pages/routes/monitoring.vue'
 import Account from '../pages/routes/account.vue'
 import DataStatistics from '../pages/routes/dataStatistics.vue'
+import DeviceSearch from '../pages/routes/deviceSearch.vue'
 
 import Log from '../pages/dialog/log.vue'
 import PWD from '../pages/dialog/PWD.vue'
 import Login from '../pages/dialog/login.vue'
 import changeInfo from '../pages/dialog/changeInfo.vue'
 import ChangePSW from '../pages/dialog/changePSW.vue'
+import overviewLog from '../pages/dialog/overviewLog.vue'
 
 
 const routes = [
@@ -41,6 +43,11 @@ const routes = [
         name: '数据统计',
         component: DataStatistics
       },
+      {
+        path: 'deviceSearch',
+        name: '设备查询',
+        component: DeviceSearch
+      },
     ]
   },
   {
@@ -48,7 +55,7 @@ const routes = [
     children: [
       {
         path: 'log',
-        name: '日志记载',
+        name: '日志查询',
         component: Log
       },
       {
@@ -70,6 +77,11 @@ const routes = [
         path: 'changePSW',
         name: '修改密码',
         component: ChangePSW
+      },
+      {
+        path: 'overviewLog',
+        name: '中央空调内机运行信息',
+        component: overviewLog
       },
     ]
   }

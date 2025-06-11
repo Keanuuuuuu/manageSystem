@@ -23,6 +23,78 @@ export const useIntelligent = defineStore({
       modeValue: '',
       windValue: '',
       numValue: 25
+    },{
+      id: 'Time3',
+      type: 1,
+      isSelectd: false,
+      firstTime: '',
+      switchValue: '',
+      modeValue: '',
+      windValue: '',
+      numValue: 25
+    },{
+      id: 'Time4',
+      type: 1,
+      isSelectd: false,
+      firstTime: '',
+      switchValue: '',
+      modeValue: '',
+      windValue: '',
+      numValue: 25
+    },{
+      id: 'Time5',
+      type: 1,
+      isSelectd: false,
+      firstTime: '',
+      switchValue: '',
+      modeValue: '',
+      windValue: '',
+      numValue: 25
+    },{
+      id: 'Time6',
+      type: 1,
+      isSelectd: false,
+      firstTime: '',
+      switchValue: '',
+      modeValue: '',
+      windValue: '',
+      numValue: 25
+    },{
+      id: 'Time7',
+      type: 1,
+      isSelectd: false,
+      firstTime: '',
+      switchValue: '',
+      modeValue: '',
+      windValue: '',
+      numValue: 25
+    },{
+      id: 'Time8',
+      type: 1,
+      isSelectd: false,
+      firstTime: '',
+      switchValue: '',
+      modeValue: '',
+      windValue: '',
+      numValue: 25
+    },{
+      id: 'Time9',
+      type: 1,
+      isSelectd: false,
+      firstTime: '',
+      switchValue: '',
+      modeValue: '',
+      windValue: '',
+      numValue: 25
+    },{
+      id: 'Time10',
+      type: 1,
+      isSelectd: false,
+      firstTime: '',
+      switchValue: '',
+      modeValue: '',
+      windValue: '',
+      numValue: 25
     }]),
     tempData: ref([{
       id: 'lowTemp',

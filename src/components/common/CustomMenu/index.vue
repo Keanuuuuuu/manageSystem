@@ -12,6 +12,7 @@
         <Item :value="value1_1" :type="changePSW">{{value1_1}}</Item>
         <Item :value="value1_2" :type="changeInfoDialog">{{value1_2}}</Item>
         <Item :value="value1_3" :type="quitSystem">{{value1_3}}</Item>
+        <Item :value="value1_4" :type="slipOver">{{value1_4}}</Item>
       </template>
     </Menu>
     <Menu :menu="menu2">
@@ -24,6 +25,7 @@
       <template #selectDropDown>
         <Item :value="value3_2" :type="dialog">{{value3_2}}</Item>
         <Item :value="value3_3" :type="routes">{{value3_3}}</Item>
+        <Item :value="value3_4" :type="routes">{{value3_4}}</Item>
       </template>
     </Menu>
     <Menu :menu="menu4">
@@ -58,6 +60,7 @@ let changeInfoDialog="changeInfoDialog"
 let changePSW="changePSW"
 let quitSystem="quitSystem"
 let link="link"
+let slipOver="slipOver"
 
 let menu1= "系统"
 let menu2= "视图"
@@ -66,10 +69,12 @@ let menu4= "帮助"
 let value1_1= "修改密码"
 let value1_2= "修改信息"
 let value1_3= "退出系统"
+let value1_4= "翻页频率"
 let value2_1= "总览"
 let value2_2= "内机监控"
-let value3_2= "日志记载"
+let value3_2= "日志查询"
 let value3_3= "账号管理"
+let value3_4= "设备查询"
 let value4_1= "帮助"
 
 function logout() {

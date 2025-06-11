@@ -7,10 +7,10 @@
 !-->
 <template>
   <div class="Monitor_display_control">
-    <el-button class="btn" @click="fetchData">状态刷新</el-button>
-    <el-button class="btn" @click="changeDialogVisible">实时控制</el-button>
+    <el-button class="btn" @click="fetchData">手动刷新</el-button>
+    <el-button class="btn" @click="changeDialogVisible">远程控制</el-button>
     <el-button class="btn" @click="intelligentControlDialogVisible">智能控制</el-button>
-    <el-input v-model="search" placeholder="Please input" class="input-with-select" @keydown.enter="handleSearch">
+    <el-input v-model="search" placeholder="请输入关键字" class="input-with-select" @keydown.enter="handleSearch">
       <template #append>
         <el-button :icon="Search" @click="handleSearch" />
       </template>
@@ -61,8 +61,10 @@ async function InitalAirconditionState() {
     baseURL: 'http://lab.zhongyaohui.club/'
   })
   airconditionNodeArray.value = res.data
+  console.log("刷新触发",res.data);
   let dataFlattenByIdResult = dataFlattenById("16", airconditionNodeArray.value) //将有层级的节点数组扁平化
   store.setMonitorTableData(dataFlattenByIdResult)   //将结果交由pinia 在table中展示
+  store.setOriginalMonitorTableData(dataFlattenByIdResult)
   handleNodeClick(store.lastTreeNode)
 }
 

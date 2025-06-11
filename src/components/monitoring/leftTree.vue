@@ -66,8 +66,9 @@ const store = useCustomStore();
 onMounted(() => {
     getTreeArr()
     getAirconditionPost()
-    systemEventBus.$on('updateAirconditionPost', () => {
-        getAirconditionPost()
+    systemEventBus.$on('updateAirconditionPost', async () => {
+        await getAirconditionPost()
+        await getTreeArr();
     })
 })
 
@@ -98,6 +99,7 @@ const handleNodeClick = (data) => {
     let dataFlattenByIdResult = dataFlattenById(data.id, airconditionNodeArray.value) //将有层级的节点数组扁平化
     // console.log(dataFlattenByIdResult);
     store.setMonitorTableData(dataFlattenByIdResult)   //将结果交由pinia 在table中展示
+    store.setOriginalMonitorTableData(dataFlattenByIdResult)
     store.setMonitorHead({ label: data.label, length: dataFlattenByIdResult.length })
     // console.log(store.monitorTableData);
 }
@@ -113,7 +115,8 @@ async function getAirconditionPost() {
     })
     // console.log('中心看板内机状态=========================》', res);
     airconditionNodeArray.value = res.data
-    handleNodeClick(airconditionNode, airconditionNodeArray.value)
+    console.log(res.data);
+    handleNodeClick(store.lastTreeNode, airconditionNodeArray.value)
     store.airconditionNodeArrayLoading = false
 }
 

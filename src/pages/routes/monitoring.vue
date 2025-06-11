@@ -24,7 +24,7 @@
 
       <div class="Monitor_the_display_data_list">
         <el-table ref="multipleTableRef"
-          :data="store.monitorTableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)"
+          :data="store.monitorTableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)" fit
           @select="handleSelectionChange" @select-all="handleSelectionChange" stripe :header-cell-style="headerRowStyle" 
           :table-layout="tableLayout" :cell-style="cellStyle" v-loading="store.airconditionNodeArrayLoading">
           <!-- 
@@ -35,20 +35,28 @@
             5、selection-change当选择项发生变化时会触发该事件
           -->
           <el-table-column type="selection" :selectable="selectable"/>
-          <el-table-column property='name' label="名称" sortable/>
-          <el-table-column property='status' label="状态" sortable/>
+          <el-table-column property='room' label="房间" min-width="120px" sortable/>
+          <el-table-column property='name' label="内机" min-width="120px" sortable/>
+          <el-table-column property='status' label="开关" sortable/>
           <el-table-column property='mode' label="模式" sortable/>
           <el-table-column property='temperature' label="温度" sortable/>
           <el-table-column property='windSpeed' label="风速" sortable/>
           <el-table-column property='roomTemperature' label="室温" sortable/>
+          <el-table-column label="智能控制" min-width="120px">
+            <template #default="scope" sortable>
+              <span>{{ intelligent(scope.row.autoControl) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="状态" sortable>
+            <template #default="scope">
+              <span v-if="scope.row.faultCode === '1'">在线</span>
+              <span v-else-if="scope.row.faultCode === '0'">掉线</span>
+              <span v-else>{{ scope.row.faultCode }}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="详情">
             <template #default="scope">
               <el-button @click="details(scope.row.id)">详情...</el-button>
-            </template>
-          </el-table-column>
-          <el-table-column label="智能控制">
-            <template #default="scope">
-              <span>{{ intelligent(scope.row.autoControl) }}</span>
             </template>
           </el-table-column>
         </el-table>
@@ -67,20 +75,9 @@
       <div m="4" class="message">
         <h3>详情内容</h3>
         <p m="t-0 b-2">内机id: {{detailsData.machineId}}</p>
-        <p m="t-0 b-2">内机label: {{detailsData.machineName}}</p>
-        <p m="t-0 b-2">房间id: {{detailsData.roomId}}</p>
-        <p m="t-0 b-2">楼栋id: {{detailsData.buildingId}}</p>
         <p m="t-0 b-2">网关id: {{detailsData.gatewayId}}</p>
-        <p m="t-0 b-2">私有网关ip: {{detailsData.privateGatewayIp}}</p>
-        <p m="t-0 b-2">内机所属机组: {{detailsData.belongToGroup ?detailsData.belongToGroup:'无'}}</p>
         <p m="t-0 b-2">集控器设备id: {{detailsData.deviceId}}</p>
         <p m="t-0 b-2">集控器设备地址: {{detailsData.deviceOrder ?detailsData.deviceOrder:'无'}}</p>
-        <p m="t-0 b-2">内机地址: {{detailsData.machineOrder}}</p>
-        <p m="t-0 b-2">负责人姓名: {{detailsData.headName ?detailsData.headName:'无'}}</p>
-        <p m="t-0 b-2">负责人手机号: {{detailsData.headPhone ?detailsData.headPhone:'无'}}</p>
-        <p m="t-0 b-2">负责人邮箱: {{detailsData.headEmail ?detailsData.headEmail:'无'}}</p>
-        <p m="t-0 b-2">备注信息: {{detailsData.notes ?detailsData.notes:'无'}}</p>
-        <p m="t-0 b-2">智能控制: {{intelligent(detailsData.autoControl)}}</p>
       </div>
     </el-scrollbar>
   </el-dialog>
@@ -184,6 +181,7 @@ const detailsData = ref({})
 // 修改内机状态的POST请求
 async function modifyNodePost(selectedobj, res) {
   console.log(selectedobj, res);
+  store.airconditionNodeArrayLoading = true
   return new Promise((resolve, reject) => {
     post('/controlMachine',
       {
@@ -207,12 +205,24 @@ async function modifyNodePost(selectedobj, res) {
 
 // 内机智能控制的POST处理方法
 async function intelligentControlPost(selectedobj, optionSelectedTime, optionSelectedTemp) {
-  Promise.all([tempPost(selectedobj, optionSelectedTemp), timePost(selectedobj, optionSelectedTime)]).then((values) => {
+  // Promise.all([tempPost(selectedobj, optionSelectedTemp), timePost(selectedobj, optionSelectedTime)]).then((values) => {
+  //     values.forEach((item, index)=>{
+  //       if(item.code === 21200 || item.code === 21201){
+  //         ElMessage({showClose: true, message: `${index === 0?'定温控制':'定时控制'}` + item.msg, type: "success"});
+  //       }else {
+  //         ElMessage({showClose: true, message: `${index === 0?'定温控制':'定时控制'}` + item.msg + '或控制项参数不全', type: "warning"});
+  //       }
+  //     })
+  //   }).catch((err) => {
+  //     console.log(err)
+  //     ElMessage({showClose: true, message: err, type: "warning",});
+  //   });
+    Promise.all([timePost(selectedobj, optionSelectedTime)]).then((values) => {
       values.forEach((item, index)=>{
         if(item.code === 21200 || item.code === 21201){
-          ElMessage({showClose: true, message: `${index === 0?'定温控制':'定时控制'}` + item.msg, type: "success"});
+          ElMessage({showClose: true, message: `定时控制` + item.msg, type: "success"});
         }else {
-          ElMessage({showClose: true, message: `${index === 0?'定温控制':'定时控制'}` + item.msg + '或控制项参数不全', type: "warning"});
+          ElMessage({showClose: true, message: `定时控制` + item.msg + '或控制项参数不全', type: "warning"});
         }
       })
     }).catch((err) => {
@@ -230,6 +240,11 @@ async function timePost(selectedobj, optionSelectedTime) {
     timeArr = [res[0], res[1]]
   }else if(res.length === 1){
     timeArr = [res[0]]
+  }else {
+    for (let index = 0; index < res.length; index++) {
+      timeArr.push(res[index]);
+      
+    }
   }
   return new Promise((resolve, reject) => {
     post('auto/time',
@@ -346,18 +361,22 @@ const cellStyle = () => {
 }
 
 const selectable = (row, rowIndex) => {
-  return row.online;
+  if(row.faultCode === '1'){
+    return true
+  }else {
+    return false
+  }
 }
 
 const intelligent = (autoControl) => {
   if(autoControl === 0){
-    return '无智能控制'
+    return '无'
   }else if(autoControl === 1){
-    return '定时控制'
+    return '有'
   }else if(autoControl === 2){
-    return '定温控制'
+    return '有'
   }else if(autoControl === 3){
-    return '定时定温控制'
+    return '有'
   }
 }
 
@@ -441,7 +460,6 @@ const details = async (id) => {
   justify-content: center;
   margin-bottom: 20px;
   box-sizing: border-box;
-  border-top: 1px solid #0000005C;
   padding: 20px 0;
 }
 

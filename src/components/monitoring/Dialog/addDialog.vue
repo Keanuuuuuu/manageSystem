@@ -29,7 +29,7 @@
     <el-form-item label="设备名称:" prop="_machineName" v-show="ruleFormRoom.nodeProperties === '设备'" label-width="120px">
       <el-input v-model="ruleFormRoom._machineName" placeholder="第x台空调"/>
     </el-form-item>
-    <el-form-item label="所属网关:" prop="_gatewayId" v-show="ruleFormRoom.nodeProperties === '设备'" label-width="120px">
+    <el-form-item label="网关编号:" prop="_gatewayId" v-show="ruleFormRoom.nodeProperties === '设备'" label-width="120px">
       <el-input v-model="ruleFormRoom._gatewayId" placeholder="x"/>
     </el-form-item>
     <el-form-item label="所属设备ID:" prop="_deviceId" v-show="ruleFormRoom.nodeProperties === '设备'" label-width="120px">
@@ -38,13 +38,13 @@
     <el-form-item label="所属设备地址:" prop="_deviceOrder" v-show="ruleFormRoom.nodeProperties === '设备'" label-width="120px">
       <el-input v-model="ruleFormRoom._deviceOrder" placeholder="x"/>
     </el-form-item>
-    <el-form-item label="所属内机地址:" prop="_machineOrder" v-show="ruleFormRoom.nodeProperties === '设备'" label-width="120px">
+    <el-form-item label="内机地址:" prop="_machineOrder" v-show="ruleFormRoom.nodeProperties === '设备'" label-width="120px">
       <el-input v-model="ruleFormRoom._machineOrder" placeholder="x"/>
     </el-form-item>
-    <el-form-item label="所属房间ID:" v-show="ruleFormRoom.nodeProperties === '设备'" label-width="120px">
+    <el-form-item label="教室ID:" v-show="ruleFormRoom.nodeProperties === '设备'" label-width="120px">
       <el-input v-model="ruleFormRoom.__roomId" disabled/>
     </el-form-item>
-    <el-form-item label="所属楼栋ID:" v-show="ruleFormRoom.nodeProperties === '设备'" label-width="120px">
+    <el-form-item label="楼栋ID:" v-show="ruleFormRoom.nodeProperties === '设备'" label-width="120px">
       <el-input v-model="ruleFormRoom.__buildingId" disabled/>
     </el-form-item>
     <el-form-item label="私有网关IP:" prop="gatewayIp" v-show="ruleFormRoom.nodeProperties === '设备'" label-width="120px">
@@ -55,10 +55,10 @@
     </el-form-item>
 
     <el-form-item label="楼栋名称:" prop="BuildingName" v-show="ruleFormRoom.nodeProperties === '房间'" label-width="120px">
-      <el-input v-model="ruleFormRoom.BuildingName" />
+      <el-input v-model="ruleFormRoom.BuildingName" disabled/>
     </el-form-item>
-    <el-form-item label="房间名称:" prop="roomName" v-show="ruleFormRoom.nodeProperties === '房间'" label-width="120px">
-      <el-input v-model="ruleFormRoom.roomName" />
+    <el-form-item label="房间ID:" prop="roomName" v-show="ruleFormRoom.nodeProperties === '房间'" label-width="120px">
+      <el-input v-model="ruleFormRoom.roomName" placeholder="房间名称默认与ID相同(16_xxx)"/>
     </el-form-item>
 
     <el-form-item label="负责人名称:" prop="gatewayIp" label-width="120px">
@@ -118,6 +118,7 @@ onMounted(()=>{
   ruleFormRoom.nodeProperties = props.addType.value
   ruleFormRoom.__buildingId = props.addType.__buildingId
   ruleFormRoom.__roomId = props.addType.__roomId
+  ruleFormRoom.BuildingName = '16'
 })
 
 const rules = reactive({
@@ -151,6 +152,7 @@ const rules = reactive({
 watchEffect(()=>{
   ruleFormRoom.nodeProperties = props.addType.value
   if(ruleFormRoom.nodeProperties === "房间"){
+    ruleFormRoom.BuildingName = '16'
     rules._machineId[0].required = false
     rules._machineName[0].required = false
     rules._gatewayId[0].required = false
